@@ -11,3 +11,7 @@ vite.config.ts.timestamp-*
 
 # Firebase debug logs
 *-debug.log
+
+# Test results
+test-results
+playwright-report

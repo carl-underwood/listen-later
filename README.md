@@ -1,28 +1,21 @@
-# create-svelte
+# Listen Later
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+A web application for storing things to listen to later on Spotify. Built using SvelteKit & Firebase.
 
-## Creating a project
+## Dependencies
 
-If you're seeing this, you've probably already done this step. Congrats!
+Firebase Tools are required for local emulators:
 
 ```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
+npm i -g firebase-tools
 ```
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Once Firebase Tool are installed (and dependencies in general have been installed via `npm i`), the application (including required emulators) may be run using:
 
 ```bash
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
 ## Building
@@ -33,6 +26,12 @@ To create a production version of your app:
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+You can preview the production build with `npm run preview` (updated from `vite preview` to `firebase emulators:start` - allowing the built site to be previewed via the Firebase Hosting emulator).
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+## Testing
+
+To run the integration tests locally, ensure your're running in dev mode (`npm run dev`) or hosting the built site (via `npm run build && npm run preview`).
+
+The tests may then be run via `npm run test:integration`.
+
+Unit tests may be run via `npm run test:unit`.
