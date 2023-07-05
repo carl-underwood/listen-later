@@ -11,11 +11,20 @@ test.describe('list page', () => {
 		await expect(page.getByRole('heading', { name: 'List' })).toBeVisible();
 	});
 
-	test('shows a button to sign out when signed in', async ({ page }) => {
+	test('shows a navigation item for settings and button to sign out in the navigation drawer when signed in', async ({
+		page
+	}) => {
 		await page.goto('/list');
 		const signInButtonLocator = page.getByRole('button', { name: 'Sign in anonymously' });
 		await expect(signInButtonLocator).toBeVisible();
 		await signInButtonLocator.click();
+
+		const navigationDrawerButtonLocator = page.getByRole('button', { name: 'Open navigation' });
+		await navigationDrawerButtonLocator.click();
+
+		const settingsNavigationItemLocator = page.getByRole('link', { name: 'Settings' });
+		await expect(settingsNavigationItemLocator).toBeVisible();
+		await expect(settingsNavigationItemLocator).toHaveAttribute('href', '/settings');
 
 		const signOutButtonLocator = page.getByRole('button', { name: 'Sign out' });
 		await expect(signOutButtonLocator).toBeVisible();
