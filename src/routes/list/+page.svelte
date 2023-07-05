@@ -1,31 +1,19 @@
 <script lang="ts">
 	import { auth } from '$lib/stores/auth';
 	import { user } from '$lib/stores/user';
-
-	let loading = false;
-
-	const withLoading = async (action: () => Promise<unknown>) => {
-		loading = true;
-		await action();
-		loading = false;
-	};
+	import { loading } from '$lib/stores/loading';
 </script>
 
 {#if $user === undefined}
 	Loading
-{:else if $user}
-	<h1>List</h1>
+{:else if $user === null}
 	<button
-		on:click={() => withLoading(auth.signOut)}
-		disabled={loading}
-		class="btn bg-gradient-to-br variant-gradient-secondary-tertiary">Sign out</button
-	>
-{:else}
-	<button
-		on:click={() => withLoading(auth.signInAnonymously)}
-		disabled={loading}
+		on:click={() => loading.whileAwaiting(auth.signInAnonymously)}
+		disabled={$loading}
 		class="btn bg-gradient-to-br variant-gradient-secondary-tertiary"
 	>
 		Sign in anonymously
 	</button>
+{:else}
+	<h1>List</h1>
 {/if}
