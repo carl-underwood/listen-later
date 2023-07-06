@@ -2,5 +2,6 @@
 	"editor.formatOnSave": true,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"eslint.workingDirectories": ["./", "./functions"],
+	"eslint.validate": ["javascript", "typescript", "svelte"],
 	"files.eol": "\n"
 }
