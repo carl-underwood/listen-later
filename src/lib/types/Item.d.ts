@@ -6,6 +6,7 @@ export default interface Item {
 	name: string;
 	metadata: string[];
 	spotifyUrl: string;
+	imageUrl: string | null;
 	addedAtUtc: string;
 	listened: boolean;
 }

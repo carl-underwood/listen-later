@@ -5,9 +5,15 @@
 
 	import { items } from '$lib/stores/items';
 	import { loading } from '$lib/stores/loading';
+	import { search } from '$lib/functions/search';
 	import type Item from '$lib/types/Item';
+	import { onMount } from 'svelte';
 
 	$: $items;
+
+	onMount(() => {
+		search('bob');
+	});
 
 	const { form, errors, handleSubmit } = createForm({
 		initialValues: {
@@ -24,6 +30,7 @@
 				metadata: [],
 				name: values.id,
 				spotifyUrl: '',
+				imageUrl: '',
 				type: 'album'
 			};
 

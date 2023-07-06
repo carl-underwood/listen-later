@@ -1,19 +1,33 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+import { onCall, HttpsError } from 'firebase-functions/v2/https';
+import { defineString } from 'firebase-functions/params';
+import { getAccessToken, search as spotifySearch } from './spotify';
+import { mapToSearchResults } from './mapToSearchResults';
 
-import {onRequest} from "firebase-functions/v2/https";
-import * as logger from "firebase-functions/logger";
+const SPOTIFY_CLIENT_ID = defineString('SPOTIFY_CLIENT_ID');
+const SPOTIFY_CLIENT_SECRET = defineString('SPOTIFY_CLIENT_SECRET');
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
+const MINIMUM_SEARCH_QUERY_LENGTH = 3;
 
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+export const search = onCall({ enforceAppCheck: true }, async (request) => {
+	if (!request.auth) {
+		throw new HttpsError('unauthenticated', 'Must be authenticated.');
+	}
+
+	const searchQuery = request.data.searchQuery;
+
+	if (typeof searchQuery !== 'string' || searchQuery.length < MINIMUM_SEARCH_QUERY_LENGTH) {
+		throw new HttpsError(
+			'invalid-argument',
+			`Must be called with a single string argument 'searchQuery' with ${MINIMUM_SEARCH_QUERY_LENGTH} or more characters.`
+		);
+	}
+
+	const accessToken = await getAccessToken(
+		SPOTIFY_CLIENT_ID.value(),
+		SPOTIFY_CLIENT_SECRET.value()
+	);
+
+	const spotifySearchResponse = await spotifySearch(searchQuery, accessToken);
+
+	return mapToSearchResults(spotifySearchResponse);
+});
