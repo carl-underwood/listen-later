@@ -14,3 +14,6 @@ yarn.lock
 
 # Functions
 /functions
+
+# Playwright output
+/playwright-report

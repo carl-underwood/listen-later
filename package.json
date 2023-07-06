@@ -11,7 +11,8 @@
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
-		"test:unit": "vitest"
+		"test:unit": "vitest",
+		"kill-emulator-ports": "npx kill-port 4000 9099 5001 8080 5000"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",

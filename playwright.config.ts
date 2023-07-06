@@ -7,12 +7,14 @@ export default defineConfig({
 		{ name: 'Android', use: devices['Pixel 5'] },
 		{ name: 'Desktop Chrome', use: devices['Desktop Chrome'] },
 		{ name: 'Desktop Safari', use: devices['Desktop Safari'] },
-		{ name: 'IOS', use: devices['iPhone 13'] }
+		{ name: 'iOS', use: devices['iPhone 13'] }
 	],
 	reporter: [['html', { open: 'never' }]],
-	retries: process.env.CI ? 4 : 0,
 	testDir: 'tests',
 	testMatch: /(.+\.)?(test|spec)\.[jt]s/,
+	use: {
+		trace: 'retain-on-failure'
+	},
 	webServer: {
 		command: 'npm run dev',
 		port: 5000,

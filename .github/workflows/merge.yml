@@ -17,10 +17,18 @@ jobs:
   #     PUBLIC_FIREBASE_MESSAGING_SENDER_ID: TODO
   #     PUBLIC_FIREBASE_APP_ID: TODO
   #     PUBLIC_FIREBASE_USE_EMULATORS: 'false'
+  #     SPOTIFY_CLIENT_ID: 'd46d2b58a44947d093ecbe0289a5dfc3'
+  #     SPOTIFY_CLIENT_SECRET: '${{ secrets.SPOTIFY_CLIENT_SECRET }}'
   #   steps:
   #     - uses: actions/checkout@v3
   #     - name: Build
   #       run: npm run build
+  #     - name: Write functions .env
+  #       run: |
+  #         touch ./functions/.env
+  #         echo SPOTIFY_CLIENT_ID="$SPOTIFY_CLIENT_ID" >> ./functions/.env
+  #         echo SPOTIFY_CLIENT_SECRET="$SPOTIFY_CLIENT_SECRET" >> ./functions/.env
+  #         cat ./functions/.env
   #     - uses: FirebaseExtended/action-hosting-deploy@v0
   #       with:
   #         repoToken: '${{ secrets.GITHUB_TOKEN }}'
