@@ -1,7 +1,7 @@
 // Inspired by https://github.com/CaptainCodeman/sveltekit-example/blob/master/src/lib/app.ts
 
 import { browser } from '$app/environment';
-import type { FirebaseApp, FirebaseOptions } from 'firebase/app';
+import type { FirebaseApp, FirebaseOptions } from '@firebase/app';
 import { readable } from 'svelte/store';
 import {
 	PUBLIC_FIREBASE_API_KEY,
@@ -15,7 +15,7 @@ import {
 
 const firebaseConfig: FirebaseOptions =
 	PUBLIC_FIREBASE_USE_EMULATORS === 'true'
-		? { apiKey: 'demo', authDomain: 'demo.firebaseapp.com' }
+		? { apiKey: 'demo', authDomain: 'demo.firebaseapp.com', projectId: 'demo' }
 		: {
 				apiKey: PUBLIC_FIREBASE_API_KEY,
 				authDomain: PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -33,7 +33,7 @@ function createApp() {
 	const { subscribe } = readable<FirebaseApp>(undefined, (set) => {
 		async function init() {
 			if (!app) {
-				const { initializeApp } = await import('firebase/app');
+				const { initializeApp } = await import('@firebase/app');
 				app = initializeApp(firebaseConfig);
 			}
 
