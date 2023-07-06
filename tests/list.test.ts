@@ -60,4 +60,39 @@ test.describe('list page', () => {
 		const newItemLocator = page.getByText(id);
 		await expect(newItemLocator).toBeVisible();
 	});
+
+	test('allows an item to be deleted when signed in', async ({ page }) => {
+		await page.goto('/list');
+		const signInButtonLocator = page.getByRole('button', { name: 'Sign in anonymously' });
+		await expect(signInButtonLocator).toBeVisible();
+		await signInButtonLocator.click();
+
+		const addItemButtonLocator = page.getByRole('link', { name: 'Add item' });
+		await expect(addItemButtonLocator).toBeVisible();
+		await addItemButtonLocator.click();
+
+		const idInputLocator = page.getByLabel('id');
+		await expect(idInputLocator).toBeVisible();
+
+		const id = uuid();
+		await idInputLocator.fill(id);
+
+		const addButtonLocator = page.getByRole('button', { name: 'Add' });
+		await expect(addButtonLocator).toBeVisible();
+		await addButtonLocator.click();
+
+		await page.waitForURL('/list');
+
+		const newItemLocator = page.getByRole('button', { name: id, exact: true });
+		await expect(newItemLocator).toBeVisible();
+
+		const newItemDeleteButton = page.getByRole('button', { name: `Delete ${id}` });
+		await expect(newItemDeleteButton).not.toBeVisible();
+
+		await newItemLocator.click();
+		await expect(newItemDeleteButton).toBeVisible();
+		await newItemDeleteButton.click();
+
+		await expect(newItemLocator).not.toBeVisible();
+	});
 });
