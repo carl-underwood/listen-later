@@ -3,5 +3,15 @@
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"eslint.workingDirectories": ["./", "./functions"],
 	"eslint.validate": ["javascript", "typescript", "svelte"],
-	"files.eol": "\n"
+	"files.eol": "\n",
+	"prettier.prettierPath": "./node_modules/prettier",
+	"[json]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[jsonc]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[html]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	}
 }

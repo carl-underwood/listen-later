@@ -32,7 +32,7 @@ export function createItems() {
 			// q = query(q, orderBy('addedAtUtc', 'desc'));
 
 			unsubscribe = onSnapshot(q, (snapshot) => {
-				items = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }) as Item);
+				items = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id } as Item));
 				set(items);
 			});
 
