@@ -5,7 +5,7 @@
 
 	import { slide } from 'svelte/transition';
 	import { page } from '$app/stores';
-	import { AppBar, Drawer, drawerStore, LightSwitch } from '@skeletonlabs/skeleton';
+	import { AppBar, Drawer, drawerStore, LightSwitch, Modal } from '@skeletonlabs/skeleton';
 
 	import { auth } from '$lib/stores/auth';
 	import { user } from '$lib/stores/user';
@@ -89,3 +89,5 @@
 </Drawer>
 
 <slot />
+
+<Modal />

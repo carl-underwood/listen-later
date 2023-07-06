@@ -5,28 +5,28 @@ test.describe('navigation drawer', () => {
 		await page.goto('/');
 
 		await expect(async () => {
-			const navDrawerButtonLocator = page.getByRole('button', { name: 'Open navigation' });
-			await navDrawerButtonLocator.click();
+			const navDrawerButton = page.getByRole('button', { name: 'Open navigation' });
+			await navDrawerButton.click();
 			await expect(page.getByRole('dialog', { name: 'Navigation drawer' })).toBeVisible({
 				timeout: 200
 			});
 		}).toPass();
 
-		const homeNavigationItemLocator = page.getByRole('link', { name: 'Home' });
-		await expect(homeNavigationItemLocator).toBeVisible();
-		await expect(homeNavigationItemLocator).toHaveAttribute('href', '/');
+		const homeNavigationItem = page.getByRole('link', { name: 'Home' });
+		await expect(homeNavigationItem).toBeVisible();
+		await expect(homeNavigationItem).toHaveAttribute('href', '/');
 
-		const aboutNavigationItemLocator = page.getByRole('link', { name: 'About' });
-		await expect(aboutNavigationItemLocator).toBeVisible();
-		await expect(aboutNavigationItemLocator).toHaveAttribute('href', '/about');
+		const aboutNavigationItem = page.getByRole('link', { name: 'About' });
+		await expect(aboutNavigationItem).toBeVisible();
+		await expect(aboutNavigationItem).toHaveAttribute('href', '/about');
 
-		const listNavigationItemLocator = page.getByRole('link', { name: 'List' });
-		await expect(listNavigationItemLocator).toBeVisible();
-		await expect(listNavigationItemLocator).toHaveAttribute('href', '/list');
+		const listNavigationItem = page.getByRole('link', { name: 'List' });
+		await expect(listNavigationItem).toBeVisible();
+		await expect(listNavigationItem).toHaveAttribute('href', '/list');
 
-		const gitHubNavigationItemLocator = page.getByRole('link', { name: 'GitHub' });
-		await expect(gitHubNavigationItemLocator).toBeVisible();
-		await expect(gitHubNavigationItemLocator).toHaveAttribute(
+		const gitHubNavigationItem = page.getByRole('link', { name: 'GitHub' });
+		await expect(gitHubNavigationItem).toBeVisible();
+		await expect(gitHubNavigationItem).toHaveAttribute(
 			'href',
 			'https://github.com/carl-hartshorn/listen-later'
 		);

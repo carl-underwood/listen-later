@@ -13,4 +13,5 @@ Note that the following classes have been removed, as these were overriding them
 - [info](info.svelte)
 - [list-music](list-music.svelte)
 - [plus](plus.svelte)
+- [trash-bin](trash-bin.svelte)
 - [user-settings](user-settings.svelte)

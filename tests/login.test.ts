@@ -4,9 +4,9 @@ test.describe('list page', () => {
 	test('shows a button to sign in anonymously when not signed in', async ({ page }) => {
 		await page.goto('/list');
 
-		const buttonLocator = page.getByRole('button', { name: 'Sign in anonymously' });
-		await expect(buttonLocator).toBeVisible();
-		await buttonLocator.click();
+		const button = page.getByRole('button', { name: 'Sign in anonymously' });
+		await expect(button).toBeVisible();
+		await button.click();
 
 		await expect(page.getByRole('heading', { name: 'List' })).toBeVisible();
 	});
@@ -15,21 +15,21 @@ test.describe('list page', () => {
 		page
 	}) => {
 		await page.goto('/list');
-		const signInButtonLocator = page.getByRole('button', { name: 'Sign in anonymously' });
-		await expect(signInButtonLocator).toBeVisible();
-		await signInButtonLocator.click();
+		const signInButton = page.getByRole('button', { name: 'Sign in anonymously' });
+		await expect(signInButton).toBeVisible();
+		await signInButton.click();
 
-		const navigationDrawerButtonLocator = page.getByRole('button', { name: 'Open navigation' });
-		await navigationDrawerButtonLocator.click();
+		const navigationDrawerButton = page.getByRole('button', { name: 'Open navigation' });
+		await navigationDrawerButton.click();
 
-		const settingsNavigationItemLocator = page.getByRole('link', { name: 'Settings' });
-		await expect(settingsNavigationItemLocator).toBeVisible();
-		await expect(settingsNavigationItemLocator).toHaveAttribute('href', '/settings');
+		const settingsNavigationItem = page.getByRole('link', { name: 'Settings' });
+		await expect(settingsNavigationItem).toBeVisible();
+		await expect(settingsNavigationItem).toHaveAttribute('href', '/settings');
 
-		const signOutButtonLocator = page.getByRole('button', { name: 'Sign out' });
-		await expect(signOutButtonLocator).toBeVisible();
-		await signOutButtonLocator.click();
+		const signOutButton = page.getByRole('button', { name: 'Sign out' });
+		await expect(signOutButton).toBeVisible();
+		await signOutButton.click();
 
-		await expect(signInButtonLocator).toBeVisible();
+		await expect(signInButton).toBeVisible();
 	});
 });

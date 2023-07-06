@@ -1,6 +1,14 @@
 import { derived, get, type Readable } from 'svelte/store';
 import { browser } from '$app/environment';
-import { collection, doc, type Firestore, onSnapshot, query, setDoc } from '@firebase/firestore';
+import {
+	collection,
+	deleteDoc,
+	doc,
+	type Firestore,
+	onSnapshot,
+	query,
+	setDoc
+} from '@firebase/firestore';
 import type { User } from '@firebase/auth';
 import type Item from '../types/Item';
 import { firestore } from './firestore';
@@ -42,7 +50,17 @@ export function createItems() {
 		await setDoc(doc($firestore, `users/${$user.uid}/items`, item.id), item);
 	};
 
-	return { subscribe, upsertItem };
+	const deleteItem = async (itemId: string) => {
+		const $firestore = get(firestore);
+		const $user = get(user);
+		if (!$firestore || !$user) {
+			return;
+		}
+
+		await deleteDoc(doc($firestore, `users/${$user.uid}/items`, itemId));
+	};
+
+	return { subscribe, upsertItem, deleteItem };
 }
 
 export const items = createItems();
