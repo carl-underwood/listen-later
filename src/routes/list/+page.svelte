@@ -2,12 +2,29 @@
 	import { items } from '$lib/stores/items';
 	import Loading from '$lib/components/Loading.svelte';
 	import Plus from '$lib/components/icons/plus.svelte';
-	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
+	import {
+		Accordion,
+		AccordionItem,
+		type ModalComponent,
+		type ModalSettings,
+		modalStore
+	} from '@skeletonlabs/skeleton';
 	import TrashBin from '$lib/components/icons/trash-bin.svelte';
-	import { loading } from '$lib/stores/loading';
+	import DeleteModal from '$lib/components/DeleteModal.svelte';
+	import type Item from '$lib/types/Item';
 
-	const deleteItem = async (itemId: string) => {
-		await loading.whileAwaiting(() => items.deleteItem(itemId));
+	const deleteItem = (item: Item) => {
+		const modalComponent: ModalComponent = {
+			ref: DeleteModal,
+			props: { item }
+		};
+
+		const modal: ModalSettings = {
+			type: 'component',
+			component: modalComponent
+		};
+
+		modalStore.trigger(modal);
 	};
 </script>
 
@@ -29,16 +46,15 @@
 			{#each $items as item (item.id)}
 				<AccordionItem>
 					<svelte:fragment slot="summary">
-						{item.id}
+						{item.name}
 					</svelte:fragment>
 					<svelte:fragment slot="content">
 						<button
 							class="btn-icon btn-icon-sm variant-soft-error"
-							disabled={$loading}
-							on:click={() => deleteItem(item.id)}
+							on:click={() => deleteItem(item)}
 						>
 							<TrashBin classes="w-4 h-4" />
-							<span class="sr-only">Delete {item.id}</span>
+							<span class="sr-only">Delete {item.name}</span>
 						</button>
 					</svelte:fragment>
 				</AccordionItem>
