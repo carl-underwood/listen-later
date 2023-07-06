@@ -1,0 +1,35 @@
+'on': workflow_call
+jobs:
+  build_and_test:
+    if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
+    runs-on: ubuntu-latest
+    env:
+      PUBLIC_FIREBASE_API_KEY: Not set as using emulators
+      PUBLIC_FIREBASE_AUTH_DOMAIN: Not set as using emulators
+      PUBLIC_FIREBASE_PROJECT_ID: Not set as using emulators
+      PUBLIC_FIREBASE_STORAGE_BUCKET: Not set as using emulators
+      PUBLIC_FIREBASE_MESSAGING_SENDER_ID: Not set as using emulators
+      PUBLIC_FIREBASE_APP_ID: Not set as using emulators
+      PUBLIC_FIREBASE_USE_EMULATORS: 'true'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: npm ci
+      - name: Run type check
+        run: npm run check
+      - name: Run unit tests
+        run: npm run test:unit
+      - name: Build
+        run: npm run build
+      - name: Install Firebase Tools
+        run: npm i -g firebase-tools
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Run Playwright tests against Firebase Emulators
+        run: firebase emulators:exec "npm run test:integration"
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 3

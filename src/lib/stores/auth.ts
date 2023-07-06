@@ -2,8 +2,8 @@
 
 import { derived, type Readable } from 'svelte/store';
 import { PUBLIC_FIREBASE_USE_EMULATORS } from '$env/static/public';
-import type { Auth } from 'firebase/auth';
-import type { FirebaseApp } from 'firebase/app';
+import type { Auth } from '@firebase/auth';
+import type { FirebaseApp } from '@firebase/app';
 import { app } from './app';
 
 const createAuth = () => {
@@ -15,7 +15,7 @@ const createAuth = () => {
 				return;
 			}
 
-			const { getAuth, connectAuthEmulator } = await import('firebase/auth');
+			const { getAuth, connectAuthEmulator } = await import('@firebase/auth');
 			auth = getAuth($app);
 
 			if (PUBLIC_FIREBASE_USE_EMULATORS) {
@@ -33,7 +33,7 @@ const createAuth = () => {
 			return;
 		}
 
-		const { signOut } = await import('firebase/auth');
+		const { signOut } = await import('@firebase/auth');
 		await signOut(auth);
 	}
 
@@ -45,7 +45,7 @@ const createAuth = () => {
 				return;
 			}
 
-			const { signInAnonymously } = await import('firebase/auth');
+			const { signInAnonymously } = await import('@firebase/auth');
 
 			await signInAnonymously(auth);
 		}
