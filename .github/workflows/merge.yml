@@ -1,0 +1,35 @@
+name: Buid, Test, Deploy to Firebase Hosting and Verify on merge
+'on':
+  push:
+    branches:
+      - main
+jobs:
+  build_and_test:
+    uses: ./.github/workflows/build-and-test.yml
+  # build_and_deploy:
+  #   needs: build_and_test
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     PUBLIC_FIREBASE_API_KEY: TODO
+  #     PUBLIC_FIREBASE_AUTH_DOMAIN: TODO
+  #     PUBLIC_FIREBASE_PROJECT_ID: TODO
+  #     PUBLIC_FIREBASE_STORAGE_BUCKET: TODO
+  #     PUBLIC_FIREBASE_MESSAGING_SENDER_ID: TODO
+  #     PUBLIC_FIREBASE_APP_ID: TODO
+  #     PUBLIC_FIREBASE_USE_EMULATORS: 'false'
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Build
+  #       run: npm run build
+  #     - uses: FirebaseExtended/action-hosting-deploy@v0
+  #       with:
+  #         repoToken: '${{ secrets.GITHUB_TOKEN }}'
+  #         firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_LISTEN_LATER_CLOUD }}'
+  #         channelId: live
+  #         projectId: listen-later-cloud
+  # verify:
+  #   needs: build_and_deploy
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Run Playwright smoke tests
+  #       run: firebase emulators:exec "npx playwright test tests/smoketest.test.ts"

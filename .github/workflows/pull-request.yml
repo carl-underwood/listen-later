@@ -1,0 +1,5 @@
+name: Build and Test on PR
+'on': pull_request
+jobs:
+  build_and_test:
+    uses: ./.github/workflows/build-and-test.yml
