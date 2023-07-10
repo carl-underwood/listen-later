@@ -38,8 +38,6 @@ jobs:
           java-version: '17'
       - name: Install Firebase Tools
         run: npm i -g firebase-tools
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps chromium webkit
       - name: Write functions .env
         run: |
           touch ./functions/.env
