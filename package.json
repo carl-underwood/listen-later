@@ -3,15 +3,16 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "firebase emulators:exec --ui --only auth,functions,firestore \"npx vite dev\"",
+		"dev": "firebase emulators:exec --ui --only auth,functions,firestore \"npx concurrently \\\"npx vite dev\\\" \\\"npm run build:watch --workspace ./functions\\\"",
 		"build": "vite build",
 		"preview": "firebase emulators:start",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"lint": "prettier --plugin-search-dir . --check . && eslint .",
-		"format": "prettier --plugin-search-dir . --write .",
+		"lint": "prettier --check . && eslint .",
+		"format": "prettier --write .",
 		"test:integration": "playwright test",
-		"test:unit": "vitest"
+		"test:unit": "vitest",
+		"kill-emulator-ports": "npx kill-port 4000 9099 5001 8080 5000"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",
@@ -23,6 +24,7 @@
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
 		"autoprefixer": "^10.4.14",
+		"concurrently": "^8.2.0",
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-svelte": "^2.30.0",
@@ -44,5 +46,8 @@
 	"type": "module",
 	"dependencies": {
 		"firebase": "^9.23.0"
-	}
+	},
+	"workspaces": [
+		"./functions"
+	]
 }

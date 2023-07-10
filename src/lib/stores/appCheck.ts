@@ -1,0 +1,35 @@
+// Inspired by https://github.com/CaptainCodeman/sveltekit-example/blob/master/src/lib/auth.ts & https://www.captaincodeman.com/lazy-loading-firebase-with-sveltekit / https://www.captaincodeman.com/lazy-loading-and-querying-firestore-with-sveltekit
+
+import { derived, type Readable } from 'svelte/store';
+import type { AppCheck } from '@firebase/app-check';
+import type { FirebaseApp } from '@firebase/app';
+import { app } from './app';
+import { PUBLIC_RECAPTCHA_SITE_KEY } from '$env/static/public';
+
+const createAppCheck = () => {
+	let appCheck: AppCheck | undefined = undefined;
+
+	const { subscribe } = derived<Readable<FirebaseApp>, AppCheck>(app, ($app, set) => {
+		async function init() {
+			if (!$app || appCheck) {
+				return;
+			}
+
+			const { initializeAppCheck, ReCaptchaV3Provider } = await import('firebase/app-check');
+			appCheck = initializeAppCheck($app, {
+				provider: new ReCaptchaV3Provider(PUBLIC_RECAPTCHA_SITE_KEY),
+				isTokenAutoRefreshEnabled: true
+			});
+
+			set(appCheck);
+		}
+
+		init();
+	});
+
+	return {
+		subscribe
+	};
+};
+
+export const appCheck = createAppCheck();

@@ -1,8 +1,6 @@
 .DS_Store
 node_modules
-/build
-/.svelte-kit
-/package
+/lib
 .env
 .env.*
 !.env.example
@@ -14,6 +12,3 @@ yarn.lock
 
 # Functions
 /functions
-
-# Playwright output
-/playwright-report

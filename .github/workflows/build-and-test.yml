@@ -3,31 +3,55 @@ jobs:
   build_and_test:
     if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.35.0-jammy
     env:
-      PUBLIC_FIREBASE_API_KEY: Not set as using emulators
-      PUBLIC_FIREBASE_AUTH_DOMAIN: Not set as using emulators
-      PUBLIC_FIREBASE_PROJECT_ID: Not set as using emulators
-      PUBLIC_FIREBASE_STORAGE_BUCKET: Not set as using emulators
-      PUBLIC_FIREBASE_MESSAGING_SENDER_ID: Not set as using emulators
-      PUBLIC_FIREBASE_APP_ID: Not set as using emulators
+      PUBLIC_FIREBASE_API_KEY: 'AIzaSyD3cNY62dZpsRtZmsU5Qn6LOGLUCjH7REk'
+      PUBLIC_FIREBASE_AUTH_DOMAIN: 'listen-later-cloud.firebaseapp.com'
+      PUBLIC_FIREBASE_PROJECT_ID: 'listen-later-cloud'
+      PUBLIC_FIREBASE_STORAGE_BUCKET: 'listen-later-cloud.appspot.com'
+      PUBLIC_FIREBASE_MESSAGING_SENDER_ID: '888811211358'
+      PUBLIC_FIREBASE_APP_ID: '1:888811211358:web:0e351469eaead560e602cf'
       PUBLIC_FIREBASE_USE_EMULATORS: 'true'
+      PUBLIC_RECAPTCHA_SITE_KEY: '6Lcaxv4mAAAAAAGnxGlw3i8IgCzIJHeCdM3p0Ymp'
+      SPOTIFY_CLIENT_ID: 'd46d2b58a44947d093ecbe0289a5dfc3'
+      SPOTIFY_CLIENT_SECRET: '${{ secrets.SPOTIFY_CLIENT_SECRET }}'
     steps:
       - uses: actions/checkout@v3
       - name: Install dependencies
         run: npm ci
-      - name: Run type check
+      - name: Run site lint
+        run: npm run lint
+      - name: Run site type check
         run: npm run check
-      - name: Run unit tests
+      - name: Run site unit tests
         run: npm run test:unit
-      - name: Build
+      - name: Build site
         run: npm run build
+      - name: Run functions lint
+        run: npm run lint --workspace ./functions
+      - name: Build functions
+        run: npm run build --workspace ./functions
+      - name: Install Java for Firebase Emulators
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
       - name: Install Firebase Tools
         run: npm i -g firebase-tools
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+        run: npx playwright install --with-deps chromium webkit
+      - name: Write functions .env
+        run: |
+          touch ./functions/.env
+          echo SPOTIFY_CLIENT_ID="$SPOTIFY_CLIENT_ID" >> ./functions/.env
+          echo SPOTIFY_CLIENT_SECRET="$SPOTIFY_CLIENT_SECRET" >> ./functions/.env
+          cat ./functions/.env
+      # GOTCHA: If the Firebase Emulators hang when starting up, it's likely that a value is missing from .env and Functions is trying to prompt for it!
       - name: Run Playwright tests against Firebase Emulators
         run: firebase emulators:exec "npm run test:integration"
-      - uses: actions/upload-artifact@v3
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: playwright-report

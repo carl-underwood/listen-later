@@ -1,15 +1,26 @@
 {
 	"editor.formatOnSave": true,
-	"[svelte]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode"
-	},
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"eslint.workingDirectories": ["./", "./functions"],
+	"eslint.validate": ["javascript", "typescript", "svelte"],
+	"files.eol": "\n",
+	"prettier.prettierPath": "./node_modules/prettier",
 	"[html]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
-	"[typescript]": {
+	"[javascript]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
-	"[javascript]": {
+	"[json]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[jsonc]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[svelte]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[typescript]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	}
 }
