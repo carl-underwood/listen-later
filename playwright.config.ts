@@ -13,12 +13,8 @@ export default defineConfig({
 	testDir: 'tests',
 	testMatch: /(.+\.)?(test|spec)\.[jt]s/,
 	use: {
-		trace: 'retain-on-failure'
-	},
-	webServer: {
-		command: 'npm run dev',
-		port: 5000,
-		reuseExistingServer: true
+		trace: 'retain-on-failure',
+		baseURL: 'http://localhost:5000/'
 	},
 	workers: process.env.CI ? 2 : undefined
 });
