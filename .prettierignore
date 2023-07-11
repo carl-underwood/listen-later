@@ -12,8 +12,8 @@ pnpm-lock.yaml
 package-lock.json
 yarn.lock
 
-# Functions
-/functions
+# Functions output
+/functions/lib
 
 # Playwright output
 /playwright-report

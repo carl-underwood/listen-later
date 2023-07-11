@@ -1,6 +1,6 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { defineString } from 'firebase-functions/params';
-import { getAccessToken, search as spotifySearch } from './spotify';
+import { getAccessToken, search as spotifySearch, getEpisodes } from './spotify';
 import { mapToSearchResults } from './mapToSearchResults';
 
 const SPOTIFY_CLIENT_ID = defineString('SPOTIFY_CLIENT_ID');
@@ -28,6 +28,8 @@ export const search = onCall({ enforceAppCheck: true }, async (request) => {
 	);
 
 	const spotifySearchResponse = await spotifySearch(searchQuery, accessToken);
+	const episodeIds = spotifySearchResponse.episodes.items.map((item) => item.id);
+	const spotifyEpisodesResponse = await getEpisodes(episodeIds, accessToken);
 
-	return mapToSearchResults(spotifySearchResponse);
+	return mapToSearchResults(spotifySearchResponse, spotifyEpisodesResponse);
 });

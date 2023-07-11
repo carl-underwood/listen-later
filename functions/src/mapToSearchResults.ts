@@ -1,8 +1,11 @@
-import type { Artist, Image, SearchResponse } from './types/spotify';
+import type { Artist, GetEpisodesResponse, Image, SearchResponse } from './types/spotify';
 import type SearchResult from '../../src/lib/types/SearchResult';
 
 // Designed as a back-end for front-end, so performing mapping here
-export const mapToSearchResults = (searchResponse: SearchResponse): SearchResult[] => {
+export const mapToSearchResults = (
+	searchResponse: SearchResponse,
+	episodesResponse: GetEpisodesResponse
+): SearchResult[] => {
 	const albumResults: SearchResult[] = searchResponse.albums.items.map((item) => ({
 		id: item.id,
 		imageUrl: getImage(item.images),
@@ -25,7 +28,8 @@ export const mapToSearchResults = (searchResponse: SearchResponse): SearchResult
 		id: item.id,
 		imageUrl: getImage(item.images),
 		name: item.name,
-		metadata: ['TODO'],
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		metadata: [episodesResponse.episodes.find((episode) => episode.id === item.id)!.show.name],
 		spotifyUrl: item.external_urls.spotify,
 		type: 'episode'
 	}));
