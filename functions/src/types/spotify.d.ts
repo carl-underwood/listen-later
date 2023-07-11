@@ -10,6 +10,10 @@ type SearchResponseData<TItem> = {
 	readonly items: TItem[];
 };
 
+export type GetEpisodesResponse = {
+	readonly episodes: EpisodeWithShow[];
+};
+
 type Album = {
 	readonly artists: Artist[];
 	readonly external_urls: ExternalUrls;
@@ -30,6 +34,10 @@ type Episode = {
 	readonly id: string;
 	readonly images: Image[];
 	readonly name: string;
+};
+
+type EpisodeWithShow = Episode & {
+	readonly show: Show;
 };
 
 type ExternalUrls = {
