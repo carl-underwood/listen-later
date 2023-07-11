@@ -4,7 +4,11 @@ import { derived, type Readable } from 'svelte/store';
 import type { AppCheck } from '@firebase/app-check';
 import type { FirebaseApp } from '@firebase/app';
 import { app } from './app';
-import { PUBLIC_RECAPTCHA_SITE_KEY } from '$env/static/public';
+import {
+	PUBLIC_FIREBASE_APPCHECK_DEBUG_TOKEN,
+	PUBLIC_FIREBASE_USE_EMULATORS,
+	PUBLIC_RECAPTCHA_SITE_KEY
+} from '$env/static/public';
 
 const createAppCheck = () => {
 	let appCheck: AppCheck | undefined = undefined;
@@ -16,6 +20,11 @@ const createAppCheck = () => {
 			}
 
 			const { initializeAppCheck, ReCaptchaV3Provider } = await import('firebase/app-check');
+
+			if (PUBLIC_FIREBASE_USE_EMULATORS === 'true') {
+				self.FIREBASE_APPCHECK_DEBUG_TOKEN = PUBLIC_FIREBASE_APPCHECK_DEBUG_TOKEN;
+			}
+
 			appCheck = initializeAppCheck($app, {
 				provider: new ReCaptchaV3Provider(PUBLIC_RECAPTCHA_SITE_KEY),
 				isTokenAutoRefreshEnabled: true

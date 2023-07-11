@@ -15,7 +15,7 @@ export const getAccessToken = async (clientId: string, clientSecret: string) => 
 
 	debug(requiresRefresh ? 'Refreshing Spotify access token' : 'Using cached Spotify access token', {
 		now,
-		lastTokenExpiresAt: cachedAccessToken?.expiresAt || null
+		cachedTokenExpiresAt: cachedAccessToken?.expiresAt || null
 	});
 
 	if (requiresRefresh) {

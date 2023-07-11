@@ -15,6 +15,5 @@ export const search = async (searchQuery: string): Promise<Item[]> => {
 
 	const result = await search({ searchQuery });
 
-	console.log(result);
-	return [];
+	return result.data as Item[];
 };

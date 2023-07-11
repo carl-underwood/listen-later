@@ -4,6 +4,8 @@ A web application for storing things to listen to later on Spotify. Built using 
 
 ## Dependencies
 
+### Firebase Tools
+
 Firebase Tools are required for local emulators:
 
 ```bash
@@ -11,6 +13,10 @@ npm i -g firebase-tools
 ```
 
 [Java](https://www.oracle.com/uk/java/technologies/downloads/) is also required to run the emulators locally.
+
+### .env files
+
+A `.env` file should be introduced in the project root as well as in `./functions`. See the `.env.example` files in those locations to see the values that are required.
 
 ## Developing
 
@@ -35,7 +41,7 @@ You can preview the production build with `npm run preview` (updated from `vite 
 
 To run the integration tests locally, ensure your're running in dev mode (`npm run dev`) or hosting the built site (via `npm run build && npm run preview`).
 
-The tests may then be run via `npm run test:integration`.
+The tests may then be run via `npm run test:integration`. Since App Check is used to protect the Functions, a `PUBLIC_FIREBASE_APPCHECK_DEBUG_TOKEN` will need to be set in `.env` (App Check is also inforced on Firestore Database, however when running the emulators this doesn't appear to cause issues).
 
 Unit tests may be run via `npm run test:unit`.
 

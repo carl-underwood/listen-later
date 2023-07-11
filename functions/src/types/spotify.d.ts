@@ -15,6 +15,7 @@ export type GetEpisodesResponse = {
 };
 
 type Album = {
+	readonly album_type: string;
 	readonly artists: Artist[];
 	readonly external_urls: ExternalUrls;
 	readonly id: string;
