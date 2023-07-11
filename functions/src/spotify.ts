@@ -1,10 +1,39 @@
+import { debug } from 'firebase-functions/logger';
 import { Agent } from 'https';
 import * as needle from 'needle';
+import { addSeconds, differenceInMinutes } from 'date-fns';
 import type { SearchResponse } from './types/spotify';
 
 const agent = new Agent({ keepAlive: true });
+let cachedAccessToken: { accessToken: string; expiresAt: Date };
 
 export const getAccessToken = async (clientId: string, clientSecret: string) => {
+	const now = new Date();
+
+	const requiresRefresh =
+		!cachedAccessToken || differenceInMinutes(cachedAccessToken.expiresAt, now) < 10;
+
+	debug(requiresRefresh ? 'Refreshing Spotify access token' : 'Using cached Spotify access token', {
+		now,
+		lastTokenExpiresAt: cachedAccessToken?.expiresAt || null
+	});
+
+	if (requiresRefresh) {
+		const accessTokenResponse = await performClientCredentialsExchange(clientId, clientSecret);
+
+		cachedAccessToken = {
+			accessToken: accessTokenResponse.access_token,
+			expiresAt: addSeconds(now, accessTokenResponse.expires_in)
+		};
+	}
+
+	return cachedAccessToken.accessToken;
+};
+
+const performClientCredentialsExchange = async (
+	clientId: string,
+	clientSecret: string
+): Promise<{ access_token: string; expires_in: number }> => {
 	const response = await needle(
 		'post',
 		'https://accounts.spotify.com/api/token',
@@ -20,7 +49,7 @@ export const getAccessToken = async (clientId: string, clientSecret: string) => 
 		);
 	}
 
-	return response.body.access_token;
+	return response.body;
 };
 
 export const search = async (searchQuery: string, accessToken: string): Promise<SearchResponse> => {
