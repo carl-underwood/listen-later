@@ -1,5 +1,4 @@
 import { expect, test } from '@playwright/test';
-import { v4 as uuid } from 'uuid';
 
 test.describe('list page', () => {
 	test('shows a button to add an item when signed in', async ({ page }) => {
@@ -23,19 +22,38 @@ test.describe('list page', () => {
 		await expect(addItemButton).toBeVisible();
 		await addItemButton.click();
 
-		const idInput = page.getByLabel('id');
-		await expect(idInput).toBeVisible();
+		const searchInput = page.getByLabel('search');
+		await expect(searchInput).toBeVisible();
 
-		const id = uuid();
-		await idInput.fill(id);
+		const id = '6cQzmvrbnCM1d51XOodmPR';
+		await searchInput.fill('Victory Dance');
 
-		const addButton = page.getByRole('button', { name: 'Add' });
+		const options = page.getByRole('option');
+		await expect(options).toHaveCount(0);
+
+		const searchButton = page.getByRole('button', { name: 'Submit' });
+		await expect(searchButton).toBeVisible();
+		await searchButton.click();
+
+		await expect(options).not.toHaveCount(0);
+
+		const addButton = page.getByRole('button', { name: 'Add', exact: true });
 		await expect(addButton).toBeVisible();
+		await expect(addButton).toBeDisabled();
+
+		const expectedOption = page.locator(`[id="${id}"]`);
+		await expect(expectedOption).toBeVisible();
+		await expectedOption.click();
+
+		await expect(addButton).not.toBeDisabled();
+
+		// Hide the emulator warning as it covers the button
+		await page.addStyleTag({ content: '.firebase-emulator-warning { display: none!important; }' });
 		await addButton.click();
 
 		await page.waitForURL('/list');
 
-		const newItem = page.getByText(id);
+		const newItem = page.getByText('Victory Dance');
 		await expect(newItem).toBeVisible();
 	});
 
@@ -45,19 +63,38 @@ test.describe('list page', () => {
 		await expect(signInButton).toBeVisible();
 		await signInButton.click();
 
-		const idInput = page.getByLabel('id');
-		await expect(idInput).toBeVisible();
+		const searchInput = page.getByLabel('search');
+		await expect(searchInput).toBeVisible();
 
-		const id = uuid();
-		await idInput.fill(id);
+		const id = '6cQzmvrbnCM1d51XOodmPR';
+		await searchInput.fill('Victory Dance');
 
-		const addButton = page.getByRole('button', { name: 'Add' });
+		const options = page.getByRole('option');
+		await expect(options).toHaveCount(0);
+
+		const searchButton = page.getByRole('button', { name: 'Submit' });
+		await expect(searchButton).toBeVisible();
+		await searchButton.click();
+
+		await expect(options).not.toHaveCount(0);
+
+		const addButton = page.getByRole('button', { name: 'Add', exact: true });
 		await expect(addButton).toBeVisible();
+		await expect(addButton).toBeDisabled();
+
+		const expectedOption = page.locator(`[id="${id}"]`);
+		await expect(expectedOption).toBeVisible();
+		await expectedOption.click();
+
+		await expect(addButton).not.toBeDisabled();
+
+		// Hide the emulator warning as it covers the button
+		await page.addStyleTag({ content: '.firebase-emulator-warning { display: none!important; }' });
 		await addButton.click();
 
 		await page.waitForURL('/list');
 
-		const newItem = page.getByText(id);
+		const newItem = page.getByText('Victory Dance');
 		await expect(newItem).toBeVisible();
 	});
 
@@ -71,29 +108,48 @@ test.describe('list page', () => {
 		await expect(addItemButton).toBeVisible();
 		await addItemButton.click();
 
-		const idInput = page.getByLabel('id');
-		await expect(idInput).toBeVisible();
+		const searchInput = page.getByLabel('search');
+		await expect(searchInput).toBeVisible();
 
-		const id = uuid();
-		await idInput.fill(id);
+		const id = '6cQzmvrbnCM1d51XOodmPR';
+		await searchInput.fill('Victory Dance');
 
-		const addButton = page.getByRole('button', { name: 'Add' });
+		const options = page.getByRole('option');
+		await expect(options).toHaveCount(0);
+
+		const searchButton = page.getByRole('button', { name: 'Submit' });
+		await expect(searchButton).toBeVisible();
+		await searchButton.click();
+
+		await expect(options).not.toHaveCount(0);
+
+		const addButton = page.getByRole('button', { name: 'Add', exact: true });
 		await expect(addButton).toBeVisible();
+		await expect(addButton).toBeDisabled();
+
+		const expectedOption = page.locator(`[id="${id}"]`);
+		await expect(expectedOption).toBeVisible();
+		await expectedOption.click();
+
+		await expect(addButton).not.toBeDisabled();
+
+		// Hide the emulator warning as it covers the button
+		await page.addStyleTag({ content: '.firebase-emulator-warning { display: none!important; }' });
 		await addButton.click();
 
 		await page.waitForURL('/list');
 
-		const newItem = page.getByRole('button', { name: id, exact: true });
+		const newItem = page.getByRole('button', { name: 'Victory Dance' });
 		await expect(newItem).toBeVisible();
 
-		const newItemDeleteButton = page.getByRole('button', { name: `Delete ${id}` });
+		const newItemDeleteButton = page.getByRole('button', { name: 'Delete Victory Dance' });
 		await expect(newItemDeleteButton).not.toBeVisible();
 
 		await newItem.click();
 		await expect(newItemDeleteButton).toBeVisible();
 		await newItemDeleteButton.click();
 
-		const confirmationPrompt = page.getByText(`Are you sure you want to delete ${id}?`);
+		const confirmationPrompt = page.getByText('Are you sure you want to delete Victory Dance?');
 		await expect(confirmationPrompt).toBeVisible();
 
 		const deleteButton = page.getByRole('button', { name: 'Delete', exact: true });
