@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-
+	import fuzzysort from 'fuzzysort';
 	import { items } from '$lib/stores/items';
 	import { functions } from '$lib/stores/functions';
 	import { loading } from '$lib/stores/loading';
 	import { search } from '$lib/functions/search';
+	import type SearchResult from '$lib/types/SearchResult';
 	import type Item from '$lib/types/Item';
-	import SearchLoop from '$lib/components/icons/search-loop.svelte';
 	import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
+	import SearchLoop from '$lib/components/icons/search-loop.svelte';
 	import Loading from '$lib/components/Loading.svelte';
 	import Headphone from '$lib/components/icons/headphone.svelte';
 
@@ -16,12 +17,34 @@
 	$: $functions;
 	$: $items;
 
-	let searchResults: Item[] = [];
+	let searchResults: SearchResult[] = [];
 	let lastSearchQuery = '';
 	let searchQuery = '';
 	let searching = false;
 	let showSearchError = false;
 	let selectedItemId = '';
+
+	$: fuzzysortedResults = [
+		...fuzzysort.go(lastSearchQuery, searchResults, {
+			key: 'name'
+		})
+	]
+		.sort((a, b) => {
+			if (a.score === b.score) {
+				return b.obj.popularity - a.obj.popularity;
+			}
+
+			return a.score < b.score ? 1 : -1; // fuzzysort scores are negative
+		})
+		.map((keyResult) => keyResult.obj);
+
+	$: filteredResults = [
+		...fuzzysortedResults,
+		...searchResults.filter(
+			(result) =>
+				!fuzzysortedResults.find((fuzzysortedResult) => fuzzysortedResult.id === result.id)
+		)
+	];
 
 	const onSearchInput = () => {
 		if (searchQuery.length >= MINIMUM_SEARCH_QUERY_LENGTH) {
@@ -37,12 +60,12 @@
 		}
 
 		await loading.whileAwaiting(async () => {
-			lastSearchQuery = searchQuery;
 			searchResults = [];
 			selectedItemId = '';
 			searching = true;
 
 			searchResults = await search(searchQuery);
+			lastSearchQuery = searchQuery;
 
 			searching = false;
 		});
@@ -112,16 +135,20 @@
 <div aria-live="assertive" class="m-b-4">
 	{#if searching}
 		<Loading />
-	{:else if !searchResults.length}
+	{:else if !filteredResults.length}
 		{#if lastSearchQuery}
 			<span>Nothing found!</span>
-			<span>Please try searching for something else.</span>
+			<span>
+				Please try {searchResults.length
+					? 'adjusting the filters'
+					: 'searching for something else'}.
+			</span>
 		{:else}
 			<span>Search for something above!</span>
 		{/if}
 	{:else}
 		<ListBox>
-			{#each searchResults as item, i (item.id)}
+			{#each filteredResults as item, i (item.id)}
 				<ListBoxItem
 					bind:group={selectedItemId}
 					name="item"

@@ -21,6 +21,7 @@ type Album = {
 	readonly id: string;
 	readonly images: Image[];
 	readonly name: string;
+	readonly popularity: number;
 };
 
 export type Artist = {
@@ -28,6 +29,7 @@ export type Artist = {
 	readonly id: string;
 	readonly images: Image[];
 	readonly name: string;
+	readonly popularity: number;
 };
 
 type Episode = {
@@ -63,4 +65,5 @@ type Track = {
 	readonly external_urls: ExternalUrls;
 	readonly id: string;
 	readonly name: string;
+	readonly popularity: number;
 };

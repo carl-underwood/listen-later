@@ -14,7 +14,8 @@ export const mapToSearchResults = (
 		name: item.name,
 		metadata: [upperFirstCharacter(item.album_type), getArtists(item.artists)],
 		spotifyUrl: item.external_urls.spotify,
-		type: 'album'
+		type: 'album',
+		popularity: item.popularity
 	}));
 
 	const artistResults: SearchResult[] = searchResponse.artists.items.map((item) => ({
@@ -23,7 +24,8 @@ export const mapToSearchResults = (
 		name: item.name,
 		metadata: ['Artist'],
 		spotifyUrl: item.external_urls.spotify,
-		type: 'artist'
+		type: 'artist',
+		popularity: item.popularity
 	}));
 
 	const episodeResults: SearchResult[] = searchResponse.episodes.items.map((item) => ({
@@ -36,7 +38,8 @@ export const mapToSearchResults = (
 			episodesResponse.episodes.find((episode) => episode.id === item.id)!.show.name
 		],
 		spotifyUrl: item.external_urls.spotify,
-		type: 'episode'
+		type: 'episode',
+		popularity: -1
 	}));
 
 	const showResults: SearchResult[] = searchResponse.shows.items.map((item) => ({
@@ -45,7 +48,8 @@ export const mapToSearchResults = (
 		name: item.name,
 		metadata: ['Podcast'],
 		spotifyUrl: item.external_urls.spotify,
-		type: 'podcast'
+		type: 'podcast',
+		popularity: -1
 	}));
 
 	const trackResults: SearchResult[] = searchResponse.tracks.items.map((item) => ({
@@ -54,7 +58,8 @@ export const mapToSearchResults = (
 		name: item.name,
 		metadata: ['Song', getArtists(item.artists), item.album.name],
 		spotifyUrl: item.external_urls.spotify,
-		type: 'track'
+		type: 'track',
+		popularity: item.popularity
 	}));
 
 	return [...albumResults, ...artistResults, ...episodeResults, ...showResults, ...trackResults];
