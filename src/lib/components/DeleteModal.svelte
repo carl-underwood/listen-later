@@ -16,7 +16,7 @@
 </script>
 
 <div class="card p-4">
-	<p>Are you sure you want to delete {item.name}?</p>
+	<p>Are you sure you want to delete <em>{item.name}</em>?</p>
 	<div class="mt-4 flex gap-4 justify-center">
 		<button
 			class="btn bg-gradient-to-br variant-filled-error"

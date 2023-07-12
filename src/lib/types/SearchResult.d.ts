@@ -1,5 +1,9 @@
 import type Item from './Item';
 
-type SearchResult = Omit<Item, 'addedAtUtc' | 'listened'>;
+type SearchResult = Readonly<
+	Omit<Item, 'addedAtUtc' | 'listened'> & {
+		readonly popularity: number;
+	}
+>;
 
 export default SearchResult;
