@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 
+// Hide the emulator warning as it covers the button
 const hideEmulatorWarining = async (page: Page) => {
 	await page.addStyleTag({ content: '.firebase-emulator-warning { display: none!important; }' });
 };
@@ -78,14 +79,14 @@ test.describe('list page', () => {
 
 		await expect(addButton).not.toBeDisabled();
 
-		// Hide the emulator warning as it covers the button
 		await hideEmulatorWarining(page);
 		await addButton.click();
 
 		await page.waitForURL('/list');
 
-		const newItem = page.getByText('Victory Dance');
+		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
 		await expect(newItem).toBeVisible();
+		await expect(newItem).toHaveAttribute('aria-expanded', 'true');
 	});
 
 	test('allows an item to be added when signed in directly to the add page', async ({ page }) => {
@@ -109,14 +110,14 @@ test.describe('list page', () => {
 
 		await expect(addButton).not.toBeDisabled();
 
-		// Hide the emulator warning as it covers the button
 		await hideEmulatorWarining(page);
 		await addButton.click();
 
 		await page.waitForURL('/list');
 
-		const newItem = page.getByText('Victory Dance');
+		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
 		await expect(newItem).toBeVisible();
+		await expect(newItem).toHaveAttribute('aria-expanded', 'true');
 	});
 
 	test('allows an item to be deleted when signed in', async ({ page }) => {
@@ -142,14 +143,16 @@ test.describe('list page', () => {
 
 		await expect(addButton).not.toBeDisabled();
 
-		// Hide the emulator warning as it covers the button
 		await hideEmulatorWarining(page);
 		await addButton.click();
 
 		await page.waitForURL('/list');
 
-		const newItem = page.getByRole('button', { name: 'Victory Dance' });
+		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
 		await expect(newItem).toBeVisible();
+		await expect(newItem).toHaveAttribute('aria-expanded', 'true');
+		await newItem.click();
+		await expect(newItem).toHaveAttribute('aria-expanded', 'false');
 
 		const newItemDeleteButton = page.getByRole('button', { name: 'Delete Victory Dance' });
 		await expect(newItemDeleteButton).not.toBeVisible();
@@ -193,15 +196,14 @@ test.describe('list page', () => {
 
 		await expect(addButton).not.toBeDisabled();
 
-		// Hide the emulator warning as it covers the button
 		await hideEmulatorWarining(page);
 		await addButton.click();
 
 		await page.waitForURL('/list');
 
-		const newItem = page.getByRole('button', { name: 'Victory Dance' });
+		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
 		await expect(newItem).toBeVisible();
-		await newItem.click();
+		await expect(newItem).toHaveAttribute('aria-expanded', 'true');
 
 		const addedAt = page.getByText('Added less than a minute ago');
 		await expect(addedAt).toBeVisible();
@@ -228,11 +230,39 @@ test.describe('list page', () => {
 
 		await page.waitForURL('/list');
 
-		const newItemDeleteButton = page.getByRole('button', { name: 'Delete Victory Dance' });
-		await expect(newItemDeleteButton).not.toBeVisible();
-
-		await newItem.click();
+		await expect(newItem).toHaveCount(1);
+		await expect(newItem).toBeVisible();
+		await expect(newItem).toHaveAttribute('aria-expanded', 'true');
 		await expect(addedAt).toBeVisible();
 		expect(await addedAt.getAttribute('data-added-at-utc')).toBe(addedAtUtc);
+	});
+
+	test('expands the newly added item', async ({ page }) => {
+		await page.goto('/list');
+		await signIn(page);
+
+		await clickAddItemButton(page);
+
+		await fillSearchInput(page, 'Ezra Collective');
+		await clickSubmitSearchButton(page);
+		await page.getByRole('option').first().click();
+		await hideEmulatorWarining(page);
+		const addButton = await getVisibleAddButton(page);
+		await addButton.click();
+
+		await page.waitForURL('/list');
+		await clickAddItemButton(page);
+
+		const id = '6cQzmvrbnCM1d51XOodmPR';
+		await fillSearchInput(page, 'Victory Dance');
+		await clickSubmitSearchButton(page);
+		await selectOptionWithId(page, id);
+		await addButton.click();
+
+		await page.waitForURL('/list');
+
+		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
+		await expect(newItem).toBeVisible();
+		await expect(newItem).toHaveAttribute('aria-expanded', 'true');
 	});
 });

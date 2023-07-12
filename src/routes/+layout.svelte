@@ -10,6 +10,7 @@
 	import { auth } from '$lib/stores/auth';
 	import { user } from '$lib/stores/user';
 	import { loading } from '$lib/stores/loading';
+	import { prefersReducedMotion } from '$lib/stores/prefersReducedMotion';
 	import Bars from '$lib/components/icons/bars.svelte';
 	import Close from '$lib/components/icons/close.svelte';
 	import Home from '$lib/components/icons/home.svelte';
@@ -38,7 +39,7 @@
 <Drawer
 	position="right"
 	labelledby="navigation-drawer-label"
-	duration={200}
+	duration={$prefersReducedMotion ? 0 : 200}
 	regionDrawer="max-w-md"
 >
 	<AppBar slotTrail="place-content-end">
