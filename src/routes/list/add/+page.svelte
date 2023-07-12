@@ -149,10 +149,10 @@
 			await items.upsertItem(item);
 		});
 
-		goToListPage();
+		goToListPage(item.id);
 	};
 
-	const goToListPage = () => goto('/list');
+	const goToListPage = (itemId?: string) => goto(`/list${!itemId ? '' : `?item=${itemId}`}`);
 
 	const onItemClick = (event: Event) => {
 		if (!$loading) {
@@ -284,7 +284,12 @@
 	>
 		Add
 	</button>
-	<button class="btn variant-soft" type="button" disabled={$loading} on:click={goToListPage}>
+	<button
+		class="btn variant-soft"
+		type="button"
+		disabled={$loading}
+		on:click={() => goToListPage()}
+	>
 		Cancel
 	</button>
 </div>
