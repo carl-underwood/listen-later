@@ -141,7 +141,14 @@
 			type: selectedItem.type
 		};
 
-		await loading.whileAwaiting(() => items.upsertItem(item));
+		await loading.whileAwaiting(async () => {
+			if ($items.find((existingItem) => existingItem.id === item.id)) {
+				return;
+			}
+
+			await items.upsertItem(item);
+		});
+
 		goToListPage();
 	};
 
