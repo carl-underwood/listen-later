@@ -1,7 +1,4 @@
 <script lang="ts">
-	import { items } from '$lib/stores/items';
-	import Loading from '$lib/components/Loading.svelte';
-	import Plus from '$lib/components/icons/plus.svelte';
 	import {
 		Accordion,
 		AccordionItem,
@@ -9,6 +6,10 @@
 		type ModalSettings,
 		modalStore
 	} from '@skeletonlabs/skeleton';
+	import { formatDistanceToNow } from 'date-fns';
+	import { items } from '$lib/stores/items';
+	import Loading from '$lib/components/Loading.svelte';
+	import Plus from '$lib/components/icons/plus.svelte';
 	import TrashBin from '$lib/components/icons/trash-bin.svelte';
 	import DeleteModal from '$lib/components/DeleteModal.svelte';
 	import type Item from '$lib/types/Item';
@@ -49,6 +50,10 @@
 						{item.name}
 					</svelte:fragment>
 					<svelte:fragment slot="content">
+						<span data-added-at-utc={item.addedAtUtc}>
+							Added {formatDistanceToNow(new Date(item.addedAtUtc), { addSuffix: true })}
+							({new Date(item.addedAtUtc).toLocaleString()})
+						</span>
 						<button
 							class="btn-icon btn-icon-sm variant-soft-error"
 							on:click={() => deleteItem(item)}
