@@ -25,6 +25,7 @@
 	let searchQuery = '';
 	let searching = false;
 	let showSearchError = false;
+	let showAddError = false;
 	let selectedItemId = '';
 
 	let itemTypeFilters: { [Property in ItemType]: boolean } = {
@@ -121,6 +122,7 @@
 
 	const onSelectionSubmit = async () => {
 		if (!selectedItemId) {
+			showAddError = true;
 			return;
 		}
 
@@ -163,35 +165,50 @@
 	};
 </script>
 
-<div class="sticky top-0 p-4 -mt-4 bg-surface-backdrop-token">
+<div class="sticky top-0 p-4 -mt-4 bg-surface-50-900-token">
 	<form on:submit|preventDefault={onSearchSubmit}>
 		<label class="label">
 			<span class="sr-only">Search</span>
-			<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
-				<div class="input-group-shim"><SearchLoop /></div>
-				<input
-					type="search"
-					placeholder="Search..."
-					bind:value={searchQuery}
+			<div class="input-group flex bg-surface-50-900-token !border-surface-900-50-token">
+				<div class="relative grow text-surface-900-50-token bg-surface-50-900-token !px-0">
+					<div class="absolute">
+						<SearchLoop />
+					</div>
+					<input
+						type="search"
+						placeholder="Search..."
+						bind:value={searchQuery}
+						disabled={$loading}
+						on:input={onSearchInput}
+						class="pl-14 pr-4 !bg-surface-50-900-token focus:!ring-4 focus:ring-inset focus:ring-surface-500 grow"
+					/>
+				</div>
+				<button
+					class="bg-surface-900-50-token text-surface-50-900-token focus:-outline-offset-4"
 					disabled={$loading}
-					on:input={onSearchInput}
-				/>
-				<button class="variant-filled-secondary" disabled={$loading}>Submit</button>
+				>
+					Submit
+				</button>
 			</div>
 		</label>
 		<small
-			role={showSearchError ? 'alert' : ''}
-			class="text-error-400 min-h-[1.5rem] block text-center"
+			role={showSearchError || showAddError ? 'alert' : ''}
+			class="text-error-600-300-token min-h-[1.5rem] block text-center"
 		>
 			{#if showSearchError}
 				Please enter a search query of at least {MINIMUM_SEARCH_QUERY_LENGTH} characters
+			{/if}
+			{#if showAddError}
+				Please search for and select an item to add
 			{/if}
 		</small>
 		<div class="mb-4 flex flex-wrap gap-4 justify-center">
 			<span class="sr-only">Filters</span>
 			{#each itemTypes as itemType}
 				<span
-					class="chip {itemTypeFilters[itemType] ? 'variant-filled' : 'variant-soft'}"
+					class="chip rounded-token"
+					class:variant-filled={itemTypeFilters[itemType]}
+					class:variant-soft-surface={!itemTypeFilters[itemType]}
 					on:click={() => filterItemTypes(itemType)}
 					on:keypress={(event) => {
 						if (event.key == ' ' || event.code == 'Space' || event.keyCode == 32) {
@@ -208,7 +225,9 @@
 				</span>
 			{/each}
 			<button
-				class="chip {itemTypeFiltersClear ? 'variant-soft-error' : 'variant-filled-error'}"
+				class="chip rounded-token"
+				class:variant-soft-error={itemTypeFiltersClear}
+				class:variant-filled-error={!itemTypeFiltersClear}
 				on:click={clearItemTypeFilters}
 				type="button"
 			>
@@ -218,32 +237,34 @@
 	</form>
 </div>
 
-<div aria-live="assertive" class="m-b-4">
+<div aria-live="assertive" class="mb-4">
 	{#if searching}
 		<Loading />
 	{:else if !filteredResults.length}
-		{#if lastSearchQuery}
-			<span>Nothing found!</span>
-			<span>
-				Please try {searchResults.length
-					? 'adjusting the filters'
-					: 'searching for something else'}.
-			</span>
-		{:else}
-			<span>Search for something above!</span>
-		{/if}
+		<div class="mx-4 text-center">
+			{#if lastSearchQuery}
+				<span>Nothing found</span>
+				<span>
+					Please try {searchResults.length
+						? 'adjusting the filters'
+						: 'searching for something else'}.
+				</span>
+			{:else}
+				<span>Search for something above 👆</span>
+			{/if}
+		</div>
 	{:else}
 		<span class="sr-only">
 			Showing {itemTypeFiltersClear ? 'all' : itemTypeFiltersFriendlyDescription()}
 			search results.
 		</span>
-		<ListBox>
+		<ListBox spacing="">
 			{#each filteredResults as item, i (item.id)}
 				<ListBoxItem
 					bind:group={selectedItemId}
 					name="item"
 					value={item.id}
-					padding="p-4"
+					padding="p-4 focus:!-outline-offset-4"
 					on:click={onItemClick}
 				>
 					<div id={item.id} class="flex gap-4" class:cursor-not-allowed={$loading}>
@@ -267,18 +288,18 @@
 					</div>
 				</ListBoxItem>
 				{#if i !== filteredResults.length - 1}
-					<hr class="!border-t-2" />
+					<hr class="!border-t-4" />
 				{/if}
 			{/each}
 		</ListBox>
 	{/if}
 </div>
 
-<div class="sticky bottom-4">
+<div class="sticky bottom-0 p-4 flex gap-4 justify-center bg-surface-50-900-token">
 	<button
-		class="btn bg-gradient-to-br variant-gradient-secondary-tertiary"
+		class="btn bg-surface-900-50-token text-surface-50-900-token"
 		type="submit"
-		disabled={$loading || !selectedItemId}
+		disabled={$loading}
 		on:click={onSelectionSubmit}
 	>
 		Add

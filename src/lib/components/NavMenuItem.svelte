@@ -9,11 +9,18 @@
 		return {};
 	};
 
-	$: classesActive = href === $page.url.pathname ? '!bg-primary-500' : '';
+	$: classesActive =
+		href === $page.url.pathname
+			? '!bg-surface-900-50-token !text-surface-50-900-token hover:!bg-surface-600-300-token'
+			: '!bg-surface-100-800-token !text-surface-900-50-token hover:!bg-surface-200-700-token';
 </script>
 
-<li>
-	<a {href} class={classesActive} transition:transition>
+<li class="!mt-0">
+	<a
+		{href}
+		class="focus:!outline-4 focus:!outline focus:!outline-surface-500 {classesActive}"
+		transition:transition
+	>
 		<slot name="icon" />
 		<span class="flex-auto"><slot /></span>
 	</a>

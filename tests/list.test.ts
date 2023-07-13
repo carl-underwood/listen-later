@@ -72,13 +72,9 @@ test.describe('list page', () => {
 
 		await expect(options).not.toHaveCount(0);
 
-		const addButton = await getVisibleAddButton(page);
-		await expect(addButton).toBeDisabled();
-
 		await selectOptionWithId(page, id);
 
-		await expect(addButton).not.toBeDisabled();
-
+		const addButton = await getVisibleAddButton(page);
 		await hideEmulatorWarining(page);
 		await addButton.click();
 
@@ -103,13 +99,9 @@ test.describe('list page', () => {
 
 		await expect(options).not.toHaveCount(0);
 
-		const addButton = await getVisibleAddButton(page);
-		await expect(addButton).toBeDisabled();
-
 		await selectOptionWithId(page, id);
 
-		await expect(addButton).not.toBeDisabled();
-
+		const addButton = await getVisibleAddButton(page);
 		await hideEmulatorWarining(page);
 		await addButton.click();
 
@@ -136,13 +128,9 @@ test.describe('list page', () => {
 
 		await expect(options).not.toHaveCount(0);
 
-		const addButton = await getVisibleAddButton(page);
-		await expect(addButton).toBeDisabled();
-
 		await selectOptionWithId(page, id);
 
-		await expect(addButton).not.toBeDisabled();
-
+		const addButton = await getVisibleAddButton(page);
 		await hideEmulatorWarining(page);
 		await addButton.click();
 
@@ -189,13 +177,9 @@ test.describe('list page', () => {
 
 		await expect(firstSearchOptions).not.toHaveCount(0);
 
-		const addButton = await getVisibleAddButton(page);
-		await expect(addButton).toBeDisabled();
-
 		await selectOptionWithId(page, id);
 
-		await expect(addButton).not.toBeDisabled();
-
+		const addButton = await getVisibleAddButton(page);
 		await hideEmulatorWarining(page);
 		await addButton.click();
 
@@ -220,11 +204,7 @@ test.describe('list page', () => {
 
 		await expect(secondSearchOptions).not.toHaveCount(0);
 
-		await expect(addButton).toBeDisabled();
-
 		await selectOptionWithId(page, id);
-
-		await expect(addButton).not.toBeDisabled();
 
 		await addButton.click();
 

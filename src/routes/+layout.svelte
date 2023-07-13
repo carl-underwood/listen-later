@@ -1,5 +1,4 @@
 <script lang="ts">
-	import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
 	import '../theme.postcss';
 	import '@skeletonlabs/skeleton/styles/skeleton.css';
 	import '../app.postcss';
@@ -27,10 +26,15 @@
 	}
 </script>
 
-<AppBar background="bg-initial" slotTrail="place-content-end">
+<AppBar background="bg-transparent" slotTrail="place-content-end">
 	<svelte:fragment slot="trail">
-		<LightSwitch />
-		<button type="button" class="btn-icon bg-initial" on:click={() => drawerStore.open()}>
+		<LightSwitch ring="ring-2 ring-primary-900-50-token" />
+		<button
+			type="button"
+			class="btn-icon bg-transparent"
+			on:click={() => drawerStore.open()}
+			disabled={$loading}
+		>
 			<Bars />
 			<span class="sr-only">Open navigation drawer</span>
 		</button>
@@ -45,15 +49,15 @@
 >
 	<AppBar slotTrail="place-content-end">
 		<svelte:fragment slot="trail">
-			<button type="button" class="btn-icon bg-initial" on:click={drawerStore.close}>
+			<button type="button" class="btn-icon bg-transparent" on:click={drawerStore.close}>
 				<Close />
 				<span class="sr-only">Close navigation drawer</span>
 			</button>
 		</svelte:fragment>
 	</AppBar>
-	<nav class="list-nav p-8 flex flex-col">
+	<nav class="list-nav pt-8 px-8 flex flex-col">
 		<span id="navigation-drawer-label" class="sr-only">Navigation drawer</span>
-		<ul class="text-2xl">
+		<ul class="text-2xl flex flex-col gap-4">
 			<NavMenuItem href="/">
 				<Home slot="icon" />
 				<svelte:fragment>Home</svelte:fragment>
@@ -77,17 +81,19 @@
 				</NavMenuItem>
 			{/if}
 		</ul>
-		{#if $user}
+	</nav>
+	{#if $user}
+		<div class="my-8 flex justify-center">
 			<button
 				on:click={() => loading.whileAwaiting(auth.signOut)}
 				disabled={$loading}
-				class="btn bg-gradient-to-br variant-gradient-secondary-tertiary mt-2 btn-2xl"
+				class="btn variant-filled-error btn-2xl"
 				transition:slide
 			>
 				Sign out
 			</button>
-		{/if}
-	</nav>
+		</div>
+	{/if}
 </Drawer>
 
 <slot />

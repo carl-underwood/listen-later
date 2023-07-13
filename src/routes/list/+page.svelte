@@ -73,14 +73,16 @@
 {:else}
 	<h1 class="sr-only">List</h1>
 	<a
-		class="btn bg-gradient-to-br variant-gradient-secondary-tertiary sticky top-4 left-1/2 -translate-x-1/2 w-36"
 		href="/list/add"
+		class="btn bg-surface-900-50-token text-surface-50-900-token sticky top-4 left-1/2 -translate-x-1/2 w-36"
+		class:opacity-50={$loading}
+		class:cursor-not-allowed={$loading}
 		on:click={preventDefaultIfLoading}
 	>
 		<Plus />
 		<span class="sr-only">Add item</span>
 	</a>
-	<div class="my-4 max-w-2xl mx-auto">
+	<div class="my-4">
 		{#if !$items.length}
 			<span
 				class="block text-center mx-4"
@@ -89,11 +91,12 @@
 				Nothing here yet! Use the button above to add an item 👆
 			</span>
 		{/if}
-		<Accordion disabled={$loading} padding="p-4">
+		<Accordion disabled={$loading} spacing="" padding="p-4">
 			{#each $items as item (item.id)}
 				<div
 					bind:this={accordionItems[item.id]}
 					transition:slide={{ duration: $prefersReducedMotion ? 0 : undefined }}
+					class="border-surface-900-50-token ring-4 ring-surface-900-50-token mt-1 first:mt-0"
 				>
 					<AccordionItem
 						open={openAccordionItemId === item.id}
@@ -102,8 +105,10 @@
 						on:toggle={(event) =>
 							goto(`/list${event.detail.open ? `?itemId=${item.id}` : ''}`, {
 								noScroll: true,
-								replaceState: true
+								replaceState: true,
+								keepFocus: true
 							})}
+						regionControl="focus:-outline-offset-4"
 					>
 						<svelte:fragment slot="lead">
 							<div class="flex flex-col gap-2 shrink-0 justify-center items-center">
@@ -129,6 +134,8 @@
 								href={item.spotifyUrl + '?go=1'}
 								target="_blank"
 								class="btn bg-[#1DB954] font-semibold text-white rounded-3xl"
+								class:opacity-50={$loading}
+								class:cursor-not-allowed={$loading}
 								on:click={preventDefaultIfLoading}
 							>
 								<SpotifyIcon classes="w-6 h-6 mr-3 fill-white" />
@@ -139,6 +146,7 @@
 								on:change={(event) => onItemListenedChange(event, item)}
 								checked={item.listened}
 								disabled={$loading}
+								class="focus:outline-offset-4"
 							>
 								Listened
 							</SlideToggle>
@@ -147,7 +155,7 @@
 								({new Date(item.addedAtUtc).toLocaleString()})
 							</small>
 							<button
-								class="btn-icon btn-icon-sm variant-soft-error"
+								class="btn-icon btn-icon-sm variant-filled-error"
 								disabled={$loading}
 								on:click={() => deleteItem(item)}
 							>

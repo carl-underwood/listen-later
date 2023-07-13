@@ -5,7 +5,7 @@
 	import Loading from '$lib/components/Loading.svelte';
 </script>
 
-<div aria-live="polite">
+<div class="max-w-2xl mx-auto" aria-live="polite">
 	{#if $user === undefined}
 		<Loading />
 	{:else if $user === null}
