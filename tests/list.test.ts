@@ -265,4 +265,73 @@ test.describe('list page', () => {
 		await expect(newItem).toBeVisible();
 		await expect(newItem).toHaveAttribute('aria-expanded', 'true');
 	});
+
+	test('shows a button to open the item in Spotify', async ({ page }) => {
+		await page.goto('/list');
+		await signIn(page);
+
+		await clickAddItemButton(page);
+
+		const id = '6cQzmvrbnCM1d51XOodmPR';
+		await fillSearchInput(page, 'Victory Dance');
+		await clickSubmitSearchButton(page);
+		await selectOptionWithId(page, id);
+
+		const addButton = await getVisibleAddButton(page);
+		await hideEmulatorWarining(page);
+		await addButton.click();
+
+		await page.waitForURL('/list');
+
+		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
+		await expect(newItem).toBeVisible();
+		await expect(newItem).toHaveAttribute('aria-expanded', 'true');
+
+		const openInSpotifyLink = page.getByRole('link', { name: 'Open in Spotify' });
+		await expect(openInSpotifyLink).toBeVisible();
+		await expect(openInSpotifyLink).toHaveAttribute(
+			'href',
+			`https://open.spotify.com/track/${id}?go=1`
+		);
+	});
+
+	test('allows items to be marked as listened to', async ({ page }) => {
+		await page.goto('/list');
+		await signIn(page);
+
+		await clickAddItemButton(page);
+
+		const id = '6cQzmvrbnCM1d51XOodmPR';
+		await fillSearchInput(page, 'Victory Dance');
+		await clickSubmitSearchButton(page);
+		await selectOptionWithId(page, id);
+
+		const addButton = await getVisibleAddButton(page);
+		await hideEmulatorWarining(page);
+		await addButton.click();
+
+		await page.waitForURL('/list');
+
+		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
+		await expect(newItem).toBeVisible();
+		await expect(newItem).toHaveAttribute('aria-expanded', 'true');
+
+		const listenedSwitch = page.getByRole('switch', { name: 'Listened' });
+		const listenedSwitchUnderlyingCheckbox = listenedSwitch.locator("input[type='checkbox']");
+		await expect(listenedSwitch).toBeVisible();
+		await expect(listenedSwitch).not.toBeChecked();
+		await listenedSwitch.click();
+		await expect(listenedSwitch).toBeChecked();
+
+		// Wait for the change to be persisted
+		await expect(listenedSwitchUnderlyingCheckbox).toBeDisabled();
+		await expect(listenedSwitchUnderlyingCheckbox).not.toBeDisabled();
+
+		await page.reload();
+
+		await expect(newItem).toBeVisible();
+		await newItem.click();
+		await expect(listenedSwitch).toBeVisible();
+		await expect(listenedSwitch).toBeChecked();
+	});
 });
