@@ -82,7 +82,7 @@
 		<Plus />
 		<span class="sr-only">Add item</span>
 	</a>
-	<div class="my-4">
+	<div class="my-5">
 		{#if !$items.length}
 			<span
 				class="block text-center mx-4"
@@ -96,21 +96,22 @@
 				<div
 					bind:this={accordionItems[item.id]}
 					transition:slide={{ duration: $prefersReducedMotion ? 0 : undefined }}
-					class="border-surface-900-50-token ring-4 ring-surface-900-50-token mt-1 first:mt-0"
+					class="border-surface-900-50-token ring-4 ring-surface-900-50-token mt-1"
 				>
 					<AccordionItem
 						open={openAccordionItemId === item.id}
 						duration={$prefersReducedMotion ? 0 : undefined}
 						disabled={$loading}
-						on:toggle={(event) =>
+						on:toggle={(event) => {
 							goto(`/list${event.detail.open ? `?itemId=${item.id}` : ''}`, {
 								noScroll: true,
 								replaceState: true,
 								keepFocus: true
-							})}
+							});
+						}}
 						regionControl="focus:-outline-offset-4"
 					>
-						<svelte:fragment slot="lead">
+						<div slot="lead" class="select-none">
 							<div class="flex flex-col gap-2 shrink-0 justify-center items-center">
 								{#if item.imageUrl}
 									<img class="h-16 w-16" src={item.imageUrl} alt="" loading="lazy" />
@@ -120,8 +121,21 @@
 									</div>
 								{/if}
 							</div>
-						</svelte:fragment>
-						<div slot="summary" class="flex flex-col">
+						</div>
+						<!-- Ignoring as the click event is only handled to prevent default -->
+						<!-- svelte-ignore a11y-click-events-have-key-events -->
+						<!-- svelte-ignore a11y-no-static-element-interactions -->
+						<div
+							slot="summary"
+							class="flex flex-col select-text"
+							on:click={(event) => {
+								if (getSelection()?.toString()) {
+									event.preventDefault();
+									event.stopImmediatePropagation();
+									return;
+								}
+							}}
+						>
 							<span class="font-semibold">
 								{item.name}
 							</span>
