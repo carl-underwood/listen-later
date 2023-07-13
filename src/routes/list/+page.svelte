@@ -149,12 +149,12 @@
 							<a
 								href={item.spotifyUrl + '?go=1'}
 								target="_blank"
-								class="btn bg-[#1DB954] font-semibold text-white rounded-3xl"
+								class="btn variant-ringed-surface font-semibold rounded-3xl"
 								class:opacity-50={$loading}
 								class:cursor-not-allowed={$loading}
 								on:click={preventDefaultIfLoading}
 							>
-								<SpotifyIcon classes="w-6 h-6 mr-3 fill-white" />
+								<SpotifyIcon classes="w-6 h-6 mr-3 fill-[#83D269]" />
 								Open in Spotify
 							</a>
 							<SlideToggle
