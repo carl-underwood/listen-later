@@ -49,7 +49,12 @@
 >
 	<AppBar slotTrail="place-content-end">
 		<svelte:fragment slot="trail">
-			<button type="button" class="btn-icon bg-transparent" on:click={drawerStore.close}>
+			<button
+				type="button"
+				class="btn-icon bg-transparent"
+				on:click={drawerStore.close}
+				disabled={$loading}
+			>
 				<Close />
 				<span class="sr-only">Close navigation drawer</span>
 			</button>
