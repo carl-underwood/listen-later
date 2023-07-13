@@ -16,7 +16,7 @@ const createFunctions = () => {
 			}
 
 			const { getFunctions, connectFunctionsEmulator } = await import('firebase/functions');
-			functions = getFunctions($app);
+			functions = getFunctions($app, 'europe-west1');
 
 			if (PUBLIC_FIREBASE_USE_EMULATORS) {
 				connectFunctionsEmulator(functions, 'localhost', 5001);
