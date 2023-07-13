@@ -14,6 +14,7 @@
 	import Check from '$lib/components/icons/check.svelte';
 	import type ItemType from '$lib/types/ItemType';
 	import { itemTypes } from '$lib/types/ItemType';
+	import SpotifyLogo from '$lib/components/SpotifyLogo.svelte';
 
 	const MINIMUM_SEARCH_QUERY_LENGTH = 3;
 
@@ -267,8 +268,8 @@
 					padding="p-4 focus:!-outline-offset-4"
 					on:click={onItemClick}
 				>
-					<div id={item.id} class="flex gap-4" class:cursor-not-allowed={$loading}>
-						<div class="flex flex-col gap-2 shrink-0 justify-center items-center">
+					<div id={item.id} class="flex gap-4 items-center" class:cursor-not-allowed={$loading}>
+						<div class="flex flex-col gap-4 shrink-0 justify-center items-center">
 							{#if item.imageUrl}
 								<img class="h-16 w-16" src={item.imageUrl} alt="" loading="lazy" />
 							{:else}
@@ -276,6 +277,7 @@
 									<Headphone classes="h-6 w-6 text-white" />
 								</div>
 							{/if}
+							<SpotifyLogo classes="w-20" />
 						</div>
 						<div class="flex flex-col">
 							<span class="font-semibold">
@@ -295,7 +297,7 @@
 	{/if}
 </div>
 
-<div class="sticky bottom-0 p-4 flex gap-4 justify-center bg-surface-50-900-token">
+<div class="sticky bottom-0 p-4 flex justify-center gap-4 bg-surface-50-900-token">
 	<button
 		class="btn bg-surface-900-50-token text-surface-50-900-token"
 		type="submit"

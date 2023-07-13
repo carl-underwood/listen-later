@@ -22,6 +22,7 @@
 	import SpotifyIcon from '$lib/components/SpotifyIcon.svelte';
 	import DeleteModal from '$lib/components/DeleteModal.svelte';
 	import type Item from '$lib/types/Item';
+	import SpotifyLogo from '$lib/components/SpotifyLogo.svelte';
 
 	let accordionItems: { [Property: string]: HTMLDivElement } = {};
 	$: openAccordionItemId = $page.url.searchParams.get('itemId');
@@ -112,7 +113,7 @@
 						regionControl="focus:-outline-offset-4"
 					>
 						<div slot="lead" class="select-none">
-							<div class="flex flex-col gap-2 shrink-0 justify-center items-center">
+							<div class="flex flex-col gap-4 shrink-0 justify-center items-center">
 								{#if item.imageUrl}
 									<img class="h-16 w-16" src={item.imageUrl} alt="" loading="lazy" />
 								{:else}
@@ -120,6 +121,7 @@
 										<Headphone classes="h-6 w-6 text-white" />
 									</div>
 								{/if}
+								<SpotifyLogo classes="w-20" />
 							</div>
 						</div>
 						<!-- Ignoring as the click event is only handled to prevent default -->

@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let classes = '';
+	export let classes = 'fill-current';
 </script>
 
 <svg class={classes} viewBox="0 0 226.73334 226.73334" xmlns="http://www.w3.org/2000/svg">

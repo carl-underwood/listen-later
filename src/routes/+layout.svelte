@@ -28,7 +28,7 @@
 
 <AppBar background="bg-transparent" slotTrail="place-content-end">
 	<svelte:fragment slot="trail">
-		<LightSwitch ring="ring-2 ring-primary-900-50-token" />
+		<LightSwitch ring="ring-2 ring-surface-900-50-token" />
 		<button
 			type="button"
 			class="btn-icon bg-transparent"
