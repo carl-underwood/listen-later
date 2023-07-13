@@ -152,7 +152,7 @@
 		goToListPage(item.id);
 	};
 
-	const goToListPage = (itemId?: string) => goto(`/list${!itemId ? '' : `?item=${itemId}`}`);
+	const goToListPage = (itemId?: string) => goto(`/list${!itemId ? '' : `?itemId=${itemId}`}`);
 
 	const onItemClick = (event: Event) => {
 		if (!$loading) {

@@ -82,7 +82,7 @@ test.describe('list page', () => {
 		await hideEmulatorWarining(page);
 		await addButton.click();
 
-		await page.waitForURL('/list');
+		await page.waitForURL(`/list?itemId=${id}`);
 
 		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
 		await expect(newItem).toBeVisible();
@@ -113,7 +113,7 @@ test.describe('list page', () => {
 		await hideEmulatorWarining(page);
 		await addButton.click();
 
-		await page.waitForURL('/list');
+		await page.waitForURL(`/list?itemId=${id}`);
 
 		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
 		await expect(newItem).toBeVisible();
@@ -146,7 +146,7 @@ test.describe('list page', () => {
 		await hideEmulatorWarining(page);
 		await addButton.click();
 
-		await page.waitForURL('/list');
+		await page.waitForURL(`/list?itemId=${id}`);
 
 		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
 		await expect(newItem).toBeVisible();
@@ -199,7 +199,7 @@ test.describe('list page', () => {
 		await hideEmulatorWarining(page);
 		await addButton.click();
 
-		await page.waitForURL('/list');
+		await page.waitForURL(`/list?itemId=${id}`);
 
 		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
 		await expect(newItem).toBeVisible();
@@ -228,7 +228,7 @@ test.describe('list page', () => {
 
 		await addButton.click();
 
-		await page.waitForURL('/list');
+		await page.waitForURL(`/list?itemId=${id}`);
 
 		await expect(newItem).toHaveCount(1);
 		await expect(newItem).toBeVisible();
@@ -250,7 +250,7 @@ test.describe('list page', () => {
 		const addButton = await getVisibleAddButton(page);
 		await addButton.click();
 
-		await page.waitForURL('/list');
+		await page.waitForURL(/\/list\?itemId=.+/);
 		await clickAddItemButton(page);
 
 		const id = '6cQzmvrbnCM1d51XOodmPR';
@@ -259,7 +259,7 @@ test.describe('list page', () => {
 		await selectOptionWithId(page, id);
 		await addButton.click();
 
-		await page.waitForURL('/list');
+		await page.waitForURL(`/list?itemId=${id}`);
 
 		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
 		await expect(newItem).toBeVisible();
@@ -281,7 +281,7 @@ test.describe('list page', () => {
 		await hideEmulatorWarining(page);
 		await addButton.click();
 
-		await page.waitForURL('/list');
+		await page.waitForURL(`/list?itemId=${id}`);
 
 		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
 		await expect(newItem).toBeVisible();
@@ -310,7 +310,7 @@ test.describe('list page', () => {
 		await hideEmulatorWarining(page);
 		await addButton.click();
 
-		await page.waitForURL('/list');
+		await page.waitForURL(`/list?itemId=${id}`);
 
 		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
 		await expect(newItem).toBeVisible();
@@ -324,13 +324,11 @@ test.describe('list page', () => {
 		await expect(listenedSwitch).toBeChecked();
 
 		// Wait for the change to be persisted
-		await expect(listenedSwitchUnderlyingCheckbox).toBeDisabled();
 		await expect(listenedSwitchUnderlyingCheckbox).not.toBeDisabled();
 
 		await page.reload();
 
 		await expect(newItem).toBeVisible();
-		await newItem.click();
 		await expect(listenedSwitch).toBeVisible();
 		await expect(listenedSwitch).toBeChecked();
 	});

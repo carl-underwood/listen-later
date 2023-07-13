@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
@@ -12,6 +11,7 @@
 		SlideToggle
 	} from '@skeletonlabs/skeleton';
 	import { formatDistanceToNow } from 'date-fns';
+	import smoothScrollIntoViewIfNeeded from 'smooth-scroll-into-view-if-needed';
 	import { items } from '$lib/stores/items';
 	import { loading } from '$lib/stores/loading';
 	import { prefersReducedMotion } from '$lib/stores/prefersReducedMotion';
@@ -23,25 +23,14 @@
 	import DeleteModal from '$lib/components/DeleteModal.svelte';
 	import type Item from '$lib/types/Item';
 
-	let goToItem: string | null = null;
-
-	onMount(() => {
-		const goToItem = $page.url.searchParams.get('item');
-
-		if (!goToItem) {
-			return;
-		}
-
-		openAccordionItemId = goToItem;
-		goto('/list', { replaceState: true });
-	});
-
 	let accordionItems: { [Property: string]: HTMLDivElement } = {};
-	let openAccordionItemId: string | undefined = undefined;
+	$: openAccordionItemId = $page.url.searchParams.get('itemId');
 
-	$: if (goToItem && accordionItems[goToItem]) {
-		accordionItems[goToItem].scrollIntoView({ behavior: 'smooth' });
-		goToItem = null;
+	$: if (openAccordionItemId && accordionItems[openAccordionItemId]) {
+		smoothScrollIntoViewIfNeeded(accordionItems[openAccordionItemId], {
+			behavior: 'smooth',
+			duration: 800
+		});
 	}
 
 	const onItemListenedChange = async (event: Event, item: Item) => {
@@ -110,11 +99,11 @@
 						open={openAccordionItemId === item.id}
 						duration={$prefersReducedMotion ? 0 : undefined}
 						disabled={$loading}
-						on:toggle={(event) => {
-							if (event.detail.open) {
-								openAccordionItemId = item.id;
-							}
-						}}
+						on:toggle={(event) =>
+							goto(`/list${event.detail.open ? `?itemId=${item.id}` : ''}`, {
+								noScroll: true,
+								replaceState: true
+							})}
 					>
 						<svelte:fragment slot="lead">
 							<div class="flex flex-col gap-2 shrink-0 justify-center items-center">
