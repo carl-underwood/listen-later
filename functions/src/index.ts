@@ -8,7 +8,7 @@ const SPOTIFY_CLIENT_SECRET = defineString('SPOTIFY_CLIENT_SECRET');
 
 const MINIMUM_SEARCH_QUERY_LENGTH = 3;
 
-export const search = onCall({ enforceAppCheck: true }, async (request) => {
+export const search = onCall({ enforceAppCheck: true, region: 'europe-west1' }, async (request) => {
 	if (!request.auth) {
 		throw new HttpsError('unauthenticated', 'Must be authenticated.');
 	}
