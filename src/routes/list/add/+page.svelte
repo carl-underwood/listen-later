@@ -152,7 +152,7 @@
 		goToListPage(item.id);
 	};
 
-	const goToListPage = (itemId?: string) => goto(`/list${!itemId ? '' : `?item=${itemId}`}`);
+	const goToListPage = (itemId?: string) => goto(`/list${!itemId ? '' : `?itemId=${itemId}`}`);
 
 	const onItemClick = (event: Event) => {
 		if (!$loading) {
@@ -163,7 +163,7 @@
 	};
 </script>
 
-<div class="sticky top-0 p-4 bg-surface-backdrop-token">
+<div class="sticky top-0 p-4 -mt-4 bg-surface-backdrop-token">
 	<form on:submit|preventDefault={onSearchSubmit}>
 		<label class="label">
 			<span class="sr-only">Search</span>
@@ -243,7 +243,6 @@
 					bind:group={selectedItemId}
 					name="item"
 					value={item.id}
-					rounded="false"
 					padding="p-4"
 					on:click={onItemClick}
 				>
