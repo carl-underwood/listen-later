@@ -30,8 +30,9 @@ describe('add page', () => {
 				metadata: [],
 				name: 'album',
 				popularity: 0,
-				spotifyUrl: '',
-				type: 'album'
+				service: 'spotify',
+				type: 'album',
+				url: ''
 			},
 			{
 				id: 'artist',
@@ -39,8 +40,9 @@ describe('add page', () => {
 				metadata: [],
 				name: 'artist',
 				popularity: 0,
-				spotifyUrl: '',
-				type: 'artist'
+				service: 'spotify',
+				type: 'artist',
+				url: ''
 			},
 			{
 				id: 'episode',
@@ -48,8 +50,9 @@ describe('add page', () => {
 				metadata: [],
 				name: 'episode',
 				popularity: 0,
-				spotifyUrl: '',
-				type: 'episode'
+				service: 'spotify',
+				type: 'episode',
+				url: ''
 			},
 			{
 				id: 'podcast',
@@ -57,8 +60,9 @@ describe('add page', () => {
 				metadata: [],
 				name: 'podcast',
 				popularity: 0,
-				spotifyUrl: '',
-				type: 'podcast'
+				service: 'spotify',
+				type: 'podcast',
+				url: ''
 			},
 			{
 				id: 'track',
@@ -66,8 +70,9 @@ describe('add page', () => {
 				metadata: [],
 				name: 'track',
 				popularity: 0,
-				spotifyUrl: '',
-				type: 'track'
+				service: 'spotify',
+				type: 'track',
+				url: ''
 			}
 		];
 

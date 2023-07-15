@@ -1,28 +1,15 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
 	import { page } from '$app/stores';
-	import { goto } from '$app/navigation';
-	import {
-		Accordion,
-		AccordionItem,
-		type ModalComponent,
-		type ModalSettings,
-		modalStore,
-		SlideToggle
-	} from '@skeletonlabs/skeleton';
-	import { formatDistanceToNow } from 'date-fns';
+	import { Accordion } from '@skeletonlabs/skeleton';
 	import smoothScrollIntoViewIfNeeded from 'smooth-scroll-into-view-if-needed';
 	import { items } from '$lib/stores/items';
 	import { loading } from '$lib/stores/loading';
 	import { prefersReducedMotion } from '$lib/stores/prefersReducedMotion';
 	import Loading from '$lib/components/Loading.svelte';
 	import Plus from '$lib/components/icons/plus.svelte';
-	import TrashBin from '$lib/components/icons/trash-bin.svelte';
-	import Headphone from '$lib/components/icons/headphone.svelte';
-	import SpotifyIcon from '$lib/components/SpotifyIcon.svelte';
-	import DeleteModal from '$lib/components/DeleteModal.svelte';
-	import type Item from '$lib/types/Item';
-	import SpotifyLogo from '$lib/components/SpotifyLogo.svelte';
+	import preventDefaultIf from '$lib/helpers/preventDefaultIf';
+	import ItemSpotify from '$lib/components/ItemSpotify.svelte';
 
 	let accordionItems: { [Property: string]: HTMLDivElement } = {};
 	$: openAccordionItemId = $page.url.searchParams.get('itemId');
@@ -33,40 +20,6 @@
 			duration: 800
 		});
 	}
-
-	const onItemListenedChange = async (event: Event, item: Item) => {
-		if ($loading) {
-			event.preventDefault();
-			return;
-		}
-
-		await loading.whileAwaiting(() =>
-			items.upsertItem({
-				...item,
-				listened: (event.target as HTMLInputElement).checked
-			})
-		);
-	};
-
-	const deleteItem = (item: Item) => {
-		const modalComponent: ModalComponent = {
-			ref: DeleteModal,
-			props: { item }
-		};
-
-		const modal: ModalSettings = {
-			type: 'component',
-			component: modalComponent
-		};
-
-		modalStore.trigger(modal);
-	};
-
-	const preventDefaultIfLoading = (event: Event) => {
-		if ($loading) {
-			event.preventDefault();
-		}
-	};
 </script>
 
 {#if $items === undefined}
@@ -78,7 +31,7 @@
 		class="btn bg-surface-900-50-token text-surface-50-900-token sticky top-4 left-1/2 -translate-x-1/2 w-36"
 		class:opacity-50={$loading}
 		class:cursor-not-allowed={$loading}
-		on:click={preventDefaultIfLoading}
+		on:click={(event) => preventDefaultIf(event, $loading)}
 	>
 		<Plus />
 		<span class="sr-only">Add item</span>
@@ -99,87 +52,9 @@
 					transition:slide={{ duration: $prefersReducedMotion ? 0 : undefined }}
 					class="border-surface-900-50-token ring-4 ring-surface-900-50-token mt-1"
 				>
-					<AccordionItem
-						open={openAccordionItemId === item.id}
-						duration={$prefersReducedMotion ? 0 : undefined}
-						disabled={$loading}
-						on:toggle={(event) => {
-							goto(`/list${event.detail.open ? `?itemId=${item.id}` : ''}`, {
-								noScroll: true,
-								replaceState: true,
-								keepFocus: true
-							});
-						}}
-						regionControl="focus:-outline-offset-4"
-					>
-						<div slot="lead" class="select-none">
-							<div class="flex flex-col gap-4 shrink-0 justify-center items-center">
-								{#if item.imageUrl}
-									<img class="h-16 w-16" src={item.imageUrl} alt="" loading="lazy" />
-								{:else}
-									<div class="h-16 w-16 bg-surface-500 flex justify-center items-center">
-										<Headphone classes="h-6 w-6 text-white" />
-									</div>
-								{/if}
-								<SpotifyLogo classes="w-20" />
-							</div>
-						</div>
-						<!-- Ignoring as the click event is only handled to prevent default -->
-						<!-- svelte-ignore a11y-click-events-have-key-events -->
-						<!-- svelte-ignore a11y-no-static-element-interactions -->
-						<div
-							slot="summary"
-							class="flex flex-col select-text"
-							on:click={(event) => {
-								if (getSelection()?.toString()) {
-									event.preventDefault();
-									event.stopImmediatePropagation();
-									return;
-								}
-							}}
-						>
-							<span class="font-semibold">
-								{item.name}
-							</span>
-							{#each item.metadata as metadataPart}
-								<span>{metadataPart}</span>
-							{/each}
-						</div>
-						<div slot="content" class="flex flex-col gap-4 items-center">
-							<a
-								href={item.spotifyUrl + '?go=1'}
-								target="_blank"
-								class="btn bg-[#1DB954] font-semibold text-white rounded-3xl"
-								class:opacity-50={$loading}
-								class:cursor-not-allowed={$loading}
-								on:click={preventDefaultIfLoading}
-							>
-								<SpotifyIcon classes="w-6 h-6 mr-3 fill-white" />
-								Open in Spotify
-							</a>
-							<SlideToggle
-								name={`listened-${item.id}`}
-								on:change={(event) => onItemListenedChange(event, item)}
-								checked={item.listened}
-								disabled={$loading}
-								class="focus:outline-offset-4"
-							>
-								Listened
-							</SlideToggle>
-							<small data-added-at-utc={item.addedAtUtc} class="text-center">
-								Added {formatDistanceToNow(new Date(item.addedAtUtc), { addSuffix: true })}
-								({new Date(item.addedAtUtc).toLocaleString()})
-							</small>
-							<button
-								class="btn-icon btn-icon-sm variant-filled-error"
-								disabled={$loading}
-								on:click={() => deleteItem(item)}
-							>
-								<TrashBin classes="w-4 h-4" />
-								<span class="sr-only">Delete {item.name}</span>
-							</button>
-						</div>
-					</AccordionItem>
+					{#if item.service === 'spotify'}
+						<ItemSpotify {item} {openAccordionItemId} />
+					{/if}
 				</div>
 			{/each}
 		</Accordion>

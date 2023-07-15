@@ -2,7 +2,7 @@ import { debug } from 'firebase-functions/logger';
 import { Agent } from 'https';
 import * as needle from 'needle';
 import { addSeconds, differenceInMinutes } from 'date-fns';
-import type { SearchResponse } from './types/spotify';
+import type { SearchResponse, SpotifyItemType } from './types/spotify';
 
 const agent = new Agent({ keepAlive: true });
 let cachedAccessToken: { accessToken: string; expiresAt: Date };
@@ -80,14 +80,18 @@ export const search = async (searchQuery: string, accessToken: string): Promise<
 	return response.body;
 };
 
-export const getEpisodes = async (episodeIds: string[], accessToken: string) => {
-	const episodeIdsCommaSeparated = episodeIds.join(',');
+export const getItems = async (
+	spotifyItemType: SpotifyItemType,
+	itemIds: string[],
+	accessToken: string
+) => {
+	const itemIdsCommaSeparated = itemIds.join(',');
 
 	const response = await needle(
 		'get',
-		`https://api.spotify.com/v1/episodes`,
+		`https://api.spotify.com/v1/${spotifyItemType}`,
 		{
-			ids: episodeIdsCommaSeparated,
+			ids: itemIdsCommaSeparated,
 			market: 'GB'
 		},
 		{
@@ -102,7 +106,7 @@ export const getEpisodes = async (episodeIds: string[], accessToken: string) => 
 		throw new Error(
 			`Unexpected ${
 				response.statusCode
-			} response from Spotify for episodes lookup ${episodeIdsCommaSeparated}: ${JSON.stringify(
+			} response from Spotify for ${spotifyItemType} lookup ${itemIdsCommaSeparated}: ${JSON.stringify(
 				response.body
 			)}`
 		);

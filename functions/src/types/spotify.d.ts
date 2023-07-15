@@ -1,3 +1,5 @@
+export type SpotifyItemType = 'albums' | 'artists' | 'episodes' | 'shows' | 'tracks';
+
 export type SearchResponse = {
 	readonly albums: SearchResponseData<Album>;
 	readonly artists: SearchResponseData<Artist>;
