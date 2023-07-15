@@ -78,7 +78,7 @@ test.describe('list page', () => {
 		await hideEmulatorWarining(page);
 		await addButton.click();
 
-		await page.waitForURL(`/list?itemId=${id}`);
+		await page.waitForURL(`/list?itemId=spotify:${id}`);
 
 		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
 		await expect(newItem).toBeVisible();
@@ -105,7 +105,7 @@ test.describe('list page', () => {
 		await hideEmulatorWarining(page);
 		await addButton.click();
 
-		await page.waitForURL(`/list?itemId=${id}`);
+		await page.waitForURL(`/list?itemId=spotify:${id}`);
 
 		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
 		await expect(newItem).toBeVisible();
@@ -134,7 +134,7 @@ test.describe('list page', () => {
 		await hideEmulatorWarining(page);
 		await addButton.click();
 
-		await page.waitForURL(`/list?itemId=${id}`);
+		await page.waitForURL(`/list?itemId=spotify:${id}`);
 
 		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
 		await expect(newItem).toBeVisible();
@@ -183,7 +183,7 @@ test.describe('list page', () => {
 		await hideEmulatorWarining(page);
 		await addButton.click();
 
-		await page.waitForURL(`/list?itemId=${id}`);
+		await page.waitForURL(`/list?itemId=spotify:${id}`);
 
 		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
 		await expect(newItem).toBeVisible();
@@ -208,7 +208,7 @@ test.describe('list page', () => {
 
 		await addButton.click();
 
-		await page.waitForURL(`/list?itemId=${id}`);
+		await page.waitForURL(`/list?itemId=spotify:${id}`);
 
 		await expect(newItem).toHaveCount(1);
 		await expect(newItem).toBeVisible();
@@ -239,7 +239,7 @@ test.describe('list page', () => {
 		await selectOptionWithId(page, id);
 		await addButton.click();
 
-		await page.waitForURL(`/list?itemId=${id}`);
+		await page.waitForURL(`/list?itemId=spotify:${id}`);
 
 		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
 		await expect(newItem).toBeVisible();
@@ -261,7 +261,7 @@ test.describe('list page', () => {
 		await hideEmulatorWarining(page);
 		await addButton.click();
 
-		await page.waitForURL(`/list?itemId=${id}`);
+		await page.waitForURL(`/list?itemId=spotify:${id}`);
 
 		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
 		await expect(newItem).toBeVisible();
@@ -290,7 +290,7 @@ test.describe('list page', () => {
 		await hideEmulatorWarining(page);
 		await addButton.click();
 
-		await page.waitForURL(`/list?itemId=${id}`);
+		await page.waitForURL(`/list?itemId=spotify:${id}`);
 
 		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
 		await expect(newItem).toBeVisible();
@@ -311,5 +311,33 @@ test.describe('list page', () => {
 		await expect(newItem).toBeVisible();
 		await expect(listenedSwitch).toBeVisible();
 		await expect(listenedSwitch).toBeChecked();
+	});
+
+	test('shows metadata for Spotify items', async ({ page }) => {
+		await page.goto('/list');
+		await signIn(page);
+
+		await clickAddItemButton(page);
+
+		const id = '5Nu4AvrNgIx42nWGbteHLh';
+		await fillSearchInput(page, 'Victory Dance');
+		await clickSubmitSearchButton(page);
+		await selectOptionWithId(page, id);
+
+		const addButton = await getVisibleAddButton(page);
+		await hideEmulatorWarining(page);
+		await addButton.click();
+
+		await page.waitForURL(`/list?itemId=spotify:${id}`);
+
+		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
+		await expect(newItem).toBeVisible();
+		await expect(newItem).toHaveAttribute('aria-expanded', 'true');
+
+		await expect(page.getByText('Ezra Collective')).toBeVisible();
+		await expect(page.getByText("Where I'm Meant To Be")).toBeVisible();
+		await expect(
+			page.locator('img[src="https://i.scdn.co/image/ab67616d0000b273c0e7017da85ab6f7b5e1b53f"]')
+		).toBeVisible();
 	});
 });

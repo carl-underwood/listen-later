@@ -43,8 +43,6 @@
 			.filter((itemType) => itemTypeFilters[itemType])
 			.join(', ');
 
-		console.log(commaSeparatedItemTypeFilters);
-
 		const lastCommaIndex = commaSeparatedItemTypeFilters.lastIndexOf(',');
 
 		if (lastCommaIndex < 0) {
@@ -135,13 +133,12 @@
 
 		const item: Item = {
 			addedAtUtc: new Date().toISOString(),
-			id: selectedItem.id,
-			imageUrl: selectedItem.imageUrl,
+			id: `${selectedItem.service}:${selectedItem.id}`,
 			listened: false,
-			metadata: selectedItem.metadata,
 			name: selectedItem.name,
-			spotifyUrl: selectedItem.spotifyUrl,
-			type: selectedItem.type
+			service: selectedItem.service,
+			type: selectedItem.type,
+			url: selectedItem.url
 		};
 
 		await loading.whileAwaiting(async () => {

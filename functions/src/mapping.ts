@@ -1,5 +1,15 @@
-import type { Artist, GetEpisodesResponse, Image, SearchResponse } from './types/spotify';
+import type {
+	Album,
+	Artist,
+	GetEpisodesResponse,
+	Image,
+	SearchResponse,
+	Show,
+	Track
+} from './types/spotify';
 import type SearchResult from '../../src/lib/types/SearchResult';
+import type ItemType from '../../src/lib/types/ItemType';
+import type ItemMetadata from '../../src/lib/types/ItemMetadata';
 
 const upperFirstCharacter = (input: string) => [input[0].toUpperCase(), ...input.slice(1)].join('');
 
@@ -13,7 +23,8 @@ export const mapToSearchResults = (
 		imageUrl: getImage(item.images),
 		name: item.name,
 		metadata: [upperFirstCharacter(item.album_type), getArtists(item.artists)],
-		spotifyUrl: item.external_urls.spotify,
+		url: item.external_urls.spotify,
+		service: 'spotify',
 		type: 'album',
 		popularity: item.popularity
 	}));
@@ -23,7 +34,8 @@ export const mapToSearchResults = (
 		imageUrl: getImage(item.images),
 		name: item.name,
 		metadata: ['Artist'],
-		spotifyUrl: item.external_urls.spotify,
+		url: item.external_urls.spotify,
+		service: 'spotify',
 		type: 'artist',
 		popularity: item.popularity
 	}));
@@ -37,7 +49,8 @@ export const mapToSearchResults = (
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			episodesResponse.episodes.find((episode) => episode.id === item.id)!.show.name
 		],
-		spotifyUrl: item.external_urls.spotify,
+		url: item.external_urls.spotify,
+		service: 'spotify',
 		type: 'episode',
 		popularity: -1
 	}));
@@ -47,7 +60,8 @@ export const mapToSearchResults = (
 		imageUrl: getImage(item.images),
 		name: item.name,
 		metadata: ['Podcast'],
-		spotifyUrl: item.external_urls.spotify,
+		url: item.external_urls.spotify,
+		service: 'spotify',
 		type: 'podcast',
 		popularity: -1
 	}));
@@ -57,12 +71,58 @@ export const mapToSearchResults = (
 		imageUrl: getImage(item.album.images),
 		name: item.name,
 		metadata: ['Song', getArtists(item.artists), item.album.name],
-		spotifyUrl: item.external_urls.spotify,
+		url: item.external_urls.spotify,
+		service: 'spotify',
 		type: 'track',
 		popularity: item.popularity
 	}));
 
 	return [...albumResults, ...artistResults, ...episodeResults, ...showResults, ...trackResults];
+};
+
+// Designed as a back-end for front-end, so performing mapping here
+export const mapToItemMetadata = (itemType: ItemType, spotifyResponse: unknown): ItemMetadata[] => {
+	if (itemType === 'album') {
+		return (spotifyResponse as { albums: Album[] }).albums.map((item) => ({
+			itemId: item.id,
+			imageUrl: getImage(item.images),
+			metadataParts: [upperFirstCharacter(item.album_type), getArtists(item.artists)]
+		}));
+	}
+
+	if (itemType === 'artist') {
+		return (spotifyResponse as { artists: Artist[] }).artists.map((item) => ({
+			itemId: item.id,
+			imageUrl: getImage(item.images),
+			metadataParts: [upperFirstCharacter(itemType)]
+		}));
+	}
+
+	if (itemType === 'episode') {
+		return (spotifyResponse as GetEpisodesResponse).episodes.map((item) => ({
+			itemId: item.id,
+			imageUrl: getImage(item.images),
+			metadataParts: [upperFirstCharacter(itemType), item.show.name]
+		}));
+	}
+
+	if (itemType === 'podcast') {
+		return (spotifyResponse as { shows: Show[] }).shows.map((item) => ({
+			itemId: item.id,
+			imageUrl: getImage(item.images),
+			metadataParts: [upperFirstCharacter(itemType)]
+		}));
+	}
+
+	if (itemType === 'track') {
+		return (spotifyResponse as { tracks: Track[] }).tracks.map((item) => ({
+			itemId: item.id,
+			imageUrl: getImage(item.album.images),
+			metadataParts: ['Song', getArtists(item.artists), item.album.name]
+		}));
+	}
+
+	return [];
 };
 
 const getArtists = (artists: Artist[]) => {

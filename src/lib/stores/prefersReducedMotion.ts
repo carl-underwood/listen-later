@@ -14,7 +14,6 @@ export const prefersReducedMotion = readable(getInitialMotionPreference(), (set)
 
 	const updateMotionPreference = (event: MediaQueryListEvent) => {
 		set(event.matches);
-		console.log(event);
 	};
 
 	const mediaQueryList = window.matchMedia(reducedMotionQuery);
