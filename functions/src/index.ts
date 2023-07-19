@@ -67,7 +67,9 @@ export const getSpotifyMetadata = onCall(
 			SPOTIFY_CLIENT_SECRET.value()
 		);
 
-		const spotifyItemType = (itemType === 'podcast' ? 'shows' : itemType + 's') as SpotifyItemType;
+		const spotifyItemType = (
+			itemType === 'podcast' ? 'shows' : itemType === 'song' ? 'tracks' : itemType + 's'
+		) as SpotifyItemType;
 
 		const spotifyResponse = await getItems(spotifyItemType, prefixlessItemIds, accessToken);
 

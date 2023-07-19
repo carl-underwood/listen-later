@@ -23,10 +23,10 @@
 	<svelte:fragment slot="metadata">
 		{#if !itemMetadata}
 			<span class="capitalize">{item.type}</span>
-			{#if ['album', 'podcast', 'track'].includes(item.type)}
+			{#if ['album', 'podcast', 'song'].includes(item.type)}
 				<span class="{itemMetadata === undefined ? 'placeholder animate-pulse' : ''} h-6" />
 			{/if}
-			{#if item.type === 'track'}
+			{#if item.type === 'song'}
 				<span class="{itemMetadata === undefined ? 'placeholder animate-pulse' : ''} h-6" />
 			{/if}
 		{:else}

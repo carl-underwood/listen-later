@@ -34,7 +34,7 @@
 		artist: false,
 		episode: false,
 		podcast: false,
-		track: false
+		song: false
 	};
 
 	$: itemTypeFiltersClear = itemTypes.every((itemType) => !itemTypeFilters[itemType]);
@@ -90,7 +90,7 @@
 			artist: false,
 			episode: false,
 			podcast: false,
-			track: false
+			song: false
 		};
 	};
 
