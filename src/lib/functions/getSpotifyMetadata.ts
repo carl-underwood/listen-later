@@ -8,7 +8,7 @@ import type ItemType from '$lib/types/ItemType';
 export const getSpotifyMetadata = async (
 	itemType: ItemType,
 	prefixlessItemIds: string[]
-): Promise<ItemMetadata[]> => {
+): Promise<(ItemMetadata & { itemId: string })[]> => {
 	const $appCheck = get(appCheck);
 	const $functions = get(functions);
 	if (!$appCheck || !$functions) {
@@ -19,5 +19,5 @@ export const getSpotifyMetadata = async (
 
 	const result = await getSpotifyMetadata({ itemType, prefixlessItemIds });
 
-	return result.data as ItemMetadata[];
+	return result.data as (ItemMetadata & { itemId: string })[];
 };

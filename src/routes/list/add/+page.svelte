@@ -10,11 +10,11 @@
 	import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
 	import SearchLoop from '$lib/components/icons/search-loop.svelte';
 	import Loading from '$lib/components/Loading.svelte';
-	import Headphone from '$lib/components/icons/headphone.svelte';
 	import Check from '$lib/components/icons/check.svelte';
 	import type ItemType from '$lib/types/ItemType';
 	import { itemTypes } from '$lib/types/ItemType';
 	import SpotifyLogo from '$lib/components/SpotifyLogo.svelte';
+	import ItemImage from '$lib/components/ItemImage.svelte';
 
 	const MINIMUM_SEARCH_QUERY_LENGTH = 3;
 
@@ -267,20 +267,14 @@
 				>
 					<div id={item.id} class="flex gap-4 items-center" class:cursor-not-allowed={$loading}>
 						<div class="flex flex-col gap-4 shrink-0 justify-center items-center">
-							{#if item.imageUrl}
-								<img class="h-16 w-16" src={item.imageUrl} alt="" loading="lazy" />
-							{:else}
-								<div class="h-16 w-16 bg-surface-500 flex justify-center items-center">
-									<Headphone classes="h-6 w-6 text-white" />
-								</div>
-							{/if}
+							<ItemImage itemMetadata={item} />
 							<SpotifyLogo classes="w-20" />
 						</div>
 						<div class="flex flex-col">
 							<span class="font-semibold">
 								{item.name}
 							</span>
-							{#each item.metadata as metadataPart}
+							{#each item.metadataParts as metadataPart}
 								<span>{metadataPart}</span>
 							{/each}
 						</div>

@@ -22,7 +22,7 @@ export const mapToSearchResults = (
 		id: item.id,
 		imageUrl: getImage(item.images),
 		name: item.name,
-		metadata: [upperFirstCharacter(item.album_type), getArtists(item.artists)],
+		metadataParts: [upperFirstCharacter(item.album_type), getArtists(item.artists)],
 		url: item.external_urls.spotify,
 		service: 'spotify',
 		type: 'album',
@@ -33,7 +33,7 @@ export const mapToSearchResults = (
 		id: item.id,
 		imageUrl: getImage(item.images),
 		name: item.name,
-		metadata: ['Artist'],
+		metadataParts: ['Artist'],
 		url: item.external_urls.spotify,
 		service: 'spotify',
 		type: 'artist',
@@ -44,7 +44,7 @@ export const mapToSearchResults = (
 		id: item.id,
 		imageUrl: getImage(item.images),
 		name: item.name,
-		metadata: [
+		metadataParts: [
 			'Episode',
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			episodesResponse.episodes.find((episode) => episode.id === item.id)!.show.name
@@ -59,7 +59,7 @@ export const mapToSearchResults = (
 		id: item.id,
 		imageUrl: getImage(item.images),
 		name: item.name,
-		metadata: ['Podcast'],
+		metadataParts: ['Podcast'],
 		url: item.external_urls.spotify,
 		service: 'spotify',
 		type: 'podcast',
@@ -70,7 +70,7 @@ export const mapToSearchResults = (
 		id: item.id,
 		imageUrl: getImage(item.album.images),
 		name: item.name,
-		metadata: ['Song', getArtists(item.artists), item.album.name],
+		metadataParts: ['Song', getArtists(item.artists), item.album.name],
 		url: item.external_urls.spotify,
 		service: 'spotify',
 		type: 'track',
@@ -81,7 +81,10 @@ export const mapToSearchResults = (
 };
 
 // Designed as a back-end for front-end, so performing mapping here
-export const mapToItemMetadata = (itemType: ItemType, spotifyResponse: unknown): ItemMetadata[] => {
+export const mapToItemMetadata = (
+	itemType: ItemType,
+	spotifyResponse: unknown
+): (ItemMetadata & { itemId: string })[] => {
 	if (itemType === 'album') {
 		return (spotifyResponse as { albums: Album[] }).albums.map((item) => ({
 			itemId: item.id,
