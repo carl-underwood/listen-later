@@ -3,11 +3,11 @@
 	import { spotifyItemMetadata } from '$lib/stores/spotifyItemMetadata';
 	import getPrefixlessId from '$lib/helpers/getPrefixlessId';
 	import ItemBase from './ItemBase.svelte';
-	import Headphone from './icons/headphone.svelte';
 	import SpotifyLogo from './SpotifyLogo.svelte';
 	import preventDefaultIf from '$lib/helpers/preventDefaultIf';
 	import SpotifyIcon from './SpotifyIcon.svelte';
 	import type Item from '$lib/types/Item';
+	import ItemImage from './ItemImage.svelte';
 
 	export let item: Item;
 	export let openAccordionItemId: string | null;
@@ -17,15 +17,7 @@
 
 <ItemBase {item} {openAccordionItemId}>
 	<svelte:fragment slot="lead">
-		{#if itemMetadata === undefined}
-			<div class="placeholder animate-pulse h-16 w-16" />
-		{:else if itemMetadata?.imageUrl}
-			<img class="h-16 w-16" src={itemMetadata.imageUrl} alt="" loading="lazy" />
-		{:else}
-			<div class="h-16 w-16 bg-surface-500 flex justify-center items-center">
-				<Headphone classes="h-6 w-6 text-white" />
-			</div>
-		{/if}
+		<ItemImage {itemMetadata} />
 		<SpotifyLogo classes="w-20" />
 	</svelte:fragment>
 	<svelte:fragment slot="metadata">

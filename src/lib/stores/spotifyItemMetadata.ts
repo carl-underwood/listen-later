@@ -50,13 +50,14 @@ export function createSpotifyItemMetadata() {
 				set(spotifyItemMetadata);
 			};
 
-			const handleBatchSuccess = (batchResult: ItemMetadata[]) => {
+			const handleBatchSuccess = (batchResult: (ItemMetadata & { itemId: string })[]) => {
 				loadingPrefixlessItemIds = loadingPrefixlessItemIds.filter(
-					(loadingItemId) => !batchResult.find((batchItem) => batchItem.itemId === loadingItemId)
+					(loadingItemId) =>
+						!batchResult.find((batchItemMetadata) => batchItemMetadata.itemId === loadingItemId)
 				);
 
 				const batchMetadata = batchResult.reduce<SpotifyItemMetadata>(
-					(obj, item) => ({ ...obj, [item.itemId]: item }),
+					(obj, itemMetadata) => ({ ...obj, [itemMetadata.itemId]: itemMetadata }),
 					{}
 				);
 

@@ -27,7 +27,7 @@ describe('add page', () => {
 			{
 				id: 'album',
 				imageUrl: '',
-				metadata: [],
+				metadataParts: [],
 				name: 'album',
 				popularity: 0,
 				service: 'spotify',
@@ -37,7 +37,7 @@ describe('add page', () => {
 			{
 				id: 'artist',
 				imageUrl: '',
-				metadata: [],
+				metadataParts: [],
 				name: 'artist',
 				popularity: 0,
 				service: 'spotify',
@@ -47,7 +47,7 @@ describe('add page', () => {
 			{
 				id: 'episode',
 				imageUrl: '',
-				metadata: [],
+				metadataParts: [],
 				name: 'episode',
 				popularity: 0,
 				service: 'spotify',
@@ -57,7 +57,7 @@ describe('add page', () => {
 			{
 				id: 'podcast',
 				imageUrl: '',
-				metadata: [],
+				metadataParts: [],
 				name: 'podcast',
 				popularity: 0,
 				service: 'spotify',
@@ -67,7 +67,7 @@ describe('add page', () => {
 			{
 				id: 'track',
 				imageUrl: '',
-				metadata: [],
+				metadataParts: [],
 				name: 'track',
 				popularity: 0,
 				service: 'spotify',
