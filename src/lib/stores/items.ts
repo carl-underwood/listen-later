@@ -25,6 +25,7 @@ export function createItems() {
 			};
 
 			if (!$firestore || !$user || !browser) {
+				set([]);
 				return unsubscribe;
 			}
 

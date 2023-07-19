@@ -31,7 +31,7 @@
 			{/if}
 		{:else}
 			{#each itemMetadata.metadataParts as metadataPart}
-				<span>{metadataPart}</span>
+				<span class="break-all">{metadataPart}</span>
 			{/each}
 		{/if}
 	</svelte:fragment>
