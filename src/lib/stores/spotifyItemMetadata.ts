@@ -80,7 +80,7 @@ export function createSpotifyItemMetadata() {
 			fetchInBatches('artist', 50);
 			fetchInBatches('episode', 50);
 			fetchInBatches('podcast', 50);
-			fetchInBatches('track', 50);
+			fetchInBatches('song', 50);
 		},
 		{}
 	);

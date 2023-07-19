@@ -65,13 +65,13 @@ describe('add page', () => {
 				url: ''
 			},
 			{
-				id: 'track',
+				id: 'song',
 				imageUrl: '',
 				metadataParts: [],
-				name: 'track',
+				name: 'song',
 				popularity: 0,
 				service: 'spotify',
-				type: 'track',
+				type: 'song',
 				url: ''
 			}
 		];
@@ -143,20 +143,20 @@ describe('add page', () => {
 		await tick();
 		expect(await getOptions()).toHaveLength(5);
 
-		const tracksFilter = await screen.findByRole('checkbox', { name: 'tracks' });
-		await userEvent.click(tracksFilter);
+		const songsFilter = await screen.findByRole('checkbox', { name: 'songs' });
+		await userEvent.click(songsFilter);
 		await tick();
 
-		const trackFilteredOptions = await getOptions();
-		expect(trackFilteredOptions).toHaveLength(1);
-		expect(trackFilteredOptions[0]).toHaveTextContent('track');
+		const songFilteredOptions = await getOptions();
+		expect(songFilteredOptions).toHaveLength(1);
+		expect(songFilteredOptions[0]).toHaveTextContent('song');
 
 		await userEvent.click(artistsFilter);
 		await tick();
 
-		const artistAndTrackFilteredOptions = await getOptions();
-		expect(artistAndTrackFilteredOptions).toHaveLength(2);
-		expect(artistAndTrackFilteredOptions[0]).toHaveTextContent('artist');
-		expect(artistAndTrackFilteredOptions[1]).toHaveTextContent('track');
+		const artistAndSongFilteredOptions = await getOptions();
+		expect(artistAndSongFilteredOptions).toHaveLength(2);
+		expect(artistAndSongFilteredOptions[0]).toHaveTextContent('artist');
+		expect(artistAndSongFilteredOptions[1]).toHaveTextContent('song');
 	});
 });

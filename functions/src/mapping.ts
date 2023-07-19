@@ -73,7 +73,7 @@ export const mapToSearchResults = (
 		metadataParts: ['Song', getArtists(item.artists), item.album.name],
 		url: item.external_urls.spotify,
 		service: 'spotify',
-		type: 'track',
+		type: 'song',
 		popularity: item.popularity
 	}));
 
@@ -117,11 +117,11 @@ export const mapToItemMetadata = (
 		}));
 	}
 
-	if (itemType === 'track') {
+	if (itemType === 'song') {
 		return (spotifyResponse as { tracks: Track[] }).tracks.map((item) => ({
 			itemId: item.id,
 			imageUrl: getImage(item.album.images),
-			metadataParts: ['Song', getArtists(item.artists), item.album.name]
+			metadataParts: [upperFirstCharacter(itemType), getArtists(item.artists), item.album.name]
 		}));
 	}
 
