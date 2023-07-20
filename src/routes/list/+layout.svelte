@@ -5,6 +5,7 @@
 	import { loading } from '$lib/stores/loading';
 	import Loading from '$lib/components/Loading.svelte';
 	import type { AuthError } from 'firebase/auth';
+	import Google from '$lib/components/icons/Google.svelte';
 
 	let isSignInWithEmailLinkChecked = false;
 	let showEmailForm = false;
@@ -96,6 +97,20 @@
 		confirmingEmailForSignIn = false;
 	};
 
+	const signInWithGoogle = async () => {
+		if (!$auth) {
+			return;
+		}
+
+		await loading.whileAwaiting(async () => {
+			const { GoogleAuthProvider, signInWithRedirect } = await import('firebase/auth');
+
+			const provider = new GoogleAuthProvider();
+
+			await signInWithRedirect($auth, provider);
+		});
+	};
+
 	onDestroy(authUnsubscribe);
 </script>
 
@@ -159,6 +174,14 @@
 					on:click={() => (showEmailForm = true)}
 				>
 					Sign in with Email
+				</button>
+				<button
+					disabled={$loading}
+					class="btn bg-surface-900-50-token text-surface-50-900-token flex gap-2"
+					on:click={signInWithGoogle}
+				>
+					<Google classes="w-6 h-6" />
+					<span>Sign in with Google</span>
 				</button>
 			{/if}
 		</div>

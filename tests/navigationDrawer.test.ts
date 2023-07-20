@@ -31,4 +31,26 @@ test.describe('navigation drawer', () => {
 			'https://github.com/carl-hartshorn/listen-later'
 		);
 	});
+
+	test('shows a navigation item for settings and button to sign out in the navigation drawer when signed in', async ({
+		page
+	}) => {
+		await page.goto('/list');
+		const signInButton = page.getByRole('button', { name: 'Sign in anonymously' });
+		await expect(signInButton).toBeVisible();
+		await signInButton.click();
+
+		const navigationDrawerButton = page.getByRole('button', { name: 'Open navigation' });
+		await navigationDrawerButton.click();
+
+		const settingsNavigationItem = page.getByRole('link', { name: 'Settings' });
+		await expect(settingsNavigationItem).toBeVisible();
+		await expect(settingsNavigationItem).toHaveAttribute('href', '/settings');
+
+		const signOutButton = page.getByRole('button', { name: 'Sign out' });
+		await expect(signOutButton).toBeVisible();
+		await signOutButton.click();
+
+		await expect(signInButton).toBeVisible();
+	});
 });

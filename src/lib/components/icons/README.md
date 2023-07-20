@@ -18,3 +18,7 @@ Note that the following classes have been removed, as these were overriding them
 - [search-loop](search-loop.svelte)
 - [trash-bin](trash-bin.svelte)
 - [user-settings](user-settings.svelte)
+
+## [Google]
+
+The Google icon for the Sign in with Google button was retrieved from the button on <https://developers.google.com/identity/gsi/web/guides/overview?authuser=0>.
