@@ -1,51 +1,13 @@
-import { expect, test, type Page } from '@playwright/test';
-
-// Hide the emulator warning as it covers the button
-const hideEmulatorWarining = async (page: Page) => {
-	await page.addStyleTag({ content: '.firebase-emulator-warning { display: none!important; }' });
-};
-
-const signIn = async (page: Page) => {
-	const signInButton = page.getByRole('button', { name: 'Sign in anonymously' });
-	await expect(signInButton).toBeVisible();
-	await signInButton.click();
-};
-
-const getVisibleAddItemButton = async (page: Page) => {
-	const addItemButton = page.getByRole('link', { name: 'Add item' });
-	await expect(addItemButton).toBeVisible();
-	return addItemButton;
-};
-
-const clickAddItemButton = async (page: Page) => {
-	const addItemButton = await getVisibleAddItemButton(page);
-	await addItemButton.click();
-};
-
-const fillSearchInput = async (page: Page, searchQuery: string) => {
-	const searchInput = page.getByLabel('search');
-	await expect(searchInput).toBeVisible();
-
-	await searchInput.fill(searchQuery);
-};
-
-const clickSubmitSearchButton = async (page: Page) => {
-	const searchButton = page.getByRole('button', { name: 'Submit' });
-	await expect(searchButton).toBeVisible();
-	await searchButton.click();
-};
-
-const getVisibleAddButton = async (page: Page) => {
-	const addButton = page.getByRole('button', { name: 'Add', exact: true });
-	await expect(addButton).toBeVisible();
-	return addButton;
-};
-
-const selectOptionWithId = async (page: Page, id: string) => {
-	const expectedOption = page.locator(`[id="${id}"]`);
-	await expect(expectedOption).toBeVisible();
-	await expectedOption.click();
-};
+import { expect, test } from '@playwright/test';
+import {
+	signIn,
+	getVisibleAddItemButton,
+	clickAddItemButton,
+	fillSearchInput,
+	clickSubmitSearchButton,
+	selectOptionWithId,
+	getVisibleAddButton
+} from './helpers/list';
 
 test.describe('list page', () => {
 	test('shows a button to add an item when signed in', async ({ page }) => {
@@ -75,7 +37,6 @@ test.describe('list page', () => {
 		await selectOptionWithId(page, id);
 
 		const addButton = await getVisibleAddButton(page);
-		await hideEmulatorWarining(page);
 		await addButton.click();
 
 		await page.waitForURL(`/list?itemId=spotify:${id}`);
@@ -102,7 +63,6 @@ test.describe('list page', () => {
 		await selectOptionWithId(page, id);
 
 		const addButton = await getVisibleAddButton(page);
-		await hideEmulatorWarining(page);
 		await addButton.click();
 
 		await page.waitForURL(`/list?itemId=spotify:${id}`);
@@ -131,7 +91,6 @@ test.describe('list page', () => {
 		await selectOptionWithId(page, id);
 
 		const addButton = await getVisibleAddButton(page);
-		await hideEmulatorWarining(page);
 		await addButton.click();
 
 		await page.waitForURL(`/list?itemId=spotify:${id}`);
@@ -180,7 +139,6 @@ test.describe('list page', () => {
 		await selectOptionWithId(page, id);
 
 		const addButton = await getVisibleAddButton(page);
-		await hideEmulatorWarining(page);
 		await addButton.click();
 
 		await page.waitForURL(`/list?itemId=spotify:${id}`);
@@ -226,7 +184,6 @@ test.describe('list page', () => {
 		await fillSearchInput(page, 'Ezra Collective');
 		await clickSubmitSearchButton(page);
 		await page.getByRole('option').first().click();
-		await hideEmulatorWarining(page);
 		const addButton = await getVisibleAddButton(page);
 		await addButton.click();
 
@@ -258,7 +215,6 @@ test.describe('list page', () => {
 		await selectOptionWithId(page, id);
 
 		const addButton = await getVisibleAddButton(page);
-		await hideEmulatorWarining(page);
 		await addButton.click();
 
 		await page.waitForURL(`/list?itemId=spotify:${id}`);
@@ -287,7 +243,6 @@ test.describe('list page', () => {
 		await selectOptionWithId(page, id);
 
 		const addButton = await getVisibleAddButton(page);
-		await hideEmulatorWarining(page);
 		await addButton.click();
 
 		await page.waitForURL(`/list?itemId=spotify:${id}`);
@@ -325,7 +280,6 @@ test.describe('list page', () => {
 		await selectOptionWithId(page, id);
 
 		const addButton = await getVisibleAddButton(page);
-		await hideEmulatorWarining(page);
 		await addButton.click();
 
 		await page.waitForURL(`/list?itemId=spotify:${id}`);

@@ -19,7 +19,7 @@ const createAuth = () => {
 			auth = getAuth($app);
 
 			if (PUBLIC_FIREBASE_USE_EMULATORS) {
-				connectAuthEmulator(auth, 'http://localhost:9099');
+				connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
 			}
 
 			set(auth);
