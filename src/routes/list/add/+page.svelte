@@ -275,7 +275,7 @@
 								{item.name}
 							</span>
 							{#each item.metadataParts as metadataPart}
-								<span>{metadataPart}</span>
+								<span class="break-all">{metadataPart}</span>
 							{/each}
 						</div>
 					</div>
