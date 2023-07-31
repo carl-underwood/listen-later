@@ -1,5 +1,8 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
+import { runWith } from 'firebase-functions/v1';
 import { defineString } from 'firebase-functions/params';
+import { initializeApp } from 'firebase-admin/app';
+import { getFirestore } from 'firebase-admin/firestore';
 import { getAccessToken, search as spotifySearch, getItems } from './spotify';
 import { mapToSearchResults, mapToItemMetadata } from './mapping';
 import { itemTypes } from '../../src/lib/types/ItemType';
@@ -11,6 +14,9 @@ const SPOTIFY_CLIENT_SECRET = defineString('SPOTIFY_CLIENT_SECRET');
 
 const MINIMUM_SEARCH_QUERY_LENGTH = 3;
 const MAXIMUM_METADATA_ITEM_IDS = 50;
+
+initializeApp();
+const db = getFirestore();
 
 export const search = onCall({ enforceAppCheck: true, region: 'europe-west1' }, async (request) => {
 	if (!request.auth) {
@@ -76,3 +82,16 @@ export const getSpotifyMetadata = onCall(
 		return mapToItemMetadata(itemType, spotifyResponse);
 	}
 );
+
+export const onUserDeleted = runWith({ failurePolicy: true })
+	.region('europe-west1')
+	.auth.user()
+	.onDelete(async (user) => {
+		const itemDocuments = await db.collection(`users/${user.uid}/items`).listDocuments();
+
+		for (const itemDocument of itemDocuments) {
+			await itemDocument.delete();
+		}
+
+		await db.doc(`users/${user.uid}`).delete();
+	});

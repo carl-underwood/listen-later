@@ -23,11 +23,6 @@ module.exports = {
 	],
 	plugins: ['@typescript-eslint', 'import'],
 	rules: {
-		'import/no-unresolved': [
-			'error',
-			{
-				ignore: ['^firebase-functions/.+', 'needle']
-			}
-		]
+		'import/no-unresolved': ['off']
 	}
 };
