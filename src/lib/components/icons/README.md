@@ -19,6 +19,10 @@ Note that the following classes have been removed, as these were overriding them
 - [trash-bin](trash-bin.svelte)
 - [user-settings](user-settings.svelte)
 
-## [Google]
+## Google
 
 The Google icon for the Sign in with Google button was retrieved from the button on <https://developers.google.com/identity/gsi/web/guides/overview?authuser=0>.
+
+## Apple
+
+The Apple icon for the Sign in with Apple button was retrieved from <https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg>.
