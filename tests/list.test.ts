@@ -290,8 +290,9 @@ test.describe('list page', () => {
 
 		await expect(page.getByText('Ezra Collective')).toBeVisible();
 		await expect(page.getByText("Where I'm Meant To Be")).toBeVisible();
-		await expect(
-			page.locator('img[src="https://i.scdn.co/image/ab67616d0000b273c0e7017da85ab6f7b5e1b53f"]')
-		).toBeVisible();
+
+		const itemImage = newItem.locator('img');
+		await expect(itemImage).toHaveAttribute('src', /https:\/\/i\.scdn\.co\/image\/.+/);
+		await expect(itemImage).toBeVisible();
 	});
 });

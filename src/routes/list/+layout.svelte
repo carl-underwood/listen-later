@@ -6,6 +6,7 @@
 	import Loading from '$lib/components/Loading.svelte';
 	import type { AuthError } from 'firebase/auth';
 	import Google from '$lib/components/icons/Google.svelte';
+	import Apple from '$lib/components/icons/Apple.svelte';
 
 	let isSignInWithEmailLinkChecked = false;
 	let showEmailForm = false;
@@ -111,6 +112,20 @@
 		});
 	};
 
+	const signInWithApple = async () => {
+		if (!$auth) {
+			return;
+		}
+
+		await loading.whileAwaiting(async () => {
+			const { OAuthProvider, signInWithRedirect } = await import('firebase/auth');
+
+			const provider = new OAuthProvider('apple.com');
+
+			await signInWithRedirect($auth, provider);
+		});
+	};
+
 	onDestroy(authUnsubscribe);
 </script>
 
@@ -182,6 +197,14 @@
 				>
 					<Google classes="w-6 h-6" />
 					<span>Sign in with Google</span>
+				</button>
+				<button
+					disabled={$loading}
+					class="btn bg-surface-900-50-token text-surface-50-900-token flex gap-2"
+					on:click={signInWithApple}
+				>
+					<Apple classes="w-6 h-6" />
+					<span>Sign in with Apple</span>
 				</button>
 			{/if}
 		</div>
