@@ -12,7 +12,7 @@
 		modalStore
 	} from '@skeletonlabs/skeleton';
 	import TrashBin from './icons/trash-bin.svelte';
-	import DeleteModal from './DeleteModal.svelte';
+	import DeleteItemModal from './DeleteItemModal.svelte';
 	import type Item from '$lib/types/Item';
 
 	export let item: Item;
@@ -34,7 +34,7 @@
 
 	const deleteItem = (item: Item) => {
 		const modalComponent: ModalComponent = {
-			ref: DeleteModal,
+			ref: DeleteItemModal,
 			props: { item }
 		};
 

@@ -39,7 +39,7 @@
 		<Plus />
 		<span class="sr-only">Add item</span>
 	</a>
-	<div class="my-5">
+	<div class="mt-5 mb-1">
 		{#if !$items.length}
 			<span class="block text-center mx-4" transition:slideWithPrefersReducedMotion>
 				Nothing here yet! Use the button above to add an item 👆

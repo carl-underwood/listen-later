@@ -235,11 +235,11 @@
 	</form>
 </div>
 
-<div aria-live="assertive" class="mb-4">
+<div aria-live="assertive">
 	{#if searching}
 		<Loading />
 	{:else if !filteredResults.length}
-		<div class="mx-4 text-center">
+		<div class="m-4 text-center">
 			{#if lastSearchQuery}
 				<span>Nothing found</span>
 				<span>
@@ -288,7 +288,7 @@
 	{/if}
 </div>
 
-<div class="sticky bottom-0 p-4 flex justify-center gap-4 bg-surface-50-900-token">
+<div class="sticky bottom-0 -mb-4 p-4 flex justify-center gap-4 bg-surface-50-900-token">
 	<button
 		class="btn bg-surface-900-50-token text-surface-50-900-token"
 		type="submit"

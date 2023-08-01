@@ -78,12 +78,10 @@
 
 			const { sendSignInLinkToEmail } = await import('firebase/auth');
 
-			await loading.whileAwaiting(() =>
-				sendSignInLinkToEmail($auth, email, {
-					url: window.location.href,
-					handleCodeInApp: true
-				})
-			);
+			await sendSignInLinkToEmail($auth, email, {
+				url: window.location.href,
+				handleCodeInApp: true
+			});
 
 			window.localStorage.setItem('emailForSignIn', email);
 			showEmailConfirmation = true;
@@ -129,11 +127,11 @@
 	onDestroy(authUnsubscribe);
 </script>
 
-<div class="max-w-2xl mx-auto" aria-live="polite">
+<div class="max-w-2xl mx-auto py-4" aria-live="polite">
 	{#if $user === undefined}
 		<Loading />
 	{:else if $user === null}
-		<div class="px-4 pb-4 flex flex-col gap-4 items-center text-center">
+		<div class="px-4 flex flex-col gap-4 items-center text-center">
 			{#if showEmailConfirmation}
 				Email sent, please check your inbox for a sign in link
 			{:else if showEmailForm}
@@ -165,11 +163,19 @@
 					</small>
 
 					<div class="flex flex-wrap gap-4 justify-center">
-						<button class="btn bg-surface-900-50-token text-surface-50-900-token">
+						<button
+							class="btn bg-surface-900-50-token text-surface-50-900-token"
+							disabled={$loading}
+						>
 							{!confirmingEmailForSignIn ? 'Send sign in link' : 'Sign in'}
 						</button>
 						{#if !confirmingEmailForSignIn}
-							<button class="btn variant-soft" type="button" on:click={resetSignInState}>
+							<button
+								class="btn variant-soft"
+								type="button"
+								disabled={$loading}
+								on:click={resetSignInState}
+							>
 								Cancel
 							</button>
 						{/if}
