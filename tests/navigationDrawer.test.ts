@@ -45,7 +45,7 @@ test.describe('navigation drawer', () => {
 
 		const settingsNavigationItem = page.getByRole('link', { name: 'Settings' });
 		await expect(settingsNavigationItem).toBeVisible();
-		await expect(settingsNavigationItem).toHaveAttribute('href', '/settings');
+		await expect(settingsNavigationItem).toHaveAttribute('href', '/list/settings');
 
 		const signOutButton = page.getByRole('button', { name: 'Sign out' });
 		await expect(signOutButton).toBeVisible();

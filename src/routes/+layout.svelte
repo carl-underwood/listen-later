@@ -24,6 +24,9 @@
 		$page;
 		drawerStore.close();
 	}
+
+	const slideWithPrefersReducedMotion = (node: Element) =>
+		slide(node, { duration: $prefersReducedMotion ? 0 : undefined });
 </script>
 
 <AppBar background="bg-transparent" slotTrail="place-content-end">
@@ -82,7 +85,7 @@
 						<svelte:fragment>GitHub</svelte:fragment>
 					</NavMenuItem>
 					{#if $user}
-						<NavMenuItem href="/settings" transition={slide}>
+						<NavMenuItem href="/list/settings" transition={slideWithPrefersReducedMotion}>
 							<UserSettings slot="icon" />
 							<svelte:fragment>Settings</svelte:fragment>
 						</NavMenuItem>
@@ -95,7 +98,7 @@
 						on:click={() => loading.whileAwaiting(auth.signOut)}
 						disabled={$loading}
 						class="btn variant-filled-error btn-2xl"
-						transition:slide
+						transition:slideWithPrefersReducedMotion
 					>
 						Sign out
 					</button>
@@ -111,7 +114,7 @@
 
 <slot />
 
-<Modal />
+<Modal duration={$prefersReducedMotion ? 0 : undefined} />
 
 <style>
 	#navigation-drawer-inner {

@@ -20,6 +20,9 @@
 			duration: 800
 		});
 	}
+
+	const slideWithPrefersReducedMotion = (node: Element) =>
+		slide(node, { duration: $prefersReducedMotion ? 0 : undefined });
 </script>
 
 {#if $items === undefined}
@@ -36,12 +39,9 @@
 		<Plus />
 		<span class="sr-only">Add item</span>
 	</a>
-	<div class="my-5">
+	<div class="mt-5 mb-1">
 		{#if !$items.length}
-			<span
-				class="block text-center mx-4"
-				transition:slide={{ duration: $prefersReducedMotion ? 0 : undefined }}
-			>
+			<span class="block text-center mx-4" transition:slideWithPrefersReducedMotion>
 				Nothing here yet! Use the button above to add an item 👆
 			</span>
 		{/if}
@@ -49,7 +49,7 @@
 			{#each $items as item (item.id)}
 				<div
 					bind:this={accordionItems[item.id]}
-					transition:slide={{ duration: $prefersReducedMotion ? 0 : undefined }}
+					transition:slideWithPrefersReducedMotion
 					class="border-surface-900-50-token ring-4 ring-surface-900-50-token mt-1"
 				>
 					{#if item.service === 'spotify'}
