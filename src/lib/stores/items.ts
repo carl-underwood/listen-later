@@ -17,7 +17,7 @@ import { user } from './user';
 export function createItems() {
 	let items: Item[] | undefined = undefined;
 
-	const { subscribe } = derived<[Readable<Firestore>, Readable<User | null>], Item[]>(
+	const { subscribe } = derived<[Readable<Firestore>, Readable<User | null>], Item[] | undefined>(
 		[firestore, user],
 		([$firestore, $user], set) => {
 			let unsubscribe = () => {
@@ -25,12 +25,11 @@ export function createItems() {
 			};
 
 			if (!$firestore || !$user || !browser) {
-				set([]);
+				set(undefined);
 				return unsubscribe;
 			}
 
 			const q = query(collection($firestore, `users/${$user.uid}/items`));
-			// q = query(q, orderBy('addedAtUtc', 'desc'));
 
 			unsubscribe = onSnapshot(q, (snapshot) => {
 				items = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id } as Item));
