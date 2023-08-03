@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page, type Locator } from '@playwright/test';
 import {
 	signIn,
 	getVisibleAddItemButton,
@@ -19,92 +19,19 @@ test.describe('list page', () => {
 	});
 
 	test('allows an item to be added when signed in', async ({ page }) => {
-		await page.goto('/list');
-		await signIn(page);
-
-		await clickAddItemButton(page);
-
-		const id = '6cQzmvrbnCM1d51XOodmPR';
-		await fillSearchInput(page, 'Victory Dance');
-
-		const options = page.getByRole('option');
-		await expect(options).toHaveCount(0);
-
-		await clickSubmitSearchButton(page);
-
-		await expect(options).not.toHaveCount(0);
-
-		await selectOptionWithId(page, id);
-
-		const addButton = await getVisibleAddButton(page);
-		await addButton.click();
-
-		await page.waitForURL(`/list?itemId=spotify:${id}`);
-
-		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
-		await expect(newItem).toBeVisible();
-		await expect(newItem).toHaveAttribute('aria-expanded', 'true');
+		await signInAddItemAndVerify(page, 'Victory Dance', '6cQzmvrbnCM1d51XOodmPR');
 	});
 
 	test('allows an item to be added when signed in directly to the add page', async ({ page }) => {
 		await page.goto('/list/add');
 		await signIn(page);
-
-		const id = '6cQzmvrbnCM1d51XOodmPR';
-		await fillSearchInput(page, 'Victory Dance');
-
-		const options = page.getByRole('option');
-		await expect(options).toHaveCount(0);
-
-		await clickSubmitSearchButton(page);
-
-		await expect(options).not.toHaveCount(0);
-
-		await selectOptionWithId(page, id);
-
-		const addButton = await getVisibleAddButton(page);
-		await addButton.click();
-
-		await page.waitForURL(`/list?itemId=spotify:${id}`);
-
-		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
-		await expect(newItem).toBeVisible();
-		await expect(newItem).toHaveAttribute('aria-expanded', 'true');
+		await searchForItemAddAndVerify(page, 'Victory Dance', '6cQzmvrbnCM1d51XOodmPR');
 	});
 
 	test('allows an item to be deleted when signed in', async ({ page }) => {
-		await page.goto('/list');
-		await signIn(page);
-
-		await clickAddItemButton(page);
-
-		const id = '6cQzmvrbnCM1d51XOodmPR';
-		await fillSearchInput(page, 'Victory Dance');
-
-		const options = page.getByRole('option');
-		await expect(options).toHaveCount(0);
-
-		await clickSubmitSearchButton(page);
-
-		await expect(options).not.toHaveCount(0);
-
-		await selectOptionWithId(page, id);
-
-		const addButton = await getVisibleAddButton(page);
-		await addButton.click();
-
-		await page.waitForURL(`/list?itemId=spotify:${id}`);
-
-		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
-		await expect(newItem).toBeVisible();
-		await expect(newItem).toHaveAttribute('aria-expanded', 'true');
-		await newItem.click();
-		await expect(newItem).toHaveAttribute('aria-expanded', 'false');
+		const newItem = await signInAddItemAndVerify(page, 'Victory Dance', '6cQzmvrbnCM1d51XOodmPR');
 
 		const newItemDeleteButton = page.getByRole('button', { name: 'Delete Victory Dance' });
-		await expect(newItemDeleteButton).not.toBeVisible();
-
-		await newItem.click();
 		await expect(newItemDeleteButton).toBeVisible();
 		await newItemDeleteButton.click();
 
@@ -121,107 +48,36 @@ test.describe('list page', () => {
 	});
 
 	test('prevents an item added again from overwriting the existing item', async ({ page }) => {
-		await page.goto('/list');
-		await signIn(page);
-
-		await clickAddItemButton(page);
-
+		const name = 'Victory Dance';
 		const id = '6cQzmvrbnCM1d51XOodmPR';
-		await fillSearchInput(page, 'Victory Dance');
 
-		const firstSearchOptions = page.getByRole('option');
-		await expect(firstSearchOptions).toHaveCount(0);
-
-		await clickSubmitSearchButton(page);
-
-		await expect(firstSearchOptions).not.toHaveCount(0);
-
-		await selectOptionWithId(page, id);
-
-		const addButton = await getVisibleAddButton(page);
-		await addButton.click();
-
-		await page.waitForURL(`/list?itemId=spotify:${id}`);
-
-		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
-		await expect(newItem).toBeVisible();
-		await expect(newItem).toHaveAttribute('aria-expanded', 'true');
+		await signInAddItemAndVerify(page, name, id);
 
 		const addedAt = page.getByText('Added less than a minute ago');
 		await expect(addedAt).toBeVisible();
 		const addedAtUtc = await addedAt.getAttribute('data-added-at-utc');
 
-		await clickAddItemButton(page);
+		await goToSearchPageAddItemAndVerify(page, name, id);
 
-		await fillSearchInput(page, 'Victory Dance');
-
-		const secondSearchOptions = page.getByRole('option');
-		await expect(secondSearchOptions).toHaveCount(0);
-
-		await clickSubmitSearchButton(page);
-
-		await expect(secondSearchOptions).not.toHaveCount(0);
-
-		await selectOptionWithId(page, id);
-
-		await addButton.click();
-
-		await page.waitForURL(`/list?itemId=spotify:${id}`);
-
-		await expect(newItem).toHaveCount(1);
-		await expect(newItem).toBeVisible();
-		await expect(newItem).toHaveAttribute('aria-expanded', 'true');
 		await expect(addedAt).toBeVisible();
 		expect(await addedAt.getAttribute('data-added-at-utc')).toBe(addedAtUtc);
 	});
 
 	test('expands the newly added item', async ({ page }) => {
-		await page.goto('/list');
-		await signIn(page);
+		await signInAddItemAndVerify(page, 'Ezra Collective', '5BRAUN0yN8557PLRZIr02W');
 
-		await clickAddItemButton(page);
-
-		await fillSearchInput(page, 'Ezra Collective');
-		await clickSubmitSearchButton(page);
-		await page.getByRole('option').first().click();
-		const addButton = await getVisibleAddButton(page);
-		await addButton.click();
-
-		await page.waitForURL(/\/list\?itemId=.+/);
-		await clickAddItemButton(page);
-
-		const id = '6cQzmvrbnCM1d51XOodmPR';
-		await fillSearchInput(page, 'Victory Dance');
-		await clickSubmitSearchButton(page);
-		await selectOptionWithId(page, id);
-		await addButton.click();
-
-		await page.waitForURL(`/list?itemId=spotify:${id}`);
-
-		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
+		const newItem = await goToSearchPageAddItemAndVerify(
+			page,
+			'Victory Dance',
+			'6cQzmvrbnCM1d51XOodmPR'
+		);
 		await expect(newItem).toBeVisible();
 		await expect(newItem).toHaveAttribute('aria-expanded', 'true');
 	});
 
 	test('shows a button to open the item in Spotify', async ({ page }) => {
-		await page.goto('/list');
-		await signIn(page);
-
-		await clickAddItemButton(page);
-
 		const id = '6cQzmvrbnCM1d51XOodmPR';
-		await fillSearchInput(page, 'Victory Dance');
-		await clickSubmitSearchButton(page);
-		await selectOptionWithId(page, id);
-
-		const addButton = await getVisibleAddButton(page);
-		await addButton.click();
-
-		await page.waitForURL(`/list?itemId=spotify:${id}`);
-
-		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
-		await expect(newItem).toBeVisible();
-		await expect(newItem).toHaveAttribute('aria-expanded', 'true');
+		await signInAddItemAndVerify(page, 'Victory Dance', id);
 
 		const openInSpotifyLink = page.getByRole('link', { name: 'Open in Spotify' });
 		await expect(openInSpotifyLink).toBeVisible();
@@ -232,24 +88,7 @@ test.describe('list page', () => {
 	});
 
 	test('allows items to be marked as listened to', async ({ page }) => {
-		await page.goto('/list');
-		await signIn(page);
-
-		await clickAddItemButton(page);
-
-		const id = '6cQzmvrbnCM1d51XOodmPR';
-		await fillSearchInput(page, 'Victory Dance');
-		await clickSubmitSearchButton(page);
-		await selectOptionWithId(page, id);
-
-		const addButton = await getVisibleAddButton(page);
-		await addButton.click();
-
-		await page.waitForURL(`/list?itemId=spotify:${id}`);
-
-		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
-		await expect(newItem).toBeVisible();
-		await expect(newItem).toHaveAttribute('aria-expanded', 'true');
+		const newItem = await signInAddItemAndVerify(page, 'Victory Dance', '6cQzmvrbnCM1d51XOodmPR');
 
 		const listenedSwitch = page.getByRole('switch', { name: 'Listened' });
 		const listenedSwitchUnderlyingCheckbox = listenedSwitch.locator("input[type='checkbox']");
@@ -268,31 +107,110 @@ test.describe('list page', () => {
 		await expect(listenedSwitch).toBeChecked();
 	});
 
-	test('shows metadata for Spotify items', async ({ page }) => {
-		await page.goto('/list');
-		await signIn(page);
+	test('shows metadata for song Spotify items', async ({ page }) => {
+		await signInAddItemAndExpectMetadata(
+			page,
+			'Victory Dance',
+			'5Nu4AvrNgIx42nWGbteHLh',
+			async (newItem) => {
+				await expect(newItem.getByText('Song')).toBeVisible();
+				await expect(newItem.getByText('Ezra Collective')).toBeVisible();
+				await expect(newItem.getByText("Where I'm Meant To Be")).toBeVisible();
+			}
+		);
+	});
 
-		await clickAddItemButton(page);
+	test('shows metadata for album Spotify items', async ({ page }) => {
+		await signInAddItemAndExpectMetadata(
+			page,
+			'Victory Dance',
+			'7x5W5TIWobdV7SeF6kFtn9',
+			async (newItem) => {
+				await expect(newItem.getByText('Single')).toBeVisible();
+				await expect(newItem.getByText('Ezra Collective')).toBeVisible();
+			}
+		);
+	});
 
-		const id = '5Nu4AvrNgIx42nWGbteHLh';
-		await fillSearchInput(page, 'Victory Dance');
-		await clickSubmitSearchButton(page);
-		await selectOptionWithId(page, id);
+	test('shows metadata for artist Spotify items', async ({ page }) => {
+		await signInAddItemAndExpectMetadata(
+			page,
+			'Ezra Collective',
+			'5BRAUN0yN8557PLRZIr02W',
+			async (newItem) => {
+				await expect(newItem.getByText('Artist')).toBeVisible();
+			}
+		);
+	});
 
-		const addButton = await getVisibleAddButton(page);
-		await addButton.click();
+	test('shows metadata for episode Spotify items', async ({ page }) => {
+		await signInAddItemAndExpectMetadata(
+			page,
+			'Guz Khan & generational jazz rap',
+			'0qUMjiIekImih3fAaF8B0H',
+			async (newItem) => {
+				await expect(newItem.getByText('Episode')).toBeVisible();
+				await expect(newItem.getByText("James Acaster's Perfect Sounds")).toBeVisible();
+			}
+		);
+	});
 
-		await page.waitForURL(`/list?itemId=spotify:${id}`);
-
-		const newItem = page.getByRole('button', { name: /^Victory Dance/ });
-		await expect(newItem).toBeVisible();
-		await expect(newItem).toHaveAttribute('aria-expanded', 'true');
-
-		await expect(page.getByText('Ezra Collective')).toBeVisible();
-		await expect(page.getByText("Where I'm Meant To Be")).toBeVisible();
-
-		const itemImage = newItem.locator('img');
-		await expect(itemImage).toHaveAttribute('src', /https:\/\/i\.scdn\.co\/image\/.+/);
-		await expect(itemImage).toBeVisible();
+	test('shows metadata for podcast Spotify items', async ({ page }) => {
+		await signInAddItemAndExpectMetadata(
+			page,
+			"James Acaster's Perfect Sounds",
+			'5zR7VUlNzu7bHtEUnC2otn',
+			async (newItem) => {
+				await expect(newItem.getByText('Podcast')).toBeVisible();
+			}
+		);
 	});
 });
+
+const goToSearchPageAddItemAndVerify = async (page: Page, name: string, id: string) => {
+	await clickAddItemButton(page);
+
+	return await searchForItemAddAndVerify(page, name, id);
+};
+
+const searchForItemAddAndVerify = async (page: Page, name: string, id: string) => {
+	await fillSearchInput(page, name);
+	await clickSubmitSearchButton(page);
+	await selectOptionWithId(page, id);
+
+	const addButton = await getVisibleAddButton(page);
+	await addButton.click();
+
+	await page.waitForURL(`/list?itemId=spotify:${id}`);
+
+	const newItem = page.getByRole('button', {
+		name,
+		expanded: true
+	});
+
+	await expect(newItem).toBeVisible();
+
+	return newItem;
+};
+
+const signInAddItemAndVerify = async (page: Page, name: string, id: string) => {
+	await page.goto('/list');
+	await signIn(page);
+
+	return await goToSearchPageAddItemAndVerify(page, name, id);
+};
+
+const signInAddItemAndExpectMetadata = async (
+	page: Page,
+	name: string,
+	id: string,
+	expectMetadata: (newItem: Locator) => Promise<void>
+) => {
+	const newItem = await signInAddItemAndVerify(page, name, id);
+
+	await expectMetadata(newItem);
+
+	const itemImage = newItem.locator('img');
+	await expect(itemImage).toHaveAttribute('src', /https:\/\/i\.scdn\.co\/image\/.+/);
+	await expect(itemImage).toBeVisible();
+};
