@@ -24,6 +24,7 @@
 	let searchResults: SearchResult[] = [];
 	let lastSearchQuery = '';
 	let searchQuery = '';
+	let searchErrored = false;
 	let searching = false;
 	let showSearchError = false;
 	let showAddError = false;
@@ -109,11 +110,17 @@
 
 		await loading.whileAwaiting(async () => {
 			searchResults = [];
+			lastSearchQuery = '';
+			searchErrored = false;
 			selectedItemId = '';
 			searching = true;
 
-			searchResults = await search(searchQuery);
-			lastSearchQuery = searchQuery;
+			try {
+				searchResults = await search(searchQuery);
+				lastSearchQuery = searchQuery;
+			} catch {
+				searchErrored = true;
+			}
 
 			searching = false;
 		});
@@ -240,7 +247,11 @@
 		<Loading />
 	{:else if !filteredResults.length}
 		<div class="m-4 text-center">
-			{#if lastSearchQuery}
+			{#if searchErrored}
+				<span role="alert" class="text-error-600-300-token">
+					There was an error when fetching search results, please try again
+				</span>
+			{:else if lastSearchQuery}
 				<span>Nothing found</span>
 				<span>
 					Please try {searchResults.length
