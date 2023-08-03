@@ -4,9 +4,9 @@ const millisecondsFromSeconds = (inputSeconds: number) => inputSeconds * 1000;
 
 export default defineConfig({
 	expect: {
-		// Increased to 10 seconds to account for functions emulator
+		// Increased to 15 seconds to account for functions emulator
 		// cold start as well as hitting Spotify for real.
-		timeout: millisecondsFromSeconds(10)
+		timeout: millisecondsFromSeconds(15)
 	},
 	forbidOnly: !!process.env.CI,
 	fullyParallel: true,

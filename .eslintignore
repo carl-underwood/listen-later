@@ -14,3 +14,7 @@ yarn.lock
 
 # Functions
 /functions
+
+# Test results
+test-results
+playwright-report
