@@ -1,5 +1,7 @@
 # Listen Later
 
+![Listen Later Logo](./static/mstile-144x144.png)
+
 A web application for storing things to listen to later on Spotify. Built using SvelteKit & Firebase.
 
 ## Dependencies
@@ -52,3 +54,9 @@ The `.github/workflows` directory contains the GitHub Actions workflows that are
 `build-and-test.yml` is a reusable workflow that's run on PR as well as on merge. It lints, builds and tests the site and functions against the Firebase Emulators. The [Playwright container](https://playwright.dev/docs/ci#via-containers) `mcr.microsoft.com/playwright:v1.35.0-jammy` is used to avoid the overhead of installing browsers and dependencies on each run. Since this container doesn't have Java installed (which is required for the Firebase Emulators to run) the `actions/setup-java@v3` step is used to install Java.
 
 `merge.yml` first runs the job from `build-and-test.yml`, before deploying the site to Firebase and running smoke tests against the deployed site.
+
+## Favicons
+
+The favicons were generated using [https://realfavicongenerator.net/](https://realfavicongenerator.net/) from the SVG logos in [listen-later-logo-bordered.svg](./listen-later-logo-bordered.svg) and [listen-later-logo.svg](./listen-later-logo.svg).
+
+These logos were created using [Boxy SVG](https://boxy-svg.com/) and were based on Material Symbols icons [More Time](https://fonts.google.com/icons?selected=Material+Symbols+Outlined:more_time:FILL@0;wght@400;GRAD@0;opsz@48&icon.query=clock) and [Headphones](https://fonts.google.com/icons?selected=Material+Symbols+Outlined:headphones:FILL@1;wght@400;GRAD@0;opsz@48&icon.query=music&icon.set=Material+Symbols).

@@ -21,7 +21,7 @@ export function createSpotifyItemMetadata() {
 	let spotifyItemMetadata: SpotifyItemMetadata = {};
 
 	const { subscribe } = derived<
-		[Readable<Item[]>, Readable<AppCheck>, Readable<Functions>],
+		[Readable<Item[] | undefined>, Readable<AppCheck>, Readable<Functions>],
 		SpotifyItemMetadata
 	>(
 		[items, appCheck, functions],
