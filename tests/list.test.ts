@@ -1,18 +1,18 @@
-import { expect, test, type Page, type Locator } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import {
-	signIn,
+	signInAnonymously,
 	getVisibleAddItemButton,
-	clickAddItemButton,
-	fillSearchInput,
-	clickSubmitSearchButton,
-	selectOptionWithId,
-	getVisibleAddButton
-} from './helpers/list';
+	signInAddItemAndExpectMetadata,
+	goToSearchPageAddItemAndVerify,
+	searchForItemAddAndVerify,
+	signInAddItemAndVerify,
+	goToListPage
+} from './helpers/shared';
 
 test.describe('list page', () => {
 	test('shows a button to add an item when signed in', async ({ page }) => {
-		await page.goto('/list');
-		await signIn(page);
+		await goToListPage(page);
+		await signInAnonymously(page);
 
 		const addItemButton = await getVisibleAddItemButton(page);
 		await expect(addItemButton).toHaveAttribute('href', '/list/add');
@@ -24,7 +24,7 @@ test.describe('list page', () => {
 
 	test('allows an item to be added when signed in directly to the add page', async ({ page }) => {
 		await page.goto('/list/add');
-		await signIn(page);
+		await signInAnonymously(page);
 		await searchForItemAddAndVerify(page, 'Victory Dance', '6cQzmvrbnCM1d51XOodmPR');
 	});
 
@@ -166,51 +166,3 @@ test.describe('list page', () => {
 		);
 	});
 });
-
-const goToSearchPageAddItemAndVerify = async (page: Page, name: string, id: string) => {
-	await clickAddItemButton(page);
-
-	return await searchForItemAddAndVerify(page, name, id);
-};
-
-const searchForItemAddAndVerify = async (page: Page, name: string, id: string) => {
-	await fillSearchInput(page, name);
-	await clickSubmitSearchButton(page);
-	await selectOptionWithId(page, id);
-
-	const addButton = await getVisibleAddButton(page);
-	await addButton.click();
-
-	await page.waitForURL(`/list?itemId=spotify:${id}`);
-
-	const newItem = page.getByRole('button', {
-		name,
-		expanded: true
-	});
-
-	await expect(newItem).toBeVisible();
-
-	return newItem;
-};
-
-const signInAddItemAndVerify = async (page: Page, name: string, id: string) => {
-	await page.goto('/list');
-	await signIn(page);
-
-	return await goToSearchPageAddItemAndVerify(page, name, id);
-};
-
-const signInAddItemAndExpectMetadata = async (
-	page: Page,
-	name: string,
-	id: string,
-	expectMetadata: (newItem: Locator) => Promise<void>
-) => {
-	const newItem = await signInAddItemAndVerify(page, name, id);
-
-	await expectMetadata(newItem);
-
-	const itemImage = newItem.locator('img');
-	await expect(itemImage).toHaveAttribute('src', /https:\/\/i\.scdn\.co\/image\/.+/);
-	await expect(itemImage).toBeVisible();
-};

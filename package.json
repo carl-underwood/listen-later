@@ -15,7 +15,7 @@
 		"kill-emulator-ports": "npx kill-port 4000 9099 5001 8080 5000"
 	},
 	"devDependencies": {
-		"@playwright/test": "^1.28.1",
+		"@playwright/test": "^1.36.2",
 		"@skeletonlabs/skeleton": "^1.9.0",
 		"@sveltejs/adapter-auto": "^2.0.0",
 		"@sveltejs/adapter-static": "^2.0.2",

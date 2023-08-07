@@ -5,8 +5,9 @@
 	import { user } from '$lib/stores/user';
 	import { auth } from '$lib/stores/auth';
 	import type { AuthError, ProviderId } from 'firebase/auth';
-	import Google from '$lib/components/icons/Google.svelte';
-	import Apple from '$lib/components/icons/Apple.svelte';
+	import SignInWithGoogleButton from './SignInWithGoogleButton.svelte';
+	import SignInWithAppleButton from './SignInWithAppleButton.svelte';
+	import { onMount } from 'svelte';
 
 	let promptForReauthentication = false;
 	let showEmailConfirmation = false;
@@ -14,26 +15,7 @@
 
 	const confirmDelete = () =>
 		loading.whileAwaiting(async () => {
-			const {
-				AuthErrorCodes,
-				EmailAuthProvider,
-				isSignInWithEmailLink,
-				ProviderId,
-				reauthenticateWithCredential
-			} = await import('firebase/auth');
-
-			providerId = ProviderId;
-
-			if (isSignInWithEmailLink($auth, window.location.href)) {
-				/* eslint-disable @typescript-eslint/no-non-null-assertion */
-				const credential = EmailAuthProvider.credentialWithLink(
-					$user!.email!,
-					window.location.href
-				);
-
-				await reauthenticateWithCredential($user!, credential);
-				/* eslint-enable @typescript-eslint/no-non-null-assertion */
-			}
+			const { AuthErrorCodes } = await import('firebase/auth');
 
 			if (
 				(window as typeof window & { FORCE_ACCOUNT_DELETION_REAUTHENTICATION?: boolean })
@@ -94,6 +76,41 @@
 		});
 
 	const closeModal = () => modalStore.close();
+
+	onMount(() =>
+		loading.whileAwaiting(async () => {
+			const {
+				AuthErrorCodes,
+				EmailAuthProvider,
+				isSignInWithEmailLink,
+				ProviderId,
+				reauthenticateWithCredential
+			} = await import('firebase/auth');
+
+			providerId = ProviderId;
+
+			try {
+				if (isSignInWithEmailLink($auth, window.location.href)) {
+					/* eslint-disable @typescript-eslint/no-non-null-assertion */
+					const credential = EmailAuthProvider.credentialWithLink(
+						$user!.email!,
+						window.location.href
+					);
+
+					await reauthenticateWithCredential($user!, credential);
+					/* eslint-enable @typescript-eslint/no-non-null-assertion */
+
+					await goto('/list/settings?deleteAccount=true', { replaceState: true });
+				}
+			} catch (error) {
+				if ((error as AuthError).code === AuthErrorCodes.INVALID_EMAIL) {
+					return;
+				}
+
+				throw error;
+			}
+		})
+	);
 </script>
 
 <div class="card p-4" aria-live="polite">
@@ -127,25 +144,11 @@
 						</button>
 					{/if}
 					{#if $user?.providerData.find((provider) => provider.providerId === providerId.GOOGLE)}
-						<button
-							disabled={$loading}
-							class="btn bg-surface-900-50-token text-surface-50-900-token flex gap-2"
-							on:click={signInWithGoogle}
-						>
-							<Google classes="w-6 h-6" />
-							<span>Sign in with Google</span>
-						</button>
+						<SignInWithGoogleButton on:click={signInWithGoogle} />
 					{/if}
 
 					{#if $user?.providerData.find((provider) => provider.providerId === 'apple.com')}
-						<button
-							disabled={$loading}
-							class="btn bg-surface-900-50-token text-surface-50-900-token flex gap-2"
-							on:click={signInWithApple}
-						>
-							<Apple classes="w-6 h-6" />
-							<span>Sign in with Apple</span>
-						</button>
+						<SignInWithAppleButton on:click={signInWithApple} />
 					{/if}
 				</div>
 			{/if}

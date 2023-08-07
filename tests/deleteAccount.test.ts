@@ -1,35 +1,23 @@
 import { expect, test, type APIRequestContext, type Locator, type Page } from '@playwright/test';
 import { v4 as uuid } from 'uuid';
 import retreiveMostRecentOobCode from './helpers/retrieveMostRecentOobCode';
-import {
-	clickAddItemButton,
-	clickSubmitSearchButton,
-	fillSearchInput,
-	getVisibleAddButton,
-	selectOptionWithId
-} from './helpers/list';
+import { goToListPage, goToSearchPageAddItemAndVerify, signInAnonymously } from './helpers/shared';
 import { initializeApp } from 'firebase-admin/app';
-import { getAuth, type Auth, type UserRecord } from 'firebase-admin/auth';
+import { getAuth, type UserRecord } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
+import { skipTestOnWebkit } from './helpers/skipTestOnWebkit';
 
-let auth: Auth;
-let firestore: FirebaseFirestore.Firestore;
+process.env.FIREBASE_AUTH_EMULATOR_HOST = '127.0.0.1:9099';
+process.env.FIRESTORE_EMULATOR_HOST = '127.0.0.1:8080';
+initializeApp({ projectId: 'listen-later-cloud' });
+const auth = getAuth();
+const firestore = getFirestore();
 
 test.describe('settings page', () => {
-	test.beforeAll(() => {
-		process.env.FIREBASE_AUTH_EMULATOR_HOST = '127.0.0.1:9099';
-		process.env.FIRESTORE_EMULATOR_HOST = '127.0.0.1:8080';
-		initializeApp({ projectId: 'listen-later-cloud' });
-		auth = getAuth();
-		firestore = getFirestore();
-	});
-
 	test('allows an anonymous account to be deleted', async ({ page }) => {
-		await page.goto('/list');
+		await goToListPage(page);
 
-		const signInButton = page.getByRole('button', { name: 'Sign in anonymously' });
-		await expect(signInButton).toBeVisible();
-		await signInButton.click();
+		const signInButton = await signInAnonymously(page);
 
 		await addSong(page);
 		await deleteAccount(page);
@@ -37,7 +25,7 @@ test.describe('settings page', () => {
 	});
 
 	test('allows an account using email to be deleted', async ({ page, request }) => {
-		await page.goto('/list');
+		await goToListPage(page);
 
 		const { email, signInButton, user } = await signInWithEmail(page, request);
 
@@ -53,12 +41,9 @@ test.describe('settings page', () => {
 		page,
 		browserName
 	}) => {
-		test.skip(
-			browserName === 'webkit',
-			"Cross-domain iframe from localhost:5000 to localhost:9099 (for auth emulator) doesn't work in webkit"
-		);
+		skipTestOnWebkit(browserName);
 
-		await page.goto('/list');
+		await goToListPage(page);
 
 		const { email, signInButton, user } = await signInWithGoogle(page);
 
@@ -74,12 +59,9 @@ test.describe('settings page', () => {
 		page,
 		browserName
 	}) => {
-		test.skip(
-			browserName === 'webkit',
-			"Cross-domain iframe from localhost:5000 to localhost:9099 (for auth emulator) doesn't work in webkit"
-		);
+		skipTestOnWebkit(browserName);
 
-		await page.goto('/list');
+		await goToListPage(page);
 
 		const { email, signInButton, user } = await signInWithApple(page);
 
@@ -95,7 +77,7 @@ test.describe('settings page', () => {
 		page,
 		request
 	}) => {
-		await page.goto('/list');
+		await goToListPage(page);
 
 		const { email, signInButton, user } = await signInWithEmail(page, request);
 
@@ -115,16 +97,55 @@ test.describe('settings page', () => {
 		await ensureUserItemsDeleted(user.uid);
 	});
 
+	test('allows an account using email to be deleted following reauthentication in a different browser context', async ({
+		browser,
+		request
+	}) => {
+		const firstContext = await browser.newContext();
+		const firstPage = await firstContext.newPage();
+
+		await goToListPage(firstPage);
+
+		const { email, user } = await signInWithEmail(firstPage, request);
+
+		await addSong(firstPage);
+		await ensureSongHasBeenAdded(user.uid);
+		await forceReauthenticationForAccountDeletion(firstPage);
+		await deleteAccount(firstPage);
+		await expectSendSignInLinkButtonAndClick(firstPage);
+
+		const reauthenticationOobCode = await retreiveMostRecentOobCode(email, request);
+
+		const secondContext = await browser.newContext();
+		const secondPage = await secondContext.newPage();
+		await secondPage.goto(reauthenticationOobCode.oobLink);
+
+		await expect(
+			secondPage.getByText('Please confirm the email that received the sign in link')
+		).toBeVisible();
+
+		const emailConfirmationInput = secondPage.getByLabel('Email');
+		await expect(emailConfirmationInput).toBeVisible();
+		await emailConfirmationInput.fill(email);
+
+		const signInButton = secondPage.getByRole('button', { name: 'Sign in' });
+		await expect(signInButton).toBeVisible();
+		await signInButton.click();
+
+		await expectAndConfirmDeletionConfirmation(secondPage);
+		const signInWithEmailButton = getSignInWithEmailButton(secondPage);
+		await ensureLoggedOutAndConfirmationModalClosed(secondPage, signInWithEmailButton);
+		await ensureUserAccountIsDeleted(email);
+		await ensureUserItemsDeleted(user.uid);
+	});
+
 	test('allows an account using Sign in with Google to be deleted following reauthentication', async ({
 		page,
 		browserName
 	}) => {
-		test.skip(
-			browserName === 'webkit',
-			"Cross-domain iframe from localhost:5000 to localhost:9099 (for auth emulator) doesn't work in webkit"
-		);
+		skipTestOnWebkit(browserName);
 
-		await page.goto('/list');
+		await goToListPage(page);
 
 		const { email, signInButton, user } = await signInWithGoogle(page);
 
@@ -143,12 +164,9 @@ test.describe('settings page', () => {
 		page,
 		browserName
 	}) => {
-		test.skip(
-			browserName === 'webkit',
-			"Cross-domain iframe from localhost:5000 to localhost:9099 (for auth emulator) doesn't work in webkit"
-		);
+		skipTestOnWebkit(browserName);
 
-		await page.goto('/list');
+		await goToListPage(page);
 
 		const { email, signInButton, user } = await signInWithApple(page);
 
@@ -174,8 +192,11 @@ const expectSendSignInLinkButtonAndClick = async (page: Page) => {
 	).toBeVisible();
 };
 
+const getSignInWithEmailButton = (page: Page) =>
+	page.getByRole('button', { name: 'Sign in with Email' });
+
 const signInWithEmail = async (page: Page, request: APIRequestContext) => {
-	const signInButton = page.getByRole('button', { name: 'Sign in with Email' });
+	const signInButton = getSignInWithEmailButton(page);
 	await expect(signInButton).toBeVisible();
 	await signInButton.click();
 
@@ -244,23 +265,9 @@ const ensureUserIsCreated = async (email: string) => {
 };
 
 const addSong = async (page: Page) => {
-	await expect(page.getByRole('heading', { name: 'List' })).toBeVisible();
-
-	await clickAddItemButton(page);
-
+	const name = 'Victory Dance';
 	const id = '5Nu4AvrNgIx42nWGbteHLh';
-	await fillSearchInput(page, 'Victory Dance');
-	await clickSubmitSearchButton(page);
-	await selectOptionWithId(page, id);
-
-	const addButton = await getVisibleAddButton(page);
-	await addButton.click();
-
-	await page.waitForURL(`/list?itemId=spotify:${id}`);
-
-	const newItem = page.getByRole('button', { name: /^Victory Dance/ });
-	await expect(newItem).toBeVisible();
-	await expect(newItem).toHaveAttribute('aria-expanded', 'true');
+	await goToSearchPageAddItemAndVerify(page, name, id);
 };
 
 const getDeletionConfirmationPrompt = (page: Page) =>

@@ -51,7 +51,7 @@ Unit tests may be run via `npm run test:unit`.
 
 The `.github/workflows` directory contains the GitHub Actions workflows that are run on PR & merge.
 
-`build-and-test.yml` is a reusable workflow that's run on PR as well as on merge. It lints, builds and tests the site and functions against the Firebase Emulators. The [Playwright container](https://playwright.dev/docs/ci#via-containers) `mcr.microsoft.com/playwright:v1.35.0-jammy` is used to avoid the overhead of installing browsers and dependencies on each run. Since this container doesn't have Java installed (which is required for the Firebase Emulators to run) the `actions/setup-java@v3` step is used to install Java.
+`build-and-test.yml` is a reusable workflow that's run on PR as well as on merge. It lints, builds and tests the site and functions against the Firebase Emulators. The [Playwright container](https://playwright.dev/docs/ci#via-containers) `mcr.microsoft.com/playwright:v1.36.2-jammy` is used to avoid the overhead of installing browsers and dependencies on each run. Since this container doesn't have Java installed (which is required for the Firebase Emulators to run) the `actions/setup-java@v3` step is used to install Java.
 
 `merge.yml` first runs the job from `build-and-test.yml`, before deploying the site to Firebase and running smoke tests against the deployed site.
 
