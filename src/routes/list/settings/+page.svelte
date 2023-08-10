@@ -2,13 +2,16 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import DeleteAccountModal from '$lib/components/DeleteAccountModal.svelte';
+	import PromoteAccountModal from '$lib/components/PromoteAccountModal.svelte';
 	import { type ModalSettings, modalStore } from '@skeletonlabs/skeleton';
 
 	$: if ($page.url.searchParams.get('deleteAccount') === 'true') {
-		showDeleteAccountModal();
+		showModal(deleteAccountModal);
+	} else if ($page.url.searchParams.get('promoteAccount') === 'true') {
+		showModal(promoteAccountModal);
 	}
 
-	$: if ($modalStore[0] !== deleteAccountModal) {
+	$: if ($modalStore[0] !== deleteAccountModal && $modalStore[0] !== promoteAccountModal) {
 		goto('/list/settings', { replaceState: true });
 	}
 
@@ -19,12 +22,21 @@
 		}
 	};
 
-	const deleteAccount = () => {
-		goto('/list/settings?deleteAccount=true', { replaceState: true });
+	const promoteAccountModal: ModalSettings = {
+		type: 'component',
+		component: {
+			ref: PromoteAccountModal
+		}
 	};
 
-	const showDeleteAccountModal = () => {
-		modalStore.trigger(deleteAccountModal);
+	const deleteAccount = () => goto('/list/settings?deleteAccount=true', { replaceState: true });
+
+	const showModal = (modalSettings: ModalSettings) => {
+		if ($modalStore[0]) {
+			return;
+		}
+
+		modalStore.trigger(modalSettings);
 	};
 </script>
 

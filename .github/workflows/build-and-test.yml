@@ -3,7 +3,11 @@ jobs:
   build_and_test:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.35.0-jammy
+      image: mcr.microsoft.com/playwright:v1.36.2-jammy
+    strategy:
+      fail-fast: false
+      matrix:
+        project: ['Android', 'Desktop Chrome', 'Desktop Safari', 'iOS']
     env:
       PUBLIC_FIREBASE_API_KEY: 'AIzaSyD3cNY62dZpsRtZmsU5Qn6LOGLUCjH7REk'
       PUBLIC_FIREBASE_AUTH_DOMAIN: 'listen-later-cloud.firebaseapp.com'
@@ -47,7 +51,7 @@ jobs:
           cat ./functions/.env
       # GOTCHA: If the Firebase Emulators hang when starting up, it's likely that a value is missing from .env and Functions is trying to prompt for it!
       - name: Run Playwright tests against Firebase Emulators
-        run: firebase emulators:exec "npm run test:integration"
+        run: firebase emulators:exec "npm run test:integration -- --project='${{ matrix.project }}'"
       - name: Upload Playwright report
         uses: actions/upload-artifact@v3
         if: always()
