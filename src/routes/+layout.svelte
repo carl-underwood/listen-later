@@ -5,7 +5,15 @@
 
 	import { slide } from 'svelte/transition';
 	import { page } from '$app/stores';
-	import { AppBar, Drawer, drawerStore, LightSwitch, Modal } from '@skeletonlabs/skeleton';
+	import { afterNavigate } from '$app/navigation';
+	import {
+		AppBar,
+		Drawer,
+		drawerStore,
+		LightSwitch,
+		Modal,
+		modalStore
+	} from '@skeletonlabs/skeleton';
 
 	import { auth } from '$lib/stores/auth';
 	import { user } from '$lib/stores/user';
@@ -19,11 +27,27 @@
 	import Info from '$lib/components/icons/info.svelte';
 	import ListMusic from '$lib/components/icons/list-music.svelte';
 	import UserSettings from '$lib/components/icons/user-settings.svelte';
+	import {
+		deleteAccountSearchParameterName,
+		promoteAccountSearchParameterName
+	} from './list/settings/searchParameters';
 
 	$: {
 		$page;
 		drawerStore.close();
 	}
+
+	afterNavigate((navigation) => {
+		const searchParams = navigation.to?.url.searchParams;
+
+		if (
+			!searchParams?.has(deleteAccountSearchParameterName) &&
+			!searchParams?.has(promoteAccountSearchParameterName) &&
+			$modalStore[0]
+		) {
+			modalStore.close();
+		}
+	});
 
 	const slideWithPrefersReducedMotion = (node: Element) =>
 		slide(node, { duration: $prefersReducedMotion ? 0 : undefined });

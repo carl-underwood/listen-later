@@ -11,6 +11,7 @@
 	import preventDefaultIf from '$lib/helpers/preventDefaultIf';
 	import ItemSpotify from '$lib/components/ItemSpotify.svelte';
 	import { user } from '$lib/stores/user';
+	import PromoteAccountAlert from '$lib/components/PromoteAccountAlert.svelte';
 
 	let accordionItems: { [Property: string]: HTMLDivElement } = {};
 	$: openAccordionItemId = $page.url.searchParams.get('itemId');
@@ -46,27 +47,16 @@
 				Nothing here yet! Use the button above to add an item 👆
 			</span>
 		{:else if $user?.isAnonymous}
-			<div
-				role="alert"
-				class="alert variant-filled-error ring-4 ring-surface-900-50-token mt-1 mb-5"
-				transition:slideWithPrefersReducedMotion
-			>
-				<div class="alert-message">
-					<span class="h3">Sign in to keep your list</span>
-					<p>
-						You're currently trying out Listen Later as a guest. We strongly recommend signing in to
-						keep your list (and to be able to view it on other devices).
-					</p>
-				</div>
-				<div class="alert-actions">
+			<PromoteAccountAlert>
+				<svelte:fragment slot="signInButton">
 					<a
 						href="/list/settings?promoteAccount=true"
 						class="btn bg-surface-900-50-token text-surface-50-900-token"
 					>
 						Sign in
 					</a>
-				</div>
-			</div>
+				</svelte:fragment>
+			</PromoteAccountAlert>
 		{/if}
 		<Accordion disabled={$loading} spacing="" padding="p-4">
 			{#each $items as item (item.id)}
