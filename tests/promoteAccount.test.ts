@@ -34,7 +34,16 @@ test.describe('list page', () => {
 
 		const { promoteAccountAlert, name } = await addItemAndExpectPromoteAccountAlert(page);
 
-		await clickSignInAndExpectPromoteAccountAlertDialog(page, promoteAccountAlert);
+		const promoteAccountAlertDialog = await clickSignInAndExpectPromoteAccountAlertDialog(
+			page,
+			promoteAccountAlert
+		);
+
+		await closeModal(page);
+		await page.waitForURL('/list/settings');
+		await expect(promoteAccountAlert).toBeVisible();
+		await expect(promoteAccountAlertDialog).not.toBeVisible();
+		await clickSignInAndExpectPromoteAccountAlertDialog(page, promoteAccountAlert, 'button');
 
 		await clickSignInWithEmailButton(page);
 		const email = `${uuid()}@listenlater.cloud`;
@@ -76,7 +85,20 @@ test.describe('list page', () => {
 		const { promoteAccountAlert: firstPagePromoteAccountAlert, name } =
 			await addItemAndExpectPromoteAccountAlert(firstPage);
 
-		await clickSignInAndExpectPromoteAccountAlertDialog(firstPage, firstPagePromoteAccountAlert);
+		const firstPagePromoteAccountAlertDialog = await clickSignInAndExpectPromoteAccountAlertDialog(
+			firstPage,
+			firstPagePromoteAccountAlert
+		);
+
+		await closeModal(firstPage);
+		await firstPage.waitForURL('/list/settings');
+		await expect(firstPagePromoteAccountAlert).toBeVisible();
+		await expect(firstPagePromoteAccountAlertDialog).not.toBeVisible();
+		await clickSignInAndExpectPromoteAccountAlertDialog(
+			firstPage,
+			firstPagePromoteAccountAlert,
+			'button'
+		);
 
 		await clickSignInWithEmailButton(firstPage);
 		const email = `${uuid()}@listenlater.cloud`;
@@ -136,7 +158,16 @@ test.describe('list page', () => {
 
 		const { promoteAccountAlert, name } = await addItemAndExpectPromoteAccountAlert(page);
 
-		await clickSignInAndExpectPromoteAccountAlertDialog(page, promoteAccountAlert);
+		const promoteAccountAlertDialog = await clickSignInAndExpectPromoteAccountAlertDialog(
+			page,
+			promoteAccountAlert
+		);
+
+		await closeModal(page);
+		await page.waitForURL('/list/settings');
+		await expect(promoteAccountAlert).toBeVisible();
+		await expect(promoteAccountAlertDialog).not.toBeVisible();
+		await clickSignInAndExpectPromoteAccountAlertDialog(page, promoteAccountAlert, 'button');
 
 		await clickSignInWithGoogleButton(page);
 		await autoGenerateOAuthUserDetails(page);
@@ -174,7 +205,16 @@ test.describe('list page', () => {
 
 		const { promoteAccountAlert, name } = await addItemAndExpectPromoteAccountAlert(page);
 
-		await clickSignInAndExpectPromoteAccountAlertDialog(page, promoteAccountAlert);
+		const promoteAccountAlertDialog = await clickSignInAndExpectPromoteAccountAlertDialog(
+			page,
+			promoteAccountAlert
+		);
+
+		await closeModal(page);
+		await page.waitForURL('/list/settings');
+		await expect(promoteAccountAlert).toBeVisible();
+		await expect(promoteAccountAlertDialog).not.toBeVisible();
+		await clickSignInAndExpectPromoteAccountAlertDialog(page, promoteAccountAlert, 'button');
 
 		await clickSignInWithAppleButton(page);
 		await autoGenerateOAuthUserDetails(page);
@@ -222,7 +262,16 @@ test.describe('list page', () => {
 
 		const { promoteAccountAlert } = await addItemAndExpectPromoteAccountAlert(page);
 
-		await clickSignInAndExpectPromoteAccountAlertDialog(page, promoteAccountAlert);
+		const promoteAccountAlertDialog = await clickSignInAndExpectPromoteAccountAlertDialog(
+			page,
+			promoteAccountAlert
+		);
+
+		await closeModal(page);
+		await page.waitForURL('/list/settings');
+		await expect(promoteAccountAlert).toBeVisible();
+		await expect(promoteAccountAlertDialog).not.toBeVisible();
+		await clickSignInAndExpectPromoteAccountAlertDialog(page, promoteAccountAlert, 'button');
 
 		await clickSignInWithGoogleButton(page);
 		await signInAsExistingOAuthUser(page, email);
@@ -260,7 +309,16 @@ test.describe('list page', () => {
 
 		const { promoteAccountAlert } = await addItemAndExpectPromoteAccountAlert(page);
 
-		await clickSignInAndExpectPromoteAccountAlertDialog(page, promoteAccountAlert);
+		const promoteAccountAlertDialog = await clickSignInAndExpectPromoteAccountAlertDialog(
+			page,
+			promoteAccountAlert
+		);
+
+		await closeModal(page);
+		await page.waitForURL('/list/settings');
+		await expect(promoteAccountAlert).toBeVisible();
+		await expect(promoteAccountAlertDialog).not.toBeVisible();
+		await clickSignInAndExpectPromoteAccountAlertDialog(page, promoteAccountAlert, 'button');
 
 		await clickSignInWithAppleButton(page);
 		await signInAsExistingOAuthUser(page, email);
@@ -298,7 +356,16 @@ test.describe('list page', () => {
 
 		const { promoteAccountAlert } = await addItemAndExpectPromoteAccountAlert(page);
 
-		await clickSignInAndExpectPromoteAccountAlertDialog(page, promoteAccountAlert);
+		const promoteAccountAlertDialog = await clickSignInAndExpectPromoteAccountAlertDialog(
+			page,
+			promoteAccountAlert
+		);
+
+		await closeModal(page);
+		await page.waitForURL('/list/settings');
+		await expect(promoteAccountAlert).toBeVisible();
+		await expect(promoteAccountAlertDialog).not.toBeVisible();
+		await clickSignInAndExpectPromoteAccountAlertDialog(page, promoteAccountAlert, 'button');
 
 		await clickSignInWithEmailButton(page);
 		await fillEmailInputClickSendSignInLinkAndExpectConfirmation(page, email);
@@ -334,16 +401,21 @@ const addItemAndExpectPromoteAccountAlert = async (page: Page) => {
 const expectPromoteAccountAlertDialog = async (page: Page) => {
 	const promoteAccountDialog = page.getByTestId('modal-component').locator('div').first();
 	await expect(promoteAccountDialog).toBeVisible();
+	return promoteAccountDialog;
 };
 
 const clickSignInAndExpectPromoteAccountAlertDialog = async (
 	page: Page,
-	promoteAccountAlert: Locator
+	promoteAccountAlert: Locator,
+	signInButtonRole: 'link' | 'button' = 'link'
 ) => {
-	const promoteAccountButton = promoteAccountAlert.getByRole('link', { name: 'Sign in' });
+	const promoteAccountButton = promoteAccountAlert.getByRole(signInButtonRole, { name: 'Sign in' });
 	await expect(promoteAccountButton).toBeVisible();
 	await promoteAccountButton.click();
 	await page.waitForURL('/list/settings?promoteAccount=true');
 
-	await expectPromoteAccountAlertDialog(page);
+	return await expectPromoteAccountAlertDialog(page);
 };
+
+const closeModal = (page: Page) =>
+	page.getByTestId('modal-backdrop').click({ position: { x: 0, y: 0 } });
