@@ -4,7 +4,7 @@
 	import '../app.postcss';
 
 	import { slide } from 'svelte/transition';
-	import { version } from '$app/environment';
+	import { browser, version } from '$app/environment';
 	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
 	import {
@@ -13,7 +13,8 @@
 		drawerStore,
 		LightSwitch,
 		Modal,
-		modalStore
+		modalStore,
+		modeCurrent
 	} from '@skeletonlabs/skeleton';
 
 	import { auth } from '$lib/stores/auth';
@@ -39,6 +40,14 @@
 	$: {
 		$page;
 		drawerStore.close();
+	}
+
+	$: {
+		if (browser) {
+			document.head
+				.querySelector("meta[name='theme-color']")
+				?.setAttribute('content', $modeCurrent ? '#ffffff' : '#000000');
+		}
 	}
 
 	afterNavigate((navigation) => {
