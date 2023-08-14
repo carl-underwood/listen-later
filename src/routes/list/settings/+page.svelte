@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { type ModalSettings, modalStore } from '@skeletonlabs/skeleton';
+	import PageTitle from '$lib/components/PageTitle.svelte';
 	import DeleteAccountModal from '$lib/components/DeleteAccountModal.svelte';
 	import PromoteAccountAlert from '$lib/components/PromoteAccountAlert.svelte';
 	import PromoteAccountModal from '$lib/components/PromoteAccountModal.svelte';
@@ -49,6 +50,8 @@
 		modalStore.trigger(modalSettings);
 	};
 </script>
+
+<PageTitle title="Settings | Listen Later" />
 
 <h1 class="sr-only">Settings</h1>
 <div

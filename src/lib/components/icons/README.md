@@ -9,6 +9,7 @@ Note that the following classes have been removed, as these were overriding them
 - [bars](bars.svelte)
 - [check](check.svelte)
 - [close](close.svelte)
+- [envelope](envelope.svelte)
 - [github](github.svelte)
 - [headphone](headphone.svelte)
 - [home](home.svelte)

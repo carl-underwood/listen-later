@@ -8,6 +8,7 @@
 	import type SearchResult from '$lib/types/SearchResult';
 	import type Item from '$lib/types/Item';
 	import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
+	import PageTitle from '$lib/components/PageTitle.svelte';
 	import SearchLoop from '$lib/components/icons/search-loop.svelte';
 	import Loading from '$lib/components/Loading.svelte';
 	import Check from '$lib/components/icons/check.svelte';
@@ -169,6 +170,8 @@
 		event.preventDefault();
 	};
 </script>
+
+<PageTitle title="Add an Item | Listen Later" />
 
 <div class="sticky top-0 p-4 -mt-4 bg-surface-50-900-token">
 	<form on:submit|preventDefault={onSearchSubmit}>

@@ -2,6 +2,7 @@
 	import { auth } from '$lib/stores/auth';
 	import { user } from '$lib/stores/user';
 	import { loading } from '$lib/stores/loading';
+	import PageTitle from '$lib/components/PageTitle.svelte';
 	import Loading from '$lib/components/Loading.svelte';
 	import SignInForm from '$lib/components/SignInForm.svelte';
 
@@ -40,6 +41,12 @@
 		});
 	};
 </script>
+
+<PageTitle title="List | Listen Later" />
+
+<svelte:head>
+	<meta name="robots" content="noindex" />
+</svelte:head>
 
 <div class="max-w-2xl mx-auto py-4" aria-live="polite">
 	{#if $user === undefined}
