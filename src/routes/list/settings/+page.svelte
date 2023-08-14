@@ -53,7 +53,7 @@
 <h1 class="sr-only">Settings</h1>
 <div
 	id="settings-container"
-	class="pb-8 flex flex-col gap-4 min-h-[calc(100vh - 4rem)] min-h-[calc(100svh - 4rem)]"
+	class="flex flex-col min-h-[calc(100vh - 4rem)] min-h-[calc(100svh - 4rem)]"
 >
 	{#if $user?.isAnonymous}
 		<PromoteAccountAlert>
@@ -68,9 +68,23 @@
 		</PromoteAccountAlert>
 	{/if}
 
+	<div class="flex flex-col gap-4 ring-4 ring-surface-900-50-token mt-1 mb-5 p-4">
+		<h2 class="h2">Spotify</h2>
+		<p>
+			Listen Later currently only supports searching Spotify for songs etc. available to the
+			<strong>United Kingdom</strong> market. This means that if your Spotify account "Country or region"
+			is not "United Kingdom", items added to your Listen Later list may not necessarily be available
+			in your region.
+		</p>
+		<p>
+			We aim to introduce best-effort market detection and manual selection at a later date. Please
+			see the <a href="/about#roadmap" class="underline">Roadmap</a> for more details.
+		</p>
+	</div>
+
 	<div class="grow" />
 
-	<div class="flex flex-col items-center gap-4">
+	<div class="flex flex-col items-center py-4">
 		<button on:click={deleteAccount} class="btn variant-filled-error btn-2xl">
 			Delete account
 		</button>
