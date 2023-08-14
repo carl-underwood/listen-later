@@ -4,6 +4,7 @@
 	import '../app.postcss';
 
 	import { slide } from 'svelte/transition';
+	import { version } from '$app/environment';
 	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
 	import {
@@ -31,6 +32,7 @@
 		deleteAccountSearchParameterName,
 		promoteAccountSearchParameterName
 	} from './list/settings/searchParameters';
+	import PolicyLinks from '$lib/components/PolicyLinks.svelte';
 
 	$: {
 		$page;
@@ -129,9 +131,20 @@
 				</div>
 			{/if}
 		</div>
-		<div class="p-8 text-center">
-			Made with <span aria-hidden="true">❤</span><span class="sr-only">love</span> by
-			<a href="https://www.carl-hartshorn.dev" class="underline">Carl Hartshorn</a>
+		<div class="p-8 flex flex-col text-center">
+			<p>
+				Made with <span aria-hidden="true">❤</span><span class="sr-only">love</span> by
+				<a href="https://www.carl-hartshorn.dev" class="underline">Carl Hartshorn</a>
+			</p>
+			<small>Version {version}</small>
+			<div>
+				<PolicyLinks
+					policyLinks={[
+						{ name: 'Terms of Use', href: '/terms-of-use' },
+						{ name: 'Privacy Policy', href: '/privacy-policy' }
+					]}
+				/>
+			</div>
 		</div>
 	</div>
 </Drawer>
