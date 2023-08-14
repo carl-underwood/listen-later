@@ -59,11 +59,13 @@ const takeScreenshot = async (page: Page, name: string) => {
 	const lightSwitch = page.getByLabel('Light Switch');
 	const isLightMode = await lightSwitch.isChecked();
 	await page.screenshot({
-		path: join(__dirname, `../src/assets/${name}-${isLightMode ? 'light' : 'dark'}.png`)
+		path: join(__dirname, `../src/assets/${name}-${isLightMode ? 'light' : 'dark'}.png`),
+		scale: 'css'
 	});
 	await lightSwitch.click();
 	await page.waitForTimeout(500);
 	await page.screenshot({
-		path: join(__dirname, `../src/assets/${name}-${isLightMode ? 'dark' : 'light'}.png`)
+		path: join(__dirname, `../src/assets/${name}-${isLightMode ? 'dark' : 'light'}.png`),
+		scale: 'css'
 	});
 };
