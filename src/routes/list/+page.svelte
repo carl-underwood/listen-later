@@ -6,7 +6,6 @@
 	import { items } from '$lib/stores/items';
 	import { loading } from '$lib/stores/loading';
 	import { prefersReducedMotion } from '$lib/stores/prefersReducedMotion';
-	import PageTitle from '$lib/components/PageTitle.svelte';
 	import Loading from '$lib/components/Loading.svelte';
 	import Plus from '$lib/components/icons/plus.svelte';
 	import preventDefaultIf from '$lib/helpers/preventDefaultIf';
@@ -27,8 +26,6 @@
 	const slideWithPrefersReducedMotion = (node: Element) =>
 		slide(node, { duration: $prefersReducedMotion ? 0 : undefined });
 </script>
-
-<PageTitle title="List | Listen Later" />
 
 {#if $items === undefined}
 	<Loading />

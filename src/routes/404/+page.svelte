@@ -1,9 +1,3 @@
-<script>
-	import PageTitle from '$lib/components/PageTitle.svelte';
-</script>
-
-<PageTitle />
-
 <svelte:head>
 	<meta name="robots" content="noindex" />
 </svelte:head>

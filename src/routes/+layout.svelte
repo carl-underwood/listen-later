@@ -35,7 +35,6 @@
 		deleteAccountSearchParameterName,
 		promoteAccountSearchParameterName
 	} from './list/settings/searchParameters';
-	import PageTitle from '$lib/components/PageTitle.svelte';
 
 	$: {
 		$page;
@@ -66,9 +65,9 @@
 		slide(node, { duration: $prefersReducedMotion ? 0 : undefined });
 </script>
 
-<PageTitle />
-
 <svelte:head>
+	<title>{$page.data.title}</title>
+	<meta name="og:title" content={$page.data.title} />
 	<meta
 		name="description"
 		content="Maintain a list of songs, artists, albums, podcasts and episodes that you want to listen to later with Spotify."

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import PageTitle from '$lib/components/PageTitle.svelte';
 	import ListenLater from '$lib/components/ListenLater.svelte';
 	import searchDark from '../assets/search-dark.png';
 	import searchLight from '../assets/search-light.png';
@@ -16,8 +15,6 @@
 		: scrollY / (document.body.scrollHeight - window.innerHeight) || 0;
 </script>
 
-<PageTitle />
-
 <svelte:window bind:scrollY />
 
 <div
@@ -29,7 +26,7 @@
 		<ListenLater classes="max-w-sm" />
 		<h1 class="h1">Listen Later</h1>
 	</div>
-	<ArrowDown classes="w-6 h-6 motion-safe:animate-bounce xl:hidden" />
+	<ArrowDown classes="w-6 h-6 my-4 motion-safe:animate-bounce xl:hidden" />
 	<div class="relative py-6 mx-auto w-full max-w-lg xl:mx-4">
 		<img
 			id="search-screenshot"
