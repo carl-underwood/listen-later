@@ -17,7 +17,19 @@
 	"hosting": {
 		"public": "build",
 		"cleanUrls": true,
-		"ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+		"ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+		"trailingSlash": false,
+		"headers": [
+			{
+				"source": "**/*.@(js|css|jpg|jpeg|gif|png|svg|ico)",
+				"headers": [
+					{
+						"key": "Cache-Control",
+						"value": "max-age=7200"
+					}
+				]
+			}
+		]
 	},
 	"emulators": {
 		"auth": {
