@@ -55,7 +55,7 @@
 			(which Spotify currently only supports for podcast episodes <GoToReferenceButton
 				oneBasedReferenceNumber={4}
 				on:goToReference={goToReference}
-			/>), Listen Later is a free to use and open source web application built to solve this
+			/>), Listen Later is a free to use and open-source web application built to solve this
 			problem.
 		</p>
 		<div class="flex gap-4">

@@ -7,6 +7,11 @@
 			application").
 		</p>
 		<p>It applies to usage of Listen Later on any device.</p>
+		<h2 class="h2">Accepting the Policy</h2>
+		<p>
+			Usage of Listen Later assumes agreement to this policy. The application may not be used if
+			this policy is not agreed to.
+		</p>
 		<h2 class="h2">Personal Information Collected by Listen Later</h2>
 		<p>
 			Listen Later collects information you provide to create your account and maintain your list.
@@ -15,7 +20,7 @@
 			different devices for access to your Listen Later list. This information is not shared with
 			any third party. Listen Later may use your email address to contact you at a later date, for
 			example if the application is being discontinued (as described in the
-			<a href="/terms-of-use" class="underline">Terms of Use</a>).
+			<a href="/terms-of-use#termination-of-hosting" class="underline">Terms of Use</a>).
 		</p>
 		<p>
 			Listen Later also collects information automatically when you use the application. This

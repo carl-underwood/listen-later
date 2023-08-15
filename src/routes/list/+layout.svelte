@@ -51,6 +51,14 @@
 	{:else if $user === null}
 		{#if !showingEmailForm}
 			<div class="px-4 pb-8 flex flex-col gap-4 items-center text-center">
+				<p>
+					By continuing to use Listen Later, you agree to the <a
+						href="/terms-of-use"
+						class="underline">Terms of Use</a
+					>
+					& <a href="/privacy-policy" class="underline">Privacy Policy</a>
+				</p>
+				<hr class="!border-t-2 w-full my-4" />
 				<p>You can try out Listen Later without signing in.</p>
 				<p>
 					If you like it, after you've added an item to your list you can sign in to create an
