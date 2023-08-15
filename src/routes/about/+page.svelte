@@ -82,9 +82,9 @@
 		<div class="flex justify-center">
 			<a href="/list" class="btn bg-surface-900-50-token text-surface-50-900-token">Try it out</a>
 		</div>
-		<hr class="!border-t-4 my-4" />
+		<hr class="!border-t-2 my-4" />
 		<Roadmap />
-		<hr class="!border-t-4 my-4" />
+		<hr class="!border-t-2 my-4" />
 		<div>
 			<h2 class="h2 mb-2">References</h2>
 			<ul>
