@@ -21,7 +21,7 @@
 	class="flex flex-col items-center gap-4 px-2 pt-4 pb-8 max-w-4xl mx-auto xl:flex-row xl:items-start xl:justify-center xl:gap-8 xl:max-w-none"
 >
 	<div
-		class="p-4 bg-surface-50-900-token border-4 border-surface-900-50-token w-max max-w-[90%] mx-auto flex flex-col gap-4 shadow-lg xl:mx-4 xl:sticky xl:top-8"
+		class="p-4 bg-surface-50-900-token border-4 border-surface-900-50-token w-max max-w-[90%] mx-auto flex flex-col gap-4 xl:mx-4 xl:sticky xl:top-8"
 	>
 		<ListenLater classes="max-w-sm" />
 		<h1 class="h1">Listen Later</h1>
