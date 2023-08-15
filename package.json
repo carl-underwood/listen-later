@@ -12,7 +12,8 @@
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
 		"test:unit": "vitest",
-		"kill-emulator-ports": "npx kill-port 4000 9099 5001 8080 5000"
+		"kill-emulator-ports": "npx kill-port 4000 9099 5001 8080 5000",
+		"generate-screenshots": "npx playwright test --headed -c ./screenshot-generator/playwright.config.ts"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.36.2",
@@ -24,6 +25,7 @@
 		"@testing-library/jest-dom": "^5.16.5",
 		"@testing-library/svelte": "^4.0.3",
 		"@testing-library/user-event": "^14.4.3",
+		"@types/marked": "^5.0.1",
 		"@types/uuid": "^9.0.2",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
@@ -34,6 +36,7 @@
 		"eslint-plugin-svelte": "^2.30.0",
 		"fuzzysort": "^2.0.4",
 		"jsdom": "^22.1.0",
+		"marked": "^7.0.3",
 		"postcss": "^8.4.24",
 		"postcss-load-config": "^4.0.1",
 		"prettier": "^2.8.0",

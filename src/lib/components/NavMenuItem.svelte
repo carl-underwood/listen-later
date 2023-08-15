@@ -5,6 +5,7 @@
 	import type { TransitionConfig } from 'svelte/transition';
 
 	export let href: string;
+	export let nofollow = false;
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	export let transition: (node: Element, ...params: any[]) => TransitionConfig = () => {
@@ -25,6 +26,7 @@
 		class:cursor-not-allowed={$loading}
 		on:click={(event) => preventDefaultIf(event, $loading)}
 		transition:transition
+		rel={nofollow ? 'nofollow' : undefined}
 	>
 		<slot name="icon" />
 		<span class="flex-auto"><slot /></span>

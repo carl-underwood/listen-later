@@ -6,9 +6,11 @@ Icon SVGs were sourced from the following repositories. Naming of these componen
 
 Note that the following classes have been removed, as these were overriding theme colours on e.g. filled buttons (where the light theme colour should also be white on that background for example): `text-gray-800 dark:text-white`.
 
+- [arrow-down](arrow-down.svelte)
 - [bars](bars.svelte)
 - [check](check.svelte)
 - [close](close.svelte)
+- [envelope](envelope.svelte)
 - [github](github.svelte)
 - [headphone](headphone.svelte)
 - [home](home.svelte)

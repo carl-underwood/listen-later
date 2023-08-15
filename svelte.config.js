@@ -14,7 +14,10 @@ const config = {
 			fallback: undefined,
 			precompress: false,
 			strict: true
-		})
+		}),
+		version: {
+			name: process.env.npm_package_version
+		}
 	}
 };
 
