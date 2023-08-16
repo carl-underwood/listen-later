@@ -2,7 +2,4 @@
 	<meta name="robots" content="noindex" />
 </svelte:head>
 
-<div>
-	<h2>404</h2>
-	<h1>Page Not Found</h1>
-</div>
+<h1 class="h1 p-4 block text-center">404 Not Found</h1>
