@@ -8,7 +8,6 @@
 	import type { AuthError } from 'firebase/auth';
 	import SignInForm from './SignInForm.svelte';
 
-	let showEmailConfirmation = false;
 	let showCredentialAlreadyInUseError = false;
 
 	const tryEmailLink = (email: string) =>
@@ -84,28 +83,24 @@
 
 <div class="card p-4" aria-live="polite">
 	<div class="flex flex-col gap-4 items-center text-center">
-		{#if showEmailConfirmation}
-			<p>Email sent, please check your inbox for a sign in link</p>
+		{#if !showCredentialAlreadyInUseError}
+			<p>Please sign in to create your account</p>
 		{:else}
-			{#if !showCredentialAlreadyInUseError}
-				<p>Please sign in to create your account</p>
-			{:else}
-				<p role="alert" class="text-error-600-300-token max-w-md">
-					You tried to sign in to an account that already exists.
-					<br />
-					<br />
-					Please try signing in again with a different account.
-					<br />
-					<br />
-					Alternatively, if you wish to use that account, please sign out before signing in again (items
-					in this guest account list will need to be manually added to that account).
-				</p>
-			{/if}
-			<SignInForm
-				on:signInWithGoogleClicked={linkWithGoogle}
-				on:signInWithAppleClicked={linkWithApple}
-				{tryEmailLink}
-			/>
+			<p role="alert" class="text-error-600-300-token max-w-md">
+				You tried to sign in to an account that already exists.
+				<br />
+				<br />
+				Please try signing in again with a different account.
+				<br />
+				<br />
+				Alternatively, if you wish to use that account, please sign out before signing in again (items
+				in this guest account list will need to be manually added to that account).
+			</p>
 		{/if}
+		<SignInForm
+			on:signInWithGoogleClicked={linkWithGoogle}
+			on:signInWithAppleClicked={linkWithApple}
+			{tryEmailLink}
+		/>
 	</div>
 </div>
