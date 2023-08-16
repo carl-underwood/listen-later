@@ -51,7 +51,10 @@ jobs:
           projectId: listen-later-cloud
           channelId: live
       - name: Write Firebase Service Account JSON
-        run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_LISTEN_LATER_CLOUD }}" > ./gcloud.json
+        run: |
+          touch ./gcloud.json
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_LISTEN_LATER_CLOUD }}" > ./gcloud.json
+          cat ./gcloud.json
       - name: Deploy Functions
         run: npx firebase-tools deploy --only functions
         env:
