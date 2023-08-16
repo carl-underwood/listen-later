@@ -36,6 +36,16 @@
 		promoteAccountSearchParameterName
 	} from './list/settings/searchParameters';
 
+	import { PUBLIC_FIREBASE_PROJECT_ID } from '$env/static/public';
+
+	if (
+		browser &&
+		(window.location.hostname == `${PUBLIC_FIREBASE_PROJECT_ID}.web.app` ||
+			window.location.hostname == `${PUBLIC_FIREBASE_PROJECT_ID}.firebaseapp.com`)
+	) {
+		window.location.href = `https://listenlater.cloud${window.location.pathname}`;
+	}
+
 	$: {
 		$page;
 		drawerStore.close();
@@ -70,11 +80,11 @@
 	<meta name="og:title" content={$page.data.title} />
 	<meta
 		name="description"
-		content="Maintain a list of songs, artists, albums, podcasts and episodes that you want to listen to later with Spotify."
+		content="Curate a list of songs, artists, albums, podcasts and episodes that you want to listen to later with Spotify."
 	/>
 	<meta
 		name="og:description"
-		content="Maintain a list of songs, artists, albums, podcasts and episodes that you want to listen to later with Spotify."
+		content="Curate a list of songs, artists, albums, podcasts and episodes that you want to listen to later with Spotify."
 	/>
 	<meta name="og:type" content="website" />
 	<meta name="og:image" content="/android-chrome-512x512.png" />
@@ -82,7 +92,8 @@
 	<meta name="og:image:width" content="512" />
 	<meta name="og:image:height" content="512" />
 	<meta name="og:image:alt" content="Listen Later Logo" />
-	<meta name="og:url" content="https://www.listenlater.cloud" />
+	<meta name="og:url" content="https://listenlater.cloud" />
+	<link rel="canonical" href={`https://listenlater.cloud${$page.url.pathname}`} />
 </svelte:head>
 
 <AppBar background="bg-transparent" slotTrail="place-content-end">
