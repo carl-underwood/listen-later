@@ -18,7 +18,7 @@ const createAuth = () => {
 			const { getAuth, connectAuthEmulator } = await import('@firebase/auth');
 			auth = getAuth($app);
 
-			if (PUBLIC_FIREBASE_USE_EMULATORS) {
+			if (PUBLIC_FIREBASE_USE_EMULATORS === 'true') {
 				connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
 			}
 

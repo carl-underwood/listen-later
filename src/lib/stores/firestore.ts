@@ -22,7 +22,7 @@ const createFirestore = () => {
 				const { getFirestore, connectFirestoreEmulator } = await import('firebase/firestore');
 				firestore = getFirestore($app);
 
-				if (PUBLIC_FIREBASE_USE_EMULATORS) {
+				if (PUBLIC_FIREBASE_USE_EMULATORS === 'true') {
 					connectFirestoreEmulator(firestore, 'localhost', 8080);
 				}
 
