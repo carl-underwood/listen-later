@@ -8,9 +8,7 @@ import {
 	autoGenerateOAuthUserDetails,
 	expectListPageToBeVisible,
 	clickAddItemButton,
-	clickSubmitSearchButton,
-	fillSearchInput,
-	selectOptionWithId,
+	searchForAndSelectItem,
 	getVisibleAddButton,
 	waitForUrlWithSpotifyItemOpen
 } from '../tests/helpers/shared';
@@ -41,9 +39,7 @@ test('generate screenshots', async ({ page }) => {
 	const name = 'Victory Dance';
 	const id = '5Nu4AvrNgIx42nWGbteHLh';
 
-	await fillSearchInput(page, name);
-	await clickSubmitSearchButton(page);
-	await selectOptionWithId(page, id);
+	await searchForAndSelectItem(page, name, id);
 
 	await takeScreenshot(page, 'search');
 
