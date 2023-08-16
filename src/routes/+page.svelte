@@ -49,7 +49,7 @@
 			)}%) rotateY(90deg) skewY(20deg) rotateY(-70deg)`}
 		/>
 	</div>
-	<div class="flex flex-col gap-4 items-center xl:self-end xl:sticky xl:bottom-8">
+	<div class="flex flex-col gap-4 items-center px-4 xl:self-end xl:sticky xl:bottom-8">
 		<a href="/list" class="btn bg-surface-900-50-token text-surface-50-900-token">Try it out</a>
 		<a href="/about" class="btn variant-soft">Learn more</a>
 	</div>

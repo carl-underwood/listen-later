@@ -122,9 +122,14 @@ export const fillSearchInput = async (page: Page, searchQuery: string) => {
 	await searchInput.fill(searchQuery);
 };
 
-export const clickSubmitSearchButton = async (page: Page) => {
+const getVisibleSubmitSearchButton = async (page: Page) => {
 	const searchButton = page.getByRole('button', { name: 'Submit' });
 	await expect(searchButton).toBeVisible();
+	return searchButton;
+};
+
+export const clickSubmitSearchButton = async (page: Page) => {
+	const searchButton = await getVisibleSubmitSearchButton(page);
 	await searchButton.click();
 };
 
@@ -182,10 +187,26 @@ export const getVisibleItemWithName = async (
 	return newItem;
 };
 
-export const searchForItemAddAndVerify = async (page: Page, name: string, id: string) => {
+export const searchForAndSelectItem = async (page: Page, name: string, id: string) => {
 	await fillSearchInput(page, name);
-	await clickSubmitSearchButton(page);
-	await selectOptionWithId(page, id);
+
+	await expect(async () => {
+		const searchButton = await getVisibleSubmitSearchButton(page);
+		await clickSubmitSearchButton(page);
+
+		await expect(searchButton).not.toBeDisabled();
+
+		const errorAlert = page.getByRole('alert').filter({
+			hasText: 'There was an error when fetching search results, please try again'
+		});
+		await expect(errorAlert).not.toBeVisible();
+
+		await selectOptionWithId(page, id);
+	}).toPass();
+};
+
+export const searchForItemAddAndVerify = async (page: Page, name: string, id: string) => {
+	await searchForAndSelectItem(page, name, id);
 
 	const addButton = await getVisibleAddButton(page);
 	await addButton.click();
