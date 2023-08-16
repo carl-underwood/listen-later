@@ -57,7 +57,7 @@ jobs:
       - name: Deploy Functions
         run: npx firebase-tools deploy --only functions
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ./gac.json
+          GOOGLE_APPLICATION_CREDENTIALS: '"$HOME"/gcloud.json'
       - name: Remove Firebase Service Account JSON
         if: always()
         run: rm "$HOME"/gcloud.json
