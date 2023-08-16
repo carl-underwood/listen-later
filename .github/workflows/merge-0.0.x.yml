@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PUBLIC_FIREBASE_API_KEY: 'AIzaSyD3cNY62dZpsRtZmsU5Qn6LOGLUCjH7REk'
-      PUBLIC_FIREBASE_AUTH_DOMAIN: 'listen-later-cloud.firebaseapp.com'
+      PUBLIC_FIREBASE_AUTH_DOMAIN: 'listenlater.cloud'
       PUBLIC_FIREBASE_PROJECT_ID: 'listen-later-cloud'
       PUBLIC_FIREBASE_STORAGE_BUCKET: 'listen-later-cloud.appspot.com'
       PUBLIC_FIREBASE_MESSAGING_SENDER_ID: '888811211358'

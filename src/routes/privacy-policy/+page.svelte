@@ -16,10 +16,10 @@
 		<p>
 			Listen Later collects information you provide to create your account and maintain your list.
 			Depending on your chosen sign in method this may include (but is not limited to) your email
-			address and name. This information is collected to maintain your account, allowing sign in on
-			different devices for access to your Listen Later list. This information is not shared with
-			any third party. Listen Later may use your email address to contact you at a later date, for
-			example if the application is being discontinued (as described in the
+			address, name and profile picture. This information is collected to maintain your account,
+			allowing sign in on different devices for access to your Listen Later list. This information
+			is not shared with any third party. Listen Later may use your email address to contact you at
+			a later date, for example if the application is being discontinued (as described in the
 			<a href="/terms-of-use#termination-of-hosting" class="underline">Terms of Use</a>).
 		</p>
 		<p>
