@@ -125,7 +125,7 @@ test('critical flow', async ({ page, request }) => {
 	const email = `${uuid()}@listenlater.testinator.com`;
 	await fillEmailInputClickSendSignInLinkAndExpectConfirmation(page, email);
 
-	await gotoSignInLinkFromMailinator(email, request, page);
+	const firstSignInEmailMessageId = await gotoSignInLinkFromMailinator(email, request, page);
 
 	await expectListPageToBeVisible(page);
 
@@ -141,7 +141,7 @@ test('critical flow', async ({ page, request }) => {
 	await clickSignInWithEmailButton(page);
 	await fillEmailInputClickSendSignInLinkAndExpectConfirmation(page, email);
 
-	await gotoSignInLinkFromMailinator(email, request, page);
+	await gotoSignInLinkFromMailinator(email, request, page, [firstSignInEmailMessageId]);
 
 	await expectListPageToBeVisible(page);
 	await expect(promoteAccountAlert).not.toBeVisible();
@@ -159,7 +159,13 @@ const setupAppCheckDebugTokenInitScript = (page: Page) =>
 		).FIREBASE_APPCHECK_DEBUG_TOKEN = appCheckDebugToken;
 	}, FIREBASE_APPCHECK_DEBUG_TOKEN);
 
-const gotoSignInLinkFromMailinator = (email: string, request: APIRequestContext, page: Page) =>
+const gotoSignInLinkFromMailinator = async (
+	email: string,
+	request: APIRequestContext,
+	page: Page,
+	notMessageIds: string[] = []
+) => {
+	let messageId: string;
 	expect(async () => {
 		const inboxResponse = await request.get(
 			`https://mailinator.com/api/v2/domains/listenlater.testinator.com/inboxes/${
@@ -173,9 +179,13 @@ const gotoSignInLinkFromMailinator = (email: string, request: APIRequestContext,
 		);
 
 		const messageJson = await inboxResponse.json();
-		const messageId = messageJson.msgs[0]?.id;
+		messageId = messageJson.msgs[0]?.id;
 
 		expect(messageId).not.toBeUndefined();
+
+		if (notMessageIds) {
+			expect(notMessageIds.includes(messageId)).toBe(false);
+		}
 
 		const messageResponse = await request.get(
 			`https://mailinator.com/api/v2/domains/listenlater.testinator.com/inboxes/${
@@ -203,3 +213,7 @@ const gotoSignInLinkFromMailinator = (email: string, request: APIRequestContext,
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		await page.goto(href!);
 	}).toPass();
+
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	return messageId!;
+};
