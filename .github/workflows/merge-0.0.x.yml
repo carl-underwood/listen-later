@@ -10,6 +10,8 @@ jobs:
   build_and_deploy:
     needs: build_and_test
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       PUBLIC_FIREBASE_API_KEY: 'AIzaSyD3cNY62dZpsRtZmsU5Qn6LOGLUCjH7REk'
       PUBLIC_FIREBASE_AUTH_DOMAIN: 'listenlater.cloud'
