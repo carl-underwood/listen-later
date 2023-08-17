@@ -142,7 +142,7 @@ test('critical flow', async ({ page, request }) => {
 	await clickSignInWithEmailButton(page);
 	await fillEmailInputClickSendSignInLinkAndExpectConfirmation(page, email);
 
-	await gotoSignInLinkFromMailinator(email, request, page);
+	await gotoSignInLinkFromMailinator(email, request, page, 1);
 
 	await expectListPageToBeVisible(page);
 	await expect(promoteAccountAlert).not.toBeVisible();
@@ -160,7 +160,12 @@ const setupAppCheckDebugTokenInitScript = (page: Page) =>
 		).FIREBASE_APPCHECK_DEBUG_TOKEN = appCheckDebugToken;
 	}, FIREBASE_APPCHECK_DEBUG_TOKEN);
 
-const gotoSignInLinkFromMailinator = (email: string, request: APIRequestContext, page: Page) =>
+const gotoSignInLinkFromMailinator = (
+	email: string,
+	request: APIRequestContext,
+	page: Page,
+	skip = 0
+) =>
 	expect(async () => {
 		const inboxResponse = await request.get(
 			`https://mailinator.com/api/v2/domains/listenlater.testinator.com/inboxes/${
@@ -169,6 +174,9 @@ const gotoSignInLinkFromMailinator = (email: string, request: APIRequestContext,
 			{
 				headers: {
 					Authorization: MAILINATOR_API_TOKEN || ''
+				},
+				params: {
+					skip
 				}
 			}
 		);
