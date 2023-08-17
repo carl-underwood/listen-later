@@ -10,8 +10,6 @@ jobs:
   build_and_deploy:
     needs: build_and_test
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     env:
       PUBLIC_FIREBASE_API_KEY: 'AIzaSyD3cNY62dZpsRtZmsU5Qn6LOGLUCjH7REk'
       PUBLIC_FIREBASE_AUTH_DOMAIN: 'listenlater.cloud'
@@ -58,13 +56,6 @@ jobs:
           credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_LISTEN_LATER_CLOUD }}'
       - name: Deploy Functions
         run: npx firebase-tools deploy --only functions --force
-      - name: Create release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: 'v${{ steps.generate_version_number.outputs.NEW_VERSION_NUMBER }}'
-          release_name: 'Release ${{ steps.generate_version_number.outputs.NEW_VERSION_NUMBER }}'
   verify:
     needs: build_and_deploy
     runs-on: ubuntu-latest

@@ -179,13 +179,16 @@ const gotoSignInLinkFromMailinator = async (
 		);
 
 		const messageJson = await inboxResponse.json();
-		messageId = messageJson.msgs[0]?.id;
+
+		if (!notMessageIds) {
+			messageId = messageJson.msgs[0]?.id;
+		} else {
+			messageId = messageJson.msgs.filter(
+				(msg: { id: string }) => !notMessageIds.includes(msg.id)
+			)[0]?.id;
+		}
 
 		expect(messageId).not.toBeUndefined();
-
-		if (notMessageIds) {
-			expect(notMessageIds.includes(messageId)).toBe(false);
-		}
 
 		const messageResponse = await request.get(
 			`https://mailinator.com/api/v2/domains/listenlater.testinator.com/inboxes/${
