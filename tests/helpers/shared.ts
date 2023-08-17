@@ -1,6 +1,12 @@
 import { expect, type APIRequestContext, type Locator, type Page } from '@playwright/test';
 import retreiveMostRecentOobCode from './retrieveMostRecentOobCode';
 
+export const expectNavigationItem = async (page: Page, name: string, href: string) => {
+	const settingsNavigationItem = page.getByRole('link', { name });
+	await expect(settingsNavigationItem).toBeVisible();
+	await expect(settingsNavigationItem).toHaveAttribute('href', href);
+};
+
 export const goToListPage = (page: Page) => page.goto('/list');
 
 const clickSignInButton = async (
@@ -237,3 +243,79 @@ export const signInAddItemAndExpectMetadata = async (
 	await expect(itemImage).toHaveAttribute('src', /https:\/\/i\.scdn\.co\/image\/.+/);
 	await expect(itemImage).toBeVisible();
 };
+
+export const expectAndConfirmDeletionConfirmation = async (page: Page) => {
+	const confirmationPrompt = getDeletionConfirmationPrompt(page);
+	await expect(confirmationPrompt).toBeVisible();
+
+	const deleteButton = page.getByRole('button', { name: 'Delete', exact: true });
+	await expect(deleteButton).toBeVisible();
+	await deleteButton.click();
+};
+
+export const deleteAccount = async (page: Page) => {
+	const openNavigationDrawerButton = page.getByRole('button', { name: 'Open navigation' });
+	await openNavigationDrawerButton.click();
+
+	const settingsLink = page.getByRole('link', { name: 'Settings' });
+	await expect(settingsLink).toBeVisible();
+	await settingsLink.click();
+
+	await page.waitForURL('/list/settings');
+
+	const deleteAccountButton = page.getByRole('button', { name: 'Delete account' });
+	await expect(deleteAccountButton).toBeVisible();
+	await deleteAccountButton.click();
+
+	await expectAndConfirmDeletionConfirmation(page);
+};
+
+export const getDeletionConfirmationPrompt = (page: Page) =>
+	page.getByText('Are you sure you want to delete your account?');
+
+export const ensureLoggedOutAndConfirmationModalClosed = async (
+	page: Page,
+	signInButton: Locator
+) => {
+	await page.waitForURL('/list');
+	await expect(signInButton).toBeVisible();
+	const confirmationPrompt = getDeletionConfirmationPrompt(page);
+	await expect(confirmationPrompt).not.toBeVisible();
+};
+
+export const getPromoteAccountAlert = (page: Page) =>
+	page.getByRole('alert').filter({ hasText: 'Sign in to keep your list' });
+
+export const addItemAndExpectPromoteAccountAlert = async (page: Page) => {
+	const promoteAccountAlert = getPromoteAccountAlert(page);
+	await expect(promoteAccountAlert).not.toBeVisible();
+
+	const name = 'Victory Dance';
+	const id = '6cQzmvrbnCM1d51XOodmPR';
+	await goToSearchPageAddItemAndVerify(page, name, id);
+
+	await expect(promoteAccountAlert).toBeVisible();
+	return { promoteAccountAlert, name };
+};
+
+export const expectPromoteAccountAlertDialog = async (page: Page) => {
+	const promoteAccountDialog = page.getByTestId('modal-component').locator('div').first();
+	await expect(promoteAccountDialog).toBeVisible();
+	return promoteAccountDialog;
+};
+
+export const clickSignInAndExpectPromoteAccountAlertDialog = async (
+	page: Page,
+	promoteAccountAlert: Locator,
+	signInButtonRole: 'link' | 'button' = 'link'
+) => {
+	const promoteAccountButton = promoteAccountAlert.getByRole(signInButtonRole, { name: 'Sign in' });
+	await expect(promoteAccountButton).toBeVisible();
+	await promoteAccountButton.click();
+	await page.waitForURL('/list/settings?promoteAccount=true');
+
+	return await expectPromoteAccountAlertDialog(page);
+};
+
+export const closeModal = (page: Page) =>
+	page.getByTestId('modal-backdrop').click({ position: { x: 0, y: 0 } });

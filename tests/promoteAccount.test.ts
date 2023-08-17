@@ -1,20 +1,24 @@
-import { test, expect, type Page, type Locator } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { v4 as uuid } from 'uuid';
 import {
+	addItemAndExpectPromoteAccountAlert,
 	autoGenerateOAuthUserDetails,
+	clickSignInAndExpectPromoteAccountAlertDialog,
 	clickSignInWithAppleButton,
 	clickSignInWithEmailButton,
 	clickSignInWithGoogleButton,
 	clickSignOutButton,
+	closeModal,
 	closeNavigation,
 	completeSignInWithApple,
 	completeSignInWithGoogle,
 	expectListPageToBeVisible,
+	expectPromoteAccountAlertDialog,
 	fillEmailInputClickSendSignInLinkAndExpectConfirmation,
 	getOAuthUserEmail,
+	getPromoteAccountAlert,
 	getVisibleItemWithName,
 	goToListPage,
-	goToSearchPageAddItemAndVerify,
 	openNavigation,
 	retreiveMostRecentOobCodeAndGoTo,
 	signInAnonymously,
@@ -382,40 +386,3 @@ test.describe('list page', () => {
 		).toBeVisible();
 	});
 });
-
-const getPromoteAccountAlert = (page: Page) =>
-	page.getByRole('alert').filter({ hasText: 'Sign in to keep your list' });
-
-const addItemAndExpectPromoteAccountAlert = async (page: Page) => {
-	const promoteAccountAlert = getPromoteAccountAlert(page);
-	await expect(promoteAccountAlert).not.toBeVisible();
-
-	const name = 'Victory Dance';
-	const id = '6cQzmvrbnCM1d51XOodmPR';
-	await goToSearchPageAddItemAndVerify(page, name, id);
-
-	await expect(promoteAccountAlert).toBeVisible();
-	return { promoteAccountAlert, name };
-};
-
-const expectPromoteAccountAlertDialog = async (page: Page) => {
-	const promoteAccountDialog = page.getByTestId('modal-component').locator('div').first();
-	await expect(promoteAccountDialog).toBeVisible();
-	return promoteAccountDialog;
-};
-
-const clickSignInAndExpectPromoteAccountAlertDialog = async (
-	page: Page,
-	promoteAccountAlert: Locator,
-	signInButtonRole: 'link' | 'button' = 'link'
-) => {
-	const promoteAccountButton = promoteAccountAlert.getByRole(signInButtonRole, { name: 'Sign in' });
-	await expect(promoteAccountButton).toBeVisible();
-	await promoteAccountButton.click();
-	await page.waitForURL('/list/settings?promoteAccount=true');
-
-	return await expectPromoteAccountAlertDialog(page);
-};
-
-const closeModal = (page: Page) =>
-	page.getByTestId('modal-backdrop').click({ position: { x: 0, y: 0 } });
