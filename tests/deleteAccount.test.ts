@@ -1,7 +1,14 @@
 import { expect, test, type APIRequestContext, type Locator, type Page } from '@playwright/test';
 import { v4 as uuid } from 'uuid';
 import retreiveMostRecentOobCode from './helpers/retrieveMostRecentOobCode';
-import { goToListPage, goToSearchPageAddItemAndVerify, signInAnonymously } from './helpers/shared';
+import {
+	deleteAccount,
+	ensureLoggedOutAndConfirmationModalClosed,
+	expectAndConfirmDeletionConfirmation,
+	goToListPage,
+	goToSearchPageAddItemAndVerify,
+	signInAnonymously
+} from './helpers/shared';
 import { initializeApp } from 'firebase-admin/app';
 import { getAuth, type UserRecord } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
@@ -270,47 +277,11 @@ const addSong = async (page: Page) => {
 	await goToSearchPageAddItemAndVerify(page, name, id);
 };
 
-const getDeletionConfirmationPrompt = (page: Page) =>
-	page.getByText('Are you sure you want to delete your account?');
-
 const ensureSongHasBeenAdded = async (userUid: string) => {
 	await expect(async () => {
 		const userItems = await firestore.collection(`users/${userUid}/items`).listDocuments();
 		expect(userItems).toHaveLength(1);
 	}).toPass();
-};
-
-const expectAndConfirmDeletionConfirmation = async (page: Page) => {
-	const confirmationPrompt = getDeletionConfirmationPrompt(page);
-	await expect(confirmationPrompt).toBeVisible();
-
-	const deleteButton = page.getByRole('button', { name: 'Delete', exact: true });
-	await expect(deleteButton).toBeVisible();
-	await deleteButton.click();
-};
-
-const deleteAccount = async (page: Page) => {
-	const openNavigationDrawerButton = page.getByRole('button', { name: 'Open navigation' });
-	await openNavigationDrawerButton.click();
-
-	const settingsLink = page.getByRole('link', { name: 'Settings' });
-	await expect(settingsLink).toBeVisible();
-	await settingsLink.click();
-
-	await page.waitForURL('/list/settings');
-
-	const deleteAccountButton = page.getByRole('button', { name: 'Delete account' });
-	await expect(deleteAccountButton).toBeVisible();
-	await deleteAccountButton.click();
-
-	await expectAndConfirmDeletionConfirmation(page);
-};
-
-const ensureLoggedOutAndConfirmationModalClosed = async (page: Page, signInButton: Locator) => {
-	await page.waitForURL('/list');
-	await expect(signInButton).toBeVisible();
-	const confirmationPrompt = getDeletionConfirmationPrompt(page);
-	await expect(confirmationPrompt).not.toBeVisible();
 };
 
 const ensureUserAccountIsDeleted = async (email: string) => {

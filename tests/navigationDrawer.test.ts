@@ -1,5 +1,10 @@
-import { expect, test, type Page } from '@playwright/test';
-import { goToListPage, openNavigation, signInAnonymously } from './helpers/shared';
+import { expect, test } from '@playwright/test';
+import {
+	expectNavigationItem,
+	goToListPage,
+	openNavigation,
+	signInAnonymously
+} from './helpers/shared';
 
 test.describe('navigation drawer', () => {
 	test('shows the expected naviation items when not signed in', async ({ page }) => {
@@ -29,9 +34,3 @@ test.describe('navigation drawer', () => {
 		await expectNavigationItem(page, 'Settings', '/list/settings');
 	});
 });
-
-const expectNavigationItem = async (page: Page, name: string, href: string) => {
-	const settingsNavigationItem = page.getByRole('link', { name });
-	await expect(settingsNavigationItem).toBeVisible();
-	await expect(settingsNavigationItem).toHaveAttribute('href', href);
-};
