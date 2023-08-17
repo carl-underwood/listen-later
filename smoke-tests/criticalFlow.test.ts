@@ -176,7 +176,8 @@ const gotoSignInLinkFromMailinator = (
 					Authorization: MAILINATOR_API_TOKEN || ''
 				},
 				params: {
-					skip
+					skip,
+					sort: 'ascending'
 				}
 			}
 		);
