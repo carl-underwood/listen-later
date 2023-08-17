@@ -125,9 +125,10 @@ test('critical flow', async ({ page, request }) => {
 	const email = `${uuid()}@listenlater.testinator.com`;
 	await fillEmailInputClickSendSignInLinkAndExpectConfirmation(page, email);
 
-	const firstSignInEmailMessageId = await gotoSignInLinkFromMailinator(email, request, page);
-
-	await expectListPageToBeVisible(page);
+	await expect(async () => {
+		await gotoSignInLinkFromMailinator(email, request, page);
+		await expectListPageToBeVisible(page);
+	}).toPass();
 
 	const ezraCollective = await getVisibleItemWithName(page, 'Ezra Collective', { expanded: false });
 
@@ -141,7 +142,7 @@ test('critical flow', async ({ page, request }) => {
 	await clickSignInWithEmailButton(page);
 	await fillEmailInputClickSendSignInLinkAndExpectConfirmation(page, email);
 
-	await gotoSignInLinkFromMailinator(email, request, page, [firstSignInEmailMessageId]);
+	await gotoSignInLinkFromMailinator(email, request, page);
 
 	await expectListPageToBeVisible(page);
 	await expect(promoteAccountAlert).not.toBeVisible();
@@ -159,13 +160,7 @@ const setupAppCheckDebugTokenInitScript = (page: Page) =>
 		).FIREBASE_APPCHECK_DEBUG_TOKEN = appCheckDebugToken;
 	}, FIREBASE_APPCHECK_DEBUG_TOKEN);
 
-const gotoSignInLinkFromMailinator = async (
-	email: string,
-	request: APIRequestContext,
-	page: Page,
-	notMessageIds: string[] = []
-) => {
-	let messageId: string;
+const gotoSignInLinkFromMailinator = (email: string, request: APIRequestContext, page: Page) =>
 	expect(async () => {
 		const inboxResponse = await request.get(
 			`https://mailinator.com/api/v2/domains/listenlater.testinator.com/inboxes/${
@@ -179,14 +174,7 @@ const gotoSignInLinkFromMailinator = async (
 		);
 
 		const messageJson = await inboxResponse.json();
-
-		if (!notMessageIds) {
-			messageId = messageJson.msgs[0]?.id;
-		} else {
-			messageId = messageJson.msgs.filter(
-				(msg: { id: string }) => !notMessageIds.includes(msg.id)
-			)[0]?.id;
-		}
+		const messageId = messageJson.msgs[0]?.id;
 
 		expect(messageId).not.toBeUndefined();
 
@@ -215,8 +203,6 @@ const gotoSignInLinkFromMailinator = async (
 
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		await page.goto(href!);
-	}).toPass();
 
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	return messageId!;
-};
+		return messageId;
+	}).toPass();
