@@ -19,4 +19,4 @@ We aim to introduce best-effort market detection and manual selection.
 
 ## Got an idea / suggestion?
 
-For feature requests, ideas & suggestions, please visit [Listen Later GitHub Issues](https://github.com/carl-hartshorn/listen-later/issues).
+For feature requests, ideas & suggestions, please visit [Listen Later Discussions on GitHub](https://github.com/carl-hartshorn/listen-later/discussions).
