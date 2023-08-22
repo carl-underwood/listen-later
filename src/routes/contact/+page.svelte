@@ -13,9 +13,15 @@
 		<h1 class="h1">Contact</h1>
 		<p>Need to get in touch?</p>
 		<p>
-			For bugs, feature requests, ideas & suggestions, please visit <a
+			For bugs, please visit <a
 				href="https://github.com/carl-hartshorn/listen-later/issues"
-				class="underline">Listen Later GitHub Issues</a
+				class="underline">Listen Later Issues on GitHub</a
+			>.
+		</p>
+		<p>
+			For feature requests, ideas & suggestions, please visit <a
+				href="https://github.com/carl-hartshorn/listen-later/discussions"
+				class="underline">Listen Later Discussions on GitHub</a
 			>.
 		</p>
 		<p>
