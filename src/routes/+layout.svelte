@@ -1,6 +1,5 @@
 <script lang="ts">
 	import '../theme.postcss';
-	import '@skeletonlabs/skeleton/styles/skeleton.css';
 	import '../app.postcss';
 
 	import { slide } from 'svelte/transition';
@@ -8,13 +7,14 @@
 	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
 	import {
+		initializeStores,
 		AppBar,
 		Drawer,
-		drawerStore,
+		getDrawerStore,
 		LightSwitch,
 		Modal,
-		modalStore,
-		modeCurrent
+		getModalStore,
+		modeCurrent,
 	} from '@skeletonlabs/skeleton';
 
 	import { auth } from '$lib/stores/auth';
@@ -37,6 +37,10 @@
 	} from './list/settings/searchParameters';
 
 	import { PUBLIC_FIREBASE_PROJECT_ID } from '$env/static/public';
+
+	initializeStores();
+	const drawerStore = getDrawerStore();
+	const modalStore = getModalStore();
 
 	if (
 		browser &&

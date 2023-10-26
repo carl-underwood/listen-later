@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { modalStore } from '@skeletonlabs/skeleton';
+	import { getModalStore } from '@skeletonlabs/skeleton';
 	import { loading } from '$lib/stores/loading';
 	import { user } from '$lib/stores/user';
 	import { auth } from '$lib/stores/auth';
@@ -9,6 +9,8 @@
 	import SignInWithAppleButton from './SignInWithAppleButton.svelte';
 	import { onMount } from 'svelte';
 
+	const modalStore = getModalStore();
+	
 	let promptForReauthentication = false;
 	let showEmailConfirmation = false;
 	let providerId: typeof ProviderId;

@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { modalStore } from '@skeletonlabs/skeleton';
+	import { getModalStore } from '@skeletonlabs/skeleton';
 	import { loading } from '$lib/stores/loading';
 	import { user } from '$lib/stores/user';
 	import { auth } from '$lib/stores/auth';
 	import type { AuthError } from 'firebase/auth';
 	import SignInForm from './SignInForm.svelte';
+
+	const modalStore = getModalStore();
 
 	let showCredentialAlreadyInUseError = false;
 
