@@ -1,14 +1,13 @@
 <script lang="ts">
-	import { Slugger } from 'marked';
 	import type { TokensList } from 'marked';
+	import GithubSlugger from 'github-slugger'
 
-	let slugger: Slugger;
+	const slugger = new GithubSlugger()
 
 	export let baseHeading = 1;
 	export let tokens: TokensList;
 
 	$: {
-		slugger = new Slugger();
 
 		const unsupportedTokenTypes = tokens
 			.filter(

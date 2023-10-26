@@ -318,4 +318,4 @@ export const clickSignInAndExpectPromoteAccountAlertDialog = async (
 };
 
 export const closeModal = (page: Page) =>
-	page.getByTestId('modal-backdrop').click({ position: { x: 0, y: 0 } });
+	page.getByTestId('modal-backdrop').click({ position: { x: 10, y: 10 } });

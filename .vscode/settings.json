@@ -4,7 +4,6 @@
 	"eslint.workingDirectories": ["./", "./functions"],
 	"eslint.validate": ["javascript", "typescript", "svelte"],
 	"files.eol": "\n",
-	"prettier.prettierPath": "./node_modules/prettier",
 	"[html]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},

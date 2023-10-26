@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { type ModalSettings, modalStore } from '@skeletonlabs/skeleton';
+	import { type ModalSettings, getModalStore } from '@skeletonlabs/skeleton';
 	import DeleteAccountModal from '$lib/components/DeleteAccountModal.svelte';
 	import PromoteAccountAlert from '$lib/components/PromoteAccountAlert.svelte';
 	import PromoteAccountModal from '$lib/components/PromoteAccountModal.svelte';
@@ -10,6 +10,8 @@
 		deleteAccountSearchParameterName,
 		promoteAccountSearchParameterName
 	} from './searchParameters';
+
+	const modalStore = getModalStore();
 
 	$: if ($page.url.searchParams.get(deleteAccountSearchParameterName) === 'true') {
 		showModal(deleteAccountModal);

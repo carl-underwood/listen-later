@@ -32,7 +32,7 @@ export function createItems() {
 			const q = query(collection($firestore, `users/${$user.uid}/items`));
 
 			unsubscribe = onSnapshot(q, (snapshot) => {
-				items = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id } as Item));
+				items = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }) as Item);
 				items.sort((a, b) => (a.addedAtUtc > b.addedAtUtc ? -1 : 1));
 				set(items);
 			});

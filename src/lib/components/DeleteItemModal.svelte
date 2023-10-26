@@ -3,7 +3,9 @@
 	import { loading } from '$lib/stores/loading';
 
 	import type Item from '$lib/types/Item';
-	import { modalStore } from '@skeletonlabs/skeleton';
+	import { getModalStore } from '@skeletonlabs/skeleton';
+
+	const modalStore = getModalStore();
 
 	export let item: Item;
 

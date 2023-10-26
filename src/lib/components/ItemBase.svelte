@@ -9,11 +9,13 @@
 		SlideToggle,
 		type ModalComponent,
 		type ModalSettings,
-		modalStore
+		getModalStore
 	} from '@skeletonlabs/skeleton';
 	import TrashBin from './icons/trash-bin.svelte';
 	import DeleteItemModal from './DeleteItemModal.svelte';
 	import type Item from '$lib/types/Item';
+
+	const modalStore = getModalStore();
 
 	export let item: Item;
 	export let openAccordionItemId: string | null;
