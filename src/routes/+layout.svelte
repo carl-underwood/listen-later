@@ -14,7 +14,7 @@
 		LightSwitch,
 		Modal,
 		getModalStore,
-		modeCurrent,
+		modeCurrent
 	} from '@skeletonlabs/skeleton';
 
 	import { auth } from '$lib/stores/auth';
