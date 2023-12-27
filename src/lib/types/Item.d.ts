@@ -1,4 +1,4 @@
-import type ItemType from './ItemType';
+import type { ItemType } from './ItemType';
 import type Service from './Service';
 
 export default interface Item {

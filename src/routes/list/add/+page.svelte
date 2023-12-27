@@ -11,8 +11,7 @@
 	import SearchLoop from '$lib/components/icons/search-loop.svelte';
 	import Loading from '$lib/components/Loading.svelte';
 	import Check from '$lib/components/icons/check.svelte';
-	import type ItemType from '$lib/types/ItemType';
-	import { itemTypes } from '$lib/types/ItemType';
+	import { type ItemType, itemTypes } from '$lib/types/ItemType';
 	import SpotifyLogo from '$lib/components/SpotifyLogo.svelte';
 	import ItemImage from '$lib/components/ItemImage.svelte';
 

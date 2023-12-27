@@ -8,7 +8,7 @@ import type {
 	Track
 } from './types/spotify';
 import type SearchResult from '../../src/lib/types/SearchResult';
-import type ItemType from '../../src/lib/types/ItemType';
+import type { ItemType } from '../../src/lib/types/ItemType';
 import type ItemMetadata from '../../src/lib/types/ItemMetadata';
 
 const upperFirstCharacter = (input: string) => [input[0].toUpperCase(), ...input.slice(1)].join('');

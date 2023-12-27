@@ -10,7 +10,7 @@
 	import { onMount } from 'svelte';
 
 	const modalStore = getModalStore();
-	
+
 	let promptForReauthentication = false;
 	let showEmailConfirmation = false;
 	let providerId: typeof ProviderId;

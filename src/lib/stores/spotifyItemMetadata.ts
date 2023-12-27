@@ -5,7 +5,7 @@ import type Item from '../types/Item';
 import { items } from './items';
 import { getSpotifyMetadata } from '$lib/functions/getSpotifyMetadata';
 import arrayChunks from '$lib/helpers/arrayChunks';
-import type ItemType from '$lib/types/ItemType';
+import type { ItemType } from '$lib/types/ItemType';
 import type { AppCheck } from 'firebase/app-check';
 import type { Functions } from 'firebase/functions';
 import { appCheck } from './appCheck';

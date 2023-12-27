@@ -6,7 +6,7 @@ import { getFirestore } from 'firebase-admin/firestore';
 import { getAccessToken, search as spotifySearch, getItems } from './spotify';
 import { mapToSearchResults, mapToItemMetadata } from './mapping';
 import { itemTypes } from '../../src/lib/types/ItemType';
-import type ItemType from '../../src/lib/types/ItemType';
+import type { ItemType } from '../../src/lib/types/ItemType';
 import type { SpotifyItemType } from './types/spotify';
 
 const SPOTIFY_CLIENT_ID = defineString('SPOTIFY_CLIENT_ID');

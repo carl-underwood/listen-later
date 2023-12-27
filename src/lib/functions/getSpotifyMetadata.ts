@@ -3,7 +3,7 @@ import { httpsCallable } from '@firebase/functions';
 import { appCheck } from '../stores/appCheck';
 import { functions } from '../stores/functions';
 import type ItemMetadata from '$lib/types/ItemMetadata';
-import type ItemType from '$lib/types/ItemType';
+import type { ItemType } from '$lib/types/ItemType';
 
 export const getSpotifyMetadata = async (
 	itemType: ItemType,
