@@ -24,13 +24,13 @@ jobs:
       SPOTIFY_CLIENT_SECRET: '${{ secrets.SPOTIFY_CLIENT_SECRET }}'
     steps:
       - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: npm ci
       - name: Generate new version number
         id: generate_version_number
         run: 'npx tsx ./generateVersionNumber.ts ${{ github.workflow_ref }} ${{ github.run_number }} >> $GITHUB_OUTPUT'
       - name: Set version
         run: npm version "${{ steps.generate_version_number.outputs.NEW_VERSION_NUMBER }}" --no-git-tag-version
-      - name: Install dependencies
-        run: npm ci
       - name: Run site type check
         run: npm run check
       - name: Build site
