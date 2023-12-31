@@ -26,6 +26,8 @@ jobs:
       - uses: actions/checkout@v3
       - name: Install dependencies
         run: npm ci
+      - name: SvelteKit sync
+        run: npx svelte-kit sync
       - name: Generate new version number
         id: generate_version_number
         run: 'npx tsx ./generateVersionNumber.ts ${{ github.workflow_ref }} ${{ github.run_number }} >> $GITHUB_OUTPUT'
