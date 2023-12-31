@@ -57,7 +57,7 @@ jobs:
           projectId: listen-later-cloud
           channelId: live
       - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v0
+        uses: google-github-actions/auth@v2
         with:
           credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_LISTEN_LATER_CLOUD }}'
       - name: Deploy Functions
