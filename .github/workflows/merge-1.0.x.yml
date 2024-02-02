@@ -23,9 +23,9 @@ jobs:
       SPOTIFY_CLIENT_ID: 'd46d2b58a44947d093ecbe0289a5dfc3'
       SPOTIFY_CLIENT_SECRET: '${{ secrets.SPOTIFY_CLIENT_SECRET }}'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js 18.x
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18.x
       - name: Install dependencies
@@ -49,28 +49,21 @@ jobs:
           echo SPOTIFY_CLIENT_ID="$SPOTIFY_CLIENT_ID" >> ./functions/.env
           echo SPOTIFY_CLIENT_SECRET="$SPOTIFY_CLIENT_SECRET" >> ./functions/.env
           cat ./functions/.env
-      - name: Deploy Hosting
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_LISTEN_LATER_CLOUD }}'
-          projectId: listen-later-cloud
-          channelId: live
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
           credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_LISTEN_LATER_CLOUD }}'
-      - name: Deploy Functions
-        run: npx firebase-tools deploy --only functions --force
+      - name: Deploy
+        run: npx firebase-tools deploy --force
   verify:
     needs: build_and_deploy
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.41.2-jammy
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js 18.x
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18.x
       - name: Install dependencies
@@ -81,7 +74,7 @@ jobs:
           FIREBASE_APPCHECK_DEBUG_TOKEN: '${{ secrets.FIREBASE_APPCHECK_DEBUG_TOKEN }}'
           MAILINATOR_API_TOKEN: '${{ secrets.MAILINATOR_API_TOKEN }}'
       - name: Upload Playwright report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-smoke-test-report

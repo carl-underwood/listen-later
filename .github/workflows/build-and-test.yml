@@ -21,9 +21,9 @@ jobs:
       SPOTIFY_CLIENT_ID: 'd46d2b58a44947d093ecbe0289a5dfc3'
       SPOTIFY_CLIENT_SECRET: '${{ secrets.SPOTIFY_CLIENT_SECRET }}'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js 18.x
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18.x
       - name: Install dependencies
@@ -41,7 +41,7 @@ jobs:
       - name: Build functions
         run: npm run build --workspace ./functions
       - name: Install Java for Firebase Emulators
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -57,7 +57,7 @@ jobs:
       - name: Run Playwright tests against Firebase Emulators
         run: firebase emulators:exec "npm run test:integration -- --project='${{ matrix.project }}'"
       - name: Upload Playwright report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report-${{ matrix.project }}
