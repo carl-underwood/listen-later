@@ -20,6 +20,7 @@
 <div class="card p-4">
 	<p>Are you sure you want to delete <em>{item.name}</em>?</p>
 	<div class="mt-4 flex gap-4 justify-center">
+		<button class="btn variant-soft" disabled={$loading} on:click={closeModal}>Cancel</button>
 		<button
 			class="btn bg-gradient-to-br variant-filled-error"
 			disabled={$loading}
@@ -27,6 +28,5 @@
 		>
 			Delete
 		</button>
-		<button class="btn variant-soft" disabled={$loading} on:click={closeModal}>Cancel</button>
 	</div>
 </div>

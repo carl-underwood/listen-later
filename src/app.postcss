@@ -3,8 +3,16 @@
 @tailwind utilities;
 @tailwind variants;
 
-:focus-visible {
-	outline-color: rgb(var(--color-surface-400));
-	outline-style: solid;
-	outline-width: var(--theme-border-base);
+:focus-visible:not(input) {
+	outline-color: rgb(var(--color-surface-400)) !important;
+	outline-style: solid !important;
+	outline-width: var(--theme-border-base) !important;
+}
+
+input:focus-visible {
+	outline-style: unset !important;
+}
+
+.modal *:focus:not(:focus-visible) {
+	outline-style: unset !important;
 }

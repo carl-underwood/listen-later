@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { getModalStore } from '@skeletonlabs/skeleton';
+	import { focusTrap, getModalStore } from '@skeletonlabs/skeleton';
 	import { loading } from '$lib/stores/loading';
 	import { user } from '$lib/stores/user';
 	import { auth } from '$lib/stores/auth';
@@ -59,8 +59,9 @@
 		modalStore.close();
 	};
 
-	onMount(() =>
-		loading.whileAwaiting(async () => {
+	var trapFocus = false;
+	onMount(async () => {
+		await loading.whileAwaiting(async () => {
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			if (!$user!.isAnonymous) {
 				await closeModalAndRedirectToList();
@@ -79,11 +80,13 @@
 
 				throw error;
 			}
-		})
-	);
+		});
+
+		trapFocus = true;
+	});
 </script>
 
-<div class="card p-4" aria-live="polite">
+<div class="card p-4" aria-live="polite" use:focusTrap={trapFocus}>
 	<div class="flex flex-col gap-4 items-center text-center">
 		{#if !showCredentialAlreadyInUseError}
 			<p>Please sign in to create your account</p>
