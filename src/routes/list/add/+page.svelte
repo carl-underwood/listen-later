@@ -174,7 +174,7 @@
 		<label class="label">
 			<span class="sr-only">Search</span>
 			<div class="input-group flex bg-surface-50-900-token !border-surface-900-50-token">
-				<div class="relative grow text-surface-900-50-token bg-surface-50-900-token !px-0">
+				<div class="relative grow text-surface-900-50-token bg-surface-50-900-token !px-0 min-w-0">
 					<div class="absolute">
 						<SearchLoop />
 					</div>
@@ -184,7 +184,7 @@
 						bind:value={searchQuery}
 						disabled={$loading}
 						on:input={onSearchInput}
-						class="pl-14 pr-4 !bg-surface-50-900-token focus:!ring-4 focus:ring-inset focus:ring-surface-500 grow"
+						class="pl-14 pr-4 !bg-surface-50-900-token focus:!ring-4 focus:ring-inset focus:ring-surface-500 grow min-w-0"
 					/>
 				</div>
 				<button
