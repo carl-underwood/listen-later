@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { getModalStore } from '@skeletonlabs/skeleton';
+	import { focusTrap, getModalStore } from '@skeletonlabs/skeleton';
 	import { loading } from '$lib/stores/loading';
 	import { user } from '$lib/stores/user';
 	import { auth } from '$lib/stores/auth';
@@ -14,6 +14,7 @@
 	let promptForReauthentication = false;
 	let showEmailConfirmation = false;
 	let providerId: typeof ProviderId;
+	let trapFocus = false;
 
 	const confirmDelete = () =>
 		loading.whileAwaiting(async () => {
@@ -79,8 +80,8 @@
 
 	const closeModal = () => modalStore.close();
 
-	onMount(() =>
-		loading.whileAwaiting(async () => {
+	onMount(async () => {
+		await loading.whileAwaiting(async () => {
 			const {
 				AuthErrorCodes,
 				EmailAuthProvider,
@@ -111,15 +112,18 @@
 
 				throw error;
 			}
-		})
-	);
+		});
+
+		trapFocus = true;
+	});
 </script>
 
-<div class="card p-4" aria-live="polite">
+<div class="card p-4" aria-live="polite" use:focusTrap={trapFocus}>
 	{#if !promptForReauthentication}
 		<p>Are you sure you want to delete your account?</p>
 		<p><strong>This can not be undone</strong></p>
 		<div class="mt-4 flex gap-4 justify-center">
+			<button class="btn variant-soft" disabled={$loading} on:click={closeModal}>Cancel</button>
 			<button
 				class="btn bg-gradient-to-br variant-filled-error"
 				disabled={$loading}
@@ -127,7 +131,6 @@
 			>
 				Delete
 			</button>
-			<button class="btn variant-soft" disabled={$loading} on:click={closeModal}>Cancel</button>
 		</div>
 	{:else}
 		<div class="flex flex-col gap-4 items-center text-center">
