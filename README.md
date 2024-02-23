@@ -8,6 +8,20 @@ A web application for storing things to listen to later on Spotify. Built using 
 
 ## Dependencies
 
+### Dev Container
+
+Configuration has been added to the `.devcontainer` directory to allow for development to be carried out in a Docker container, avoiding the need to install specific development dependencies for this project on the host machine. For more information on Dev Containers, see [Development Containers](https://containers.dev/) & [Developing inside a Container](https://code.visualstudio.com/docs/devcontainers/containers).
+
+`devcontainer.json` uses the Playwright image (see the [CI / CD section](#ci--cd) below) and installs Java as described in the [Firebase Tools section](#firebase-tools) below. It also describes the extensions and settings for VS Code, as well as a `postCreateCommand` that sets up the container ready for the project to be run. The only manual intervention required before running `npm run dev` is to place the `.env` files as described in the [`.env` files section](#env-files) below.
+
+#### Performance
+
+When first attempting to use a Dev Container, the exposed <http://localhost:5000> port when running `npm run dev` was very slow, there were also issues with running the Firebase Functions emulator, which appeared to be due to the emulator timing out when attempting to read the functions defined in code. The [Improve disk performance article](https://code.visualstudio.com/remote/advancedcontainers/improve-performance) notes:
+
+> The Dev Containers extension uses "bind mounts" to source code in your local filesystem by default. While this is the simplest option, on macOS and Windows, you may encounter slower disk performance when running commands like yarn install from inside the container.
+
+To resolve this, the option ["Store your source code in the WSL 2 filesystem on Windows"](https://code.visualstudio.com/remote/advancedcontainers/improve-performance#_store-your-source-code-in-the-wsl-2-filesystem-on-windows) was selected as a best fit for my personal development workflow, however ["Use Clone Repository in Container Volume"](https://code.visualstudio.com/remote/advancedcontainers/improve-performance#_use-clone-repository-in-container-volume) was also tested and seemed to resolve the issue too.
+
 ### Firebase Tools
 
 Firebase Tools are required for local emulators:
@@ -57,7 +71,7 @@ Finally, a test exists to generate the screenshots used on the home and about pa
 
 The `.github/workflows` directory contains the GitHub Actions workflows that are run on PR & merge.
 
-`build-and-test.yml` is a reusable workflow that's run on PR as well as on merge. It lints, builds and tests the site and functions against the Firebase Emulators. The [Playwright container](https://playwright.dev/docs/ci#via-containers) `mcr.microsoft.com/playwright:v1.41.2-jammy` is used to avoid the overhead of installing browsers and dependencies on each run. Since this container doesn't have Java installed (which is required for the Firebase Emulators to run) the `actions/setup-java@v4` step is used to install Java.
+`build-and-test.yml` is a reusable workflow that's run on PR as well as on merge. It lints, builds and tests the site and functions against the Firebase Emulators. The [Playwright image](https://playwright.dev/docs/ci#via-containers) `mcr.microsoft.com/playwright:v1.41.2-jammy` is used to avoid the overhead of installing browsers and dependencies on each run. Since this container doesn't have Java installed (which is required for the Firebase Emulators to run) the `actions/setup-java@v4` step is used to install Java.
 
 `merge-1.0.x.yml` first runs the job from `build-and-test.yml`, before deploying the site to Firebase and running smoke tests against the deployed site.
 
