@@ -76,7 +76,7 @@ describe('add page', () => {
 			}
 		];
 
-		const searchMock = search as Mock<[string], Promise<SearchResult[]>>;
+		const searchMock = search as Mock<(searchQuery: string) => Promise<SearchResult[]>>;
 		searchMock.mockResolvedValue(searchResults);
 
 		render(AddPage);
