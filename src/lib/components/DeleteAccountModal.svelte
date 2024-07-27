@@ -6,7 +6,6 @@
 	import { auth } from '$lib/stores/auth';
 	import type { AuthError, ProviderId } from 'firebase/auth';
 	import SignInWithGoogleButton from './SignInWithGoogleButton.svelte';
-	import SignInWithAppleButton from './SignInWithAppleButton.svelte';
 	import { onMount } from 'svelte';
 
 	const modalStore = getModalStore();
@@ -63,16 +62,6 @@
 			const { GoogleAuthProvider, reauthenticateWithRedirect } = await import('firebase/auth');
 
 			const provider = new GoogleAuthProvider();
-
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			await reauthenticateWithRedirect($user!, provider);
-		});
-
-	const signInWithApple = () =>
-		loading.whileAwaiting(async () => {
-			const { OAuthProvider, reauthenticateWithRedirect } = await import('firebase/auth');
-
-			const provider = new OAuthProvider('apple.com');
 
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			await reauthenticateWithRedirect($user!, provider);
@@ -150,10 +139,6 @@
 					{/if}
 					{#if $user?.providerData.find((provider) => provider.providerId === providerId.GOOGLE)}
 						<SignInWithGoogleButton on:click={signInWithGoogle} />
-					{/if}
-
-					{#if $user?.providerData.find((provider) => provider.providerId === 'apple.com')}
-						<SignInWithAppleButton on:click={signInWithApple} />
 					{/if}
 				</div>
 			{/if}

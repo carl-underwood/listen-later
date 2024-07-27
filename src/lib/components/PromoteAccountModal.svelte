@@ -44,16 +44,6 @@
 			await linkWithRedirect($user!, provider);
 		});
 
-	const linkWithApple = () =>
-		loading.whileAwaiting(async () => {
-			const { OAuthProvider, linkWithRedirect } = await import('firebase/auth');
-
-			const provider = new OAuthProvider('apple.com');
-
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			await linkWithRedirect($user!, provider);
-		});
-
 	const closeModalAndRedirectToList = async () => {
 		await goto('/list');
 		modalStore.close();
@@ -102,10 +92,6 @@
 				in this guest account list will need to be manually added to that account).
 			</p>
 		{/if}
-		<SignInForm
-			on:signInWithGoogleClicked={linkWithGoogle}
-			on:signInWithAppleClicked={linkWithApple}
-			{tryEmailLink}
-		/>
+		<SignInForm on:signInWithGoogleClicked={linkWithGoogle} {tryEmailLink} />
 	</div>
 </div>

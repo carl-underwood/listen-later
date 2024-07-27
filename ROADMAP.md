@@ -1,10 +1,10 @@
 # Roadmap
 
-## 1.1.0
+## 1.2.0
 
 List filtering & ordering (e.g. the ability to filter out items marked as listened to).
 
-## 1.2.0
+## 1.3.0
 
 Support for other Spotify markets.
 
@@ -14,7 +14,6 @@ We aim to introduce best-effort market detection and manual selection.
 
 ## Considering for later versions
 
-- Installable PWA.
 - Support for viewing the list offline.
 
 ## Got an idea / suggestion?

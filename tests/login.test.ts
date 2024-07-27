@@ -3,12 +3,10 @@ import { v4 as uuid } from 'uuid';
 import retreiveMostRecentOobCode from './helpers/retrieveMostRecentOobCode';
 import {
 	autoGenerateOAuthUserDetails,
-	clickSignInWithAppleButton,
 	clickSignInWithEmailButton,
 	clickSignInWithGoogleButton,
 	clickSignOutButton,
 	closeNavigation,
-	completeSignInWithApple,
 	completeSignInWithGoogle,
 	expectListPageToBeVisible,
 	fillEmailInputClickSendSignInLinkAndExpectConfirmation,
@@ -120,49 +118,6 @@ test.describe('list page', () => {
 		await clickSignInWithGoogleButton(page);
 		await fillOAuthUserEmail(page, email);
 		await completeSignInWithGoogle(page);
-
-		await waitForUrlWithSpotifyItemOpen(page, id);
-		await expectListPageToBeVisible(page);
-		await expect(newItem).toBeVisible();
-	});
-
-	test('shows a button to sign in with Apple when not signed in', async ({ page, browserName }) => {
-		skipTestOnWebkit(browserName);
-
-		await goToListPage(page);
-		await clickSignInWithAppleButton(page);
-		await autoGenerateOAuthUserDetails(page);
-		await completeSignInWithApple(page);
-		await expectListPageToBeVisible(page);
-	});
-
-	test('links an account created via sign in with email when signing in with Apple using the same email', async ({
-		page,
-		request,
-		browserName
-	}) => {
-		skipTestOnWebkit(browserName);
-
-		await goToListPage(page);
-		await clickSignInWithEmailButton(page);
-
-		const email = `${uuid()}@listenlater.cloud`;
-
-		await fillEmailInputClickSendSignInLinkAndExpectConfirmation(page, email);
-		await retreiveMostRecentOobCodeAndGoTo(email, request, page);
-		await expectListPageToBeVisible(page);
-
-		const name = 'Victory Dance';
-		const id = '5Nu4AvrNgIx42nWGbteHLh';
-		const newItem = await goToSearchPageAddItemAndVerify(page, name, id);
-
-		await openNavigation(page);
-		await clickSignOutButton(page);
-		await closeNavigation(page);
-
-		await clickSignInWithAppleButton(page);
-		await fillOAuthUserEmail(page, email);
-		await completeSignInWithApple(page);
 
 		await waitForUrlWithSpotifyItemOpen(page, id);
 		await expectListPageToBeVisible(page);

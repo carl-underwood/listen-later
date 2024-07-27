@@ -4,7 +4,6 @@
 	import { user } from '$lib/stores/user';
 	import { loading } from '$lib/stores/loading';
 	import SignInWithGoogleButton from './SignInWithGoogleButton.svelte';
-	import SignInWithAppleButton from './SignInWithAppleButton.svelte';
 	import type { AuthError } from 'firebase/auth';
 	import { goto } from '$app/navigation';
 
@@ -170,6 +169,5 @@
 			Sign in with Email
 		</button>
 		<SignInWithGoogleButton on:click={() => dispatch('signInWithGoogleClicked')} />
-		<SignInWithAppleButton on:click={() => dispatch('signInWithAppleClicked')} />
 	{/if}
 </div>

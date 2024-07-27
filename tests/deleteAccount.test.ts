@@ -62,24 +62,6 @@ test.describe('settings page', () => {
 		await ensureUserItemsDeleted(user.uid);
 	});
 
-	test('allows an account using Sign in with Apple to be deleted', async ({
-		page,
-		browserName
-	}) => {
-		skipTestOnWebkit(browserName);
-
-		await goToListPage(page);
-
-		const { email, signInButton, user } = await signInWithApple(page);
-
-		await addSong(page);
-		await ensureSongHasBeenAdded(user.uid);
-		await deleteAccount(page);
-		await ensureLoggedOutAndConfirmationModalClosed(page, signInButton);
-		await ensureUserAccountIsDeleted(email);
-		await ensureUserItemsDeleted(user.uid);
-	});
-
 	test('allows an account using email to be deleted following reauthentication', async ({
 		page,
 		request
@@ -166,27 +148,6 @@ test.describe('settings page', () => {
 		await ensureUserAccountIsDeleted(email);
 		await ensureUserItemsDeleted(user.uid);
 	});
-
-	test('allows an account using Sign in with Apple to be deleted following reauthentication', async ({
-		page,
-		browserName
-	}) => {
-		skipTestOnWebkit(browserName);
-
-		await goToListPage(page);
-
-		const { email, signInButton, user } = await signInWithApple(page);
-
-		await addSong(page);
-		await ensureSongHasBeenAdded(user.uid);
-		await forceReauthenticationForAccountDeletion(page);
-		await deleteAccount(page);
-		await expectSignInButtonAndSignInWithExistingAccount(page, signInButton, email);
-		await expectAndConfirmDeletionConfirmation(page);
-		await ensureLoggedOutAndConfirmationModalClosed(page, signInButton);
-		await ensureUserAccountIsDeleted(email);
-		await ensureUserItemsDeleted(user.uid);
-	});
 });
 
 const expectSendSignInLinkButtonAndClick = async (page: Page) => {
@@ -223,7 +184,7 @@ const signInWithEmail = async (page: Page, request: APIRequestContext) => {
 	return { email, signInButton, user };
 };
 
-const signInWithOAuthProvider = async (page: Page, oAuthProvider: 'Apple' | 'Google') => {
+const signInWithOAuthProvider = async (page: Page, oAuthProvider: 'Google') => {
 	const signInButton = page.getByRole('button', { name: `Sign in with ${oAuthProvider}` });
 	await expect(signInButton).toBeVisible();
 	await signInButton.click();
@@ -256,7 +217,6 @@ const signInWithOAuthProvider = async (page: Page, oAuthProvider: 'Apple' | 'Goo
 };
 
 const signInWithGoogle = (page: Page) => signInWithOAuthProvider(page, 'Google');
-const signInWithApple = (page: Page) => signInWithOAuthProvider(page, 'Apple');
 
 const ensureUserIsCreated = async (email: string) => {
 	let user: UserRecord;
