@@ -11,7 +11,7 @@ export const goToListPage = (page: Page) => page.goto('/list');
 
 const clickSignInButton = async (
 	page: Page,
-	type: 'anonymously' | 'with Email' | 'with Google' | 'with Apple'
+	type: 'anonymously' | 'with Email' | 'with Google'
 ) => {
 	const signInButton = page.getByRole('button', {
 		name: type === 'anonymously' ? 'Try it out' : `Sign in ${type}`
@@ -54,8 +54,6 @@ export const retreiveMostRecentOobCodeAndGoTo = async (
 
 export const clickSignInWithGoogleButton = (page: Page) => clickSignInButton(page, 'with Google');
 
-export const clickSignInWithAppleButton = (page: Page) => clickSignInButton(page, 'with Apple');
-
 export const clickAddOAuthAccountButton = async (page: Page) => {
 	const addNewAccountButton = page.getByRole('button', { name: 'Add new account' });
 	await expect(addNewAccountButton).toBeVisible();
@@ -95,7 +93,7 @@ export const fillOAuthUserEmail = (page: Page, email: string) =>
 export const signInAsExistingOAuthUser = (page: Page, email: string) =>
 	page.getByText(email).click();
 
-const completeSignInWith = async (page: Page, oAuthProvider: 'Apple' | 'Google') => {
+const completeSignInWith = async (page: Page, oAuthProvider: 'Google') => {
 	const signInWithOAuthProviderButton = page.getByRole('button', {
 		name: `Sign in with ${oAuthProvider}.com`
 	});
@@ -104,8 +102,6 @@ const completeSignInWith = async (page: Page, oAuthProvider: 'Apple' | 'Google')
 };
 
 export const completeSignInWithGoogle = (page: Page) => completeSignInWith(page, 'Google');
-
-export const completeSignInWithApple = (page: Page) => completeSignInWith(page, 'Apple');
 
 export const expectListPageToBeVisible = (page: Page) =>
 	expect(page.getByRole('heading', { name: 'List' })).toBeVisible();

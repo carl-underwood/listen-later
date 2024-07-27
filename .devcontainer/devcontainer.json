@@ -46,7 +46,8 @@
 			}
 		}
 	},
-	"postCreateCommand": "npm i && npm i -g firebase-tools && npx svelte-kit sync && npm run build --workspace functions"
+	"postCreateCommand": "npm i && npm i -g firebase-tools && npx svelte-kit sync && npm run build --workspace functions",
+	"forwardPorts": [4000, 5000, 5001, 8080, 9099]
 
 	// See https://github.com/firebase/firebase-tools/issues/5888#issuecomment-1641950931 for issues starting Functions emulator in dev contianer
 

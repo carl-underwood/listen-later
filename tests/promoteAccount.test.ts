@@ -4,13 +4,11 @@ import {
 	addItemAndExpectPromoteAccountAlert,
 	autoGenerateOAuthUserDetails,
 	clickSignInAndExpectPromoteAccountAlertDialog,
-	clickSignInWithAppleButton,
 	clickSignInWithEmailButton,
 	clickSignInWithGoogleButton,
 	clickSignOutButton,
 	closeModal,
 	closeNavigation,
-	completeSignInWithApple,
 	completeSignInWithGoogle,
 	expectListPageToBeVisible,
 	expectPromoteAccountAlertDialog,
@@ -197,53 +195,6 @@ test.describe('list page', () => {
 		await expect(newItem).toBeVisible();
 	});
 
-	test('shows an alert suggesting account promotion when an anonymous user has added an item and allows promotion via Apple', async ({
-		page,
-		browserName
-	}) => {
-		skipTestOnWebkit(browserName);
-
-		await goToListPage(page);
-		await signInAnonymously(page);
-		await expectListPageToBeVisible(page);
-
-		const { promoteAccountAlert, name } = await addItemAndExpectPromoteAccountAlert(page);
-
-		const promoteAccountAlertDialog = await clickSignInAndExpectPromoteAccountAlertDialog(
-			page,
-			promoteAccountAlert
-		);
-
-		await closeModal(page);
-		await page.waitForURL('/list/settings');
-		await expect(promoteAccountAlert).toBeVisible();
-		await expect(promoteAccountAlertDialog).not.toBeVisible();
-		await clickSignInAndExpectPromoteAccountAlertDialog(page, promoteAccountAlert, 'button');
-
-		await clickSignInWithAppleButton(page);
-		await autoGenerateOAuthUserDetails(page);
-		const email = await getOAuthUserEmail(page);
-		await completeSignInWithApple(page);
-
-		await expectListPageToBeVisible(page);
-
-		const newItem = await getVisibleItemWithName(page, name, { expanded: false });
-
-		await expect(promoteAccountAlert).not.toBeVisible();
-		await expect(newItem).toBeVisible();
-
-		await openNavigation(page);
-		await clickSignOutButton(page);
-		await closeNavigation(page);
-
-		await clickSignInWithAppleButton(page);
-		await signInAsExistingOAuthUser(page, email);
-
-		await expectListPageToBeVisible(page);
-		await expect(promoteAccountAlert).not.toBeVisible();
-		await expect(newItem).toBeVisible();
-	});
-
 	test('shows an error when attempting to promote an anonymous account using a Google credential that already has an account', async ({
 		page,
 		browserName
@@ -278,53 +229,6 @@ test.describe('list page', () => {
 		await clickSignInAndExpectPromoteAccountAlertDialog(page, promoteAccountAlert, 'button');
 
 		await clickSignInWithGoogleButton(page);
-		await signInAsExistingOAuthUser(page, email);
-
-		await expectPromoteAccountAlertDialog(page);
-		await expect(
-			page.getByText(
-				'You tried to sign in to an account that already exists. ' +
-					'Please try signing in again with a different account. ' +
-					'Alternatively, if you wish to use that account, please sign out before signing in again ' +
-					'(items in this guest account list will need to be manually added to that account).'
-			)
-		).toBeVisible();
-	});
-
-	test('shows an error when attempting to promote an anonymous account using a Apple credential that already has an account', async ({
-		page,
-		browserName
-	}) => {
-		skipTestOnWebkit(browserName);
-
-		await goToListPage(page);
-		await clickSignInWithAppleButton(page);
-		await autoGenerateOAuthUserDetails(page);
-		const email = await getOAuthUserEmail(page);
-		await completeSignInWithApple(page);
-		await expectListPageToBeVisible(page);
-
-		await openNavigation(page);
-		await clickSignOutButton(page);
-		await closeNavigation(page);
-
-		await signInAnonymously(page);
-		await expectListPageToBeVisible(page);
-
-		const { promoteAccountAlert } = await addItemAndExpectPromoteAccountAlert(page);
-
-		const promoteAccountAlertDialog = await clickSignInAndExpectPromoteAccountAlertDialog(
-			page,
-			promoteAccountAlert
-		);
-
-		await closeModal(page);
-		await page.waitForURL('/list/settings');
-		await expect(promoteAccountAlert).toBeVisible();
-		await expect(promoteAccountAlertDialog).not.toBeVisible();
-		await clickSignInAndExpectPromoteAccountAlertDialog(page, promoteAccountAlert, 'button');
-
-		await clickSignInWithAppleButton(page);
 		await signInAsExistingOAuthUser(page, email);
 
 		await expectPromoteAccountAlertDialog(page);

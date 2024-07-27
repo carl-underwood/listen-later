@@ -25,20 +25,6 @@
 			await signInWithRedirect($auth, provider);
 		});
 	};
-
-	const signInWithApple = async () => {
-		if (!$auth) {
-			return;
-		}
-
-		await loading.whileAwaiting(async () => {
-			const { OAuthProvider, signInWithRedirect } = await import('firebase/auth');
-
-			const provider = new OAuthProvider('apple.com');
-
-			await signInWithRedirect($auth, provider);
-		});
-	};
 </script>
 
 <svelte:head>
@@ -88,7 +74,6 @@
 		<SignInForm
 			on:emailFormToggled={(event) => (showingEmailForm = event.detail.showingEmailForm)}
 			on:signInWithGoogleClicked={signInWithGoogle}
-			on:signInWithAppleClicked={signInWithApple}
 			{tryEmailLink}
 		/>
 	{:else}
