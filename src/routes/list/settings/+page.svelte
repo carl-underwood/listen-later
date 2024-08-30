@@ -53,10 +53,7 @@
 </script>
 
 <h1 class="sr-only">Settings</h1>
-<div
-	id="settings-container"
-	class="flex flex-col min-h-[calc(100vh - 4rem)] min-h-[calc(100svh - 4rem)]"
->
+<div id="settings-container" class="flex flex-col gap-4">
 	{#if $user?.isAnonymous}
 		<PromoteAccountAlert>
 			<svelte:fragment slot="signInButton">
@@ -70,7 +67,7 @@
 		</PromoteAccountAlert>
 	{/if}
 
-	<div class="flex flex-col gap-4 ring-4 ring-surface-900-50-token mt-1 mb-5 p-4">
+	<div class="flex flex-col gap-4 ring-4 ring-surface-900-50-token mt-1 mb-1 p-4">
 		<h2 class="h2">Spotify</h2>
 		<p>
 			Listen Later currently only supports searching Spotify for songs etc. available to the
@@ -84,9 +81,7 @@
 		</p>
 	</div>
 
-	<div class="grow" />
-
-	<div class="flex flex-col items-center py-4">
+	<div class="flex flex-col items-center justify-end grow">
 		<button on:click={deleteAccount} class="btn variant-filled-error btn-2xl">
 			Delete account
 		</button>
@@ -95,6 +90,7 @@
 
 <style>
 	#settings-container {
-		min-height: calc(100svh - 6.75rem);
+		min-height: calc(100vh - (4.6875rem + 1rem)); /* Top bar + bottom padding */
+		min-height: calc(100svh - (4.6875rem + 1rem)); /* Top bar + bottom padding */
 	}
 </style>

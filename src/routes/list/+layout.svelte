@@ -31,7 +31,7 @@
 	<meta name="robots" content="noindex" />
 </svelte:head>
 
-<div class="max-w-2xl mx-auto py-4" aria-live="polite">
+<div class="max-w-2xl mx-auto pb-4" aria-live="polite">
 	{#if $user === undefined}
 		<Loading />
 	{:else if $user === null}
