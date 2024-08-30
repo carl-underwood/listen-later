@@ -1,10 +1,10 @@
 import { expect, type APIRequestContext, type Locator, type Page } from '@playwright/test';
 import retreiveMostRecentOobCode from './retrieveMostRecentOobCode';
 
-export const expectNavigationItem = async (page: Page, name: string, href: string) => {
-	const settingsNavigationItem = page.getByRole('link', { name });
-	await expect(settingsNavigationItem).toBeVisible();
-	await expect(settingsNavigationItem).toHaveAttribute('href', href);
+export const expectNavigationItem = async (locator: Locator, name: string, href: string) => {
+	const navigationItem = locator.getByRole('link', { name });
+	await expect(navigationItem).toBeVisible();
+	await expect(navigationItem).toHaveAttribute('href', href);
 };
 
 export const goToListPage = (page: Page) => page.goto('/list');

@@ -29,6 +29,13 @@
 					}
 				]
 			}
+		],
+		"redirects": [
+			{
+				"source": "/about",
+				"destination": "/",
+				"type": 302
+			}
 		]
 	},
 	"emulators": {
