@@ -8,7 +8,7 @@
 
 <div
 	role="alert"
-	class="alert variant-filled-error ring-4 ring-surface-900-50-token mt-1 mb-5"
+	class="alert variant-filled-error ring-4 ring-surface-900-50-token mt-1 mb-1"
 	transition:slideWithPrefersReducedMotion
 >
 	<div class="alert-message">

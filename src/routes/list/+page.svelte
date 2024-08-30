@@ -30,21 +30,11 @@
 {#if $items === undefined}
 	<Loading />
 {:else}
-	<h1 class="sr-only">List</h1>
-	<a
-		href="/list/add"
-		class="btn bg-surface-900-50-token text-surface-50-900-token sticky top-4 left-1/2 -translate-x-1/2 w-36"
-		class:opacity-50={$loading}
-		class:cursor-not-allowed={$loading}
-		on:click={(event) => preventDefaultIf(event, $loading)}
-	>
-		<Plus />
-		<span class="sr-only">Add item</span>
-	</a>
-	<div class="mt-5 mb-1">
+	<div id="list-container" class="flex flex-col gap-4">
+		<h1 class="sr-only">List</h1>
 		{#if !$items.length}
 			<span class="block text-center mx-4" transition:slideWithPrefersReducedMotion>
-				Nothing here yet! Use the button above to add an item 👆
+				Nothing here yet! Use the button below to add an item 👇
 			</span>
 		{:else if $user?.isAnonymous}
 			<PromoteAccountAlert>
@@ -72,4 +62,25 @@
 			{/each}
 		</Accordion>
 	</div>
+	<a
+		href="/list/add"
+		class="btn bg-surface-900-50-token text-surface-50-900-token mt-5 sticky bottom-4 left-1/2 -translate-x-1/2 w-36"
+		class:opacity-50={$loading}
+		class:cursor-not-allowed={$loading}
+		on:click={(event) => preventDefaultIf(event, $loading)}
+	>
+		<Plus />
+		<span class="sr-only">Add item</span>
+	</a>
 {/if}
+
+<style>
+	#list-container {
+		min-height: calc(
+			100vh - (4.6875rem + 1rem + 3.875rem)
+		); /* Top bar + bottom padding + add button */
+		min-height: calc(
+			100svh - (4.6875rem + 1rem + 3.875rem)
+		); /* Top bar + bottom padding + add button */
+	}
+</style>

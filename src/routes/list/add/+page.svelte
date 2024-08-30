@@ -171,133 +171,137 @@
 	};
 </script>
 
-<div class="sticky top-0 p-4 -mt-4 bg-surface-50-900-token">
-	<form on:submit|preventDefault={onSearchSubmit}>
-		<label class="label">
-			<span class="sr-only">Search</span>
-			<div class="input-group flex bg-surface-50-900-token !border-surface-900-50-token">
-				<div class="relative grow text-surface-900-50-token bg-surface-50-900-token !px-0 min-w-0">
-					<div class="absolute">
-						<SearchLoop />
+<div id="add-container" class="flex flex-col">
+	<div class="sticky top-0 p-4 -mt-4 bg-surface-50-900-token">
+		<form on:submit|preventDefault={onSearchSubmit}>
+			<label class="label">
+				<span class="sr-only">Search</span>
+				<div class="input-group flex bg-surface-50-900-token !border-surface-900-50-token">
+					<div
+						class="relative grow text-surface-900-50-token bg-surface-50-900-token !px-0 min-w-0"
+					>
+						<div class="absolute">
+							<SearchLoop />
+						</div>
+						<input
+							type="search"
+							placeholder="Search..."
+							bind:value={searchQuery}
+							disabled={$loading}
+							on:input={onSearchInput}
+							class="pl-14 pr-4 !bg-surface-50-900-token focus:!ring-4 focus:ring-inset focus:ring-surface-500 grow min-w-0"
+						/>
 					</div>
-					<input
-						type="search"
-						placeholder="Search..."
-						bind:value={searchQuery}
+					<button
+						class="bg-surface-900-50-token text-surface-50-900-token focus:-outline-offset-4"
 						disabled={$loading}
-						on:input={onSearchInput}
-						class="pl-14 pr-4 !bg-surface-50-900-token focus:!ring-4 focus:ring-inset focus:ring-surface-500 grow min-w-0"
-					/>
+					>
+						Submit
+					</button>
 				</div>
+			</label>
+			<small
+				role={showSearchError || showAddError ? 'alert' : ''}
+				class="text-error-600-300-token min-h-[1.5rem] block text-center"
+			>
+				{#if showSearchError}
+					Please enter a search query of at least {MINIMUM_SEARCH_QUERY_LENGTH} characters
+				{/if}
+				{#if showAddError}
+					Please search for and select an item to add
+				{/if}
+			</small>
+			<div class="mb-4 flex flex-wrap gap-4 justify-center">
+				<span class="sr-only">Filters</span>
+				{#each itemTypes as itemType}
+					<span
+						class="chip rounded-token"
+						class:variant-filled={itemTypeFilters[itemType]}
+						class:variant-soft-surface={!itemTypeFilters[itemType]}
+						on:click={() => filterItemTypes(itemType)}
+						on:keypress={(event) => {
+							if (event.key == ' ' || event.code == 'Space' || event.keyCode == 32) {
+								filterItemTypes(itemType);
+								event.preventDefault();
+							}
+						}}
+						role="checkbox"
+						aria-checked={itemTypeFilters[itemType]}
+						tabindex="0"
+					>
+						{#if itemTypeFilters[itemType]}<span><Check classes="h-2.5 w-2.5" /></span>{/if}
+						<span class="capitalize">{itemType + 's'}</span>
+					</span>
+				{/each}
 				<button
-					class="bg-surface-900-50-token text-surface-50-900-token focus:-outline-offset-4"
-					disabled={$loading}
+					class="chip rounded-token"
+					class:variant-soft-error={itemTypeFiltersClear}
+					class:variant-filled-error={!itemTypeFiltersClear}
+					on:click={clearItemTypeFilters}
+					type="button"
 				>
-					Submit
+					Clear <span class="sr-only">filters</span>
 				</button>
 			</div>
-		</label>
-		<small
-			role={showSearchError || showAddError ? 'alert' : ''}
-			class="text-error-600-300-token min-h-[1.5rem] block text-center"
-		>
-			{#if showSearchError}
-				Please enter a search query of at least {MINIMUM_SEARCH_QUERY_LENGTH} characters
-			{/if}
-			{#if showAddError}
-				Please search for and select an item to add
-			{/if}
-		</small>
-		<div class="mb-4 flex flex-wrap gap-4 justify-center">
-			<span class="sr-only">Filters</span>
-			{#each itemTypes as itemType}
-				<span
-					class="chip rounded-token"
-					class:variant-filled={itemTypeFilters[itemType]}
-					class:variant-soft-surface={!itemTypeFilters[itemType]}
-					on:click={() => filterItemTypes(itemType)}
-					on:keypress={(event) => {
-						if (event.key == ' ' || event.code == 'Space' || event.keyCode == 32) {
-							filterItemTypes(itemType);
-							event.preventDefault();
-						}
-					}}
-					role="checkbox"
-					aria-checked={itemTypeFilters[itemType]}
-					tabindex="0"
-				>
-					{#if itemTypeFilters[itemType]}<span><Check classes="h-2.5 w-2.5" /></span>{/if}
-					<span class="capitalize">{itemType + 's'}</span>
-				</span>
-			{/each}
-			<button
-				class="chip rounded-token"
-				class:variant-soft-error={itemTypeFiltersClear}
-				class:variant-filled-error={!itemTypeFiltersClear}
-				on:click={clearItemTypeFilters}
-				type="button"
-			>
-				Clear <span class="sr-only">filters</span>
-			</button>
-		</div>
-	</form>
-</div>
+		</form>
+	</div>
 
-<div aria-live="assertive">
-	{#if searching}
-		<Loading />
-	{:else if !filteredResults.length}
-		<div class="m-4 text-center">
-			{#if searchErrored}
-				<span role="alert" class="text-error-600-300-token">
-					There was an error when fetching search results, please try again
-				</span>
-			{:else if lastSearchQuery}
-				<span>Nothing found</span>
-				<span>
-					Please try {searchResults.length
-						? 'adjusting the filters'
-						: 'searching for something else'}.
-				</span>
-			{:else}
-				<span>Search for something above 👆</span>
-			{/if}
-		</div>
-	{:else}
-		<span class="sr-only">
-			Showing {itemTypeFiltersClear ? 'all' : itemTypeFiltersFriendlyDescription()}
-			search results.
-		</span>
-		<ListBox spacing="">
-			{#each filteredResults as item, i (item.id)}
-				<ListBoxItem
-					bind:group={selectedItemId}
-					name="item"
-					value={item.id}
-					padding="p-4 focus:!-outline-offset-4"
-					on:click={onItemClick}
-				>
-					<div id={item.id} class="flex gap-4 items-center" class:cursor-not-allowed={$loading}>
-						<div class="flex flex-col gap-4 shrink-0 justify-center items-center">
-							<ItemImage itemMetadata={item} />
-							<SpotifyLogo classes="w-20" />
-						</div>
-						<div class="flex flex-col">
-							<span class="font-semibold">
-								{item.name}
-							</span>
-							{#each item.metadataParts as metadataPart}
-								<span class="break-word">{metadataPart}</span>
-							{/each}
-						</div>
-					</div>
-				</ListBoxItem>
-				{#if i !== filteredResults.length - 1}
-					<hr class="!border-t-4" />
+	<div aria-live="assertive">
+		{#if searching}
+			<Loading />
+		{:else if !filteredResults.length}
+			<div class="m-4 text-center">
+				{#if searchErrored}
+					<span role="alert" class="text-error-600-300-token">
+						There was an error when fetching search results, please try again
+					</span>
+				{:else if lastSearchQuery}
+					<span>Nothing found</span>
+					<span>
+						Please try {searchResults.length
+							? 'adjusting the filters'
+							: 'searching for something else'}.
+					</span>
+				{:else}
+					<span>Search for something above 👆</span>
 				{/if}
-			{/each}
-		</ListBox>
-	{/if}
+			</div>
+		{:else}
+			<span class="sr-only">
+				Showing {itemTypeFiltersClear ? 'all' : itemTypeFiltersFriendlyDescription()}
+				search results.
+			</span>
+			<ListBox spacing="">
+				{#each filteredResults as item, i (item.id)}
+					<ListBoxItem
+						bind:group={selectedItemId}
+						name="item"
+						value={item.id}
+						padding="p-4 focus:!-outline-offset-4"
+						on:click={onItemClick}
+					>
+						<div id={item.id} class="flex gap-4 items-center" class:cursor-not-allowed={$loading}>
+							<div class="flex flex-col gap-4 shrink-0 justify-center items-center">
+								<ItemImage itemMetadata={item} />
+								<SpotifyLogo classes="w-20" />
+							</div>
+							<div class="flex flex-col">
+								<span class="font-semibold">
+									{item.name}
+								</span>
+								{#each item.metadataParts as metadataPart}
+									<span class="break-word">{metadataPart}</span>
+								{/each}
+							</div>
+						</div>
+					</ListBoxItem>
+					{#if i !== filteredResults.length - 1}
+						<hr class="!border-t-4" />
+					{/if}
+				{/each}
+			</ListBox>
+		{/if}
+	</div>
 </div>
 
 <div class="sticky bottom-0 -mb-4 p-4 flex justify-center gap-4 bg-surface-50-900-token">
@@ -318,3 +322,14 @@
 		Cancel
 	</button>
 </div>
+
+<style>
+	#add-container {
+		min-height: calc(
+			100vh - (4.6875rem + 1rem + 3.625rem)
+		); /* Top bar + bottom padding + add and cancel buttons */
+		min-height: calc(
+			100svh - (4.6875rem + 1rem + 3.625rem)
+		); /* Top bar + bottom padding + add and cancel buttons */
+	}
+</style>
