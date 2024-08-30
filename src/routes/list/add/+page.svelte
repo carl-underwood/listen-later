@@ -17,7 +17,9 @@
 
 	const MINIMUM_SEARCH_QUERY_LENGTH = 3;
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 	$: $functions;
+	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 	$: $items;
 
 	let searchResults: SearchResult[] = [];

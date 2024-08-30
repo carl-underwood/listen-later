@@ -3,7 +3,7 @@
 {
 	"name": "Playwright with Java & Node 18",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/playwright:v1.45.3-jammy",
+	"image": "mcr.microsoft.com/playwright:v1.46.1-jammy",
 	"features": {
 		"ghcr.io/devcontainers/features/java:1": {},
 		"ghcr.io/devcontainers/features/node:1": {
@@ -17,7 +17,8 @@
 				"esbenp.prettier-vscode",
 				"svelte.svelte-vscode",
 				"dbaeumer.vscode-eslint",
-				"github.vscode-github-actions"
+				"github.vscode-github-actions",
+				"howardzuo.vscode-npm-dependency"
 			],
 			"settings": {
 				"editor.formatOnSave": true,

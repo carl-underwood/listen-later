@@ -51,6 +51,7 @@
 	}
 
 	$: {
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		$page;
 		drawerStore.close();
 	}
