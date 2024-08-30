@@ -25,7 +25,6 @@
 	import Close from '$lib/components/icons/close.svelte';
 	import NavMenuItem from '$lib/components/NavMenuItem.svelte';
 	import Home from '$lib/components/icons/home.svelte';
-	import Info from '$lib/components/icons/info.svelte';
 	import ListMusic from '$lib/components/icons/list-music.svelte';
 	import Github from '$lib/components/icons/github.svelte';
 	import Envelope from '$lib/components/icons/envelope.svelte';
@@ -143,10 +142,6 @@
 					<NavMenuItem href="/">
 						<Home slot="icon" />
 						<svelte:fragment>Home</svelte:fragment>
-					</NavMenuItem>
-					<NavMenuItem href="/about">
-						<Info slot="icon" />
-						<svelte:fragment>About</svelte:fragment>
 					</NavMenuItem>
 					<NavMenuItem href="/list" nofollow>
 						<ListMusic slot="icon" />

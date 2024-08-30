@@ -10,18 +10,23 @@ test.describe('navigation drawer', () => {
 	test('shows the expected naviation items when not signed in', async ({ page }) => {
 		await page.goto('/');
 
+		const navigationDrawer = page.getByRole('dialog', { name: 'Navigation drawer' });
+
 		await expect(async () => {
 			await openNavigation(page);
 
-			await expect(page.getByRole('dialog', { name: 'Navigation drawer' })).toBeVisible({
+			await expect(navigationDrawer).toBeVisible({
 				timeout: 200
 			});
 		}).toPass();
 
-		await expectNavigationItem(page, 'Home', '/');
-		await expectNavigationItem(page, 'About', '/about');
-		await expectNavigationItem(page, 'List', '/list');
-		await expectNavigationItem(page, 'GitHub', 'https://github.com/carl-hartshorn/listen-later');
+		await expectNavigationItem(navigationDrawer, 'Home', '/');
+		await expectNavigationItem(navigationDrawer, 'List', '/list');
+		await expectNavigationItem(
+			navigationDrawer,
+			'GitHub',
+			'https://github.com/carl-hartshorn/listen-later'
+		);
 	});
 
 	test('shows a navigation item for settings and button to sign out in the navigation drawer when signed in', async ({
@@ -31,6 +36,10 @@ test.describe('navigation drawer', () => {
 		await signInAnonymously(page);
 
 		await openNavigation(page);
-		await expectNavigationItem(page, 'Settings', '/list/settings');
+		await expectNavigationItem(
+			page.getByRole('dialog', { name: 'Navigation drawer' }),
+			'Settings',
+			'/list/settings'
+		);
 	});
 });

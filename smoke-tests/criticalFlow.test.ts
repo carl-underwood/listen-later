@@ -28,28 +28,38 @@ const MAILINATOR_API_TOKEN = process.env.MAILINATOR_API_TOKEN;
 test('critical flow', async ({ page, request }) => {
 	await setupAppCheckDebugTokenInitScript(page);
 
+	// Old about page redirects home
+	await page.goto('/about');
+	await expect(page).toHaveURL('/');
+	await expect(page.getByRole('heading', { level: 1 })).toHaveText('Listen Later');
+
 	// Shows the expected naviation items when not signed in
 	await page.goto('/');
+
+	const navigationDrawer = page.getByRole('dialog', { name: 'Navigation drawer' });
 
 	await expect(async () => {
 		await openNavigation(page);
 
-		await expect(page.getByRole('dialog', { name: 'Navigation drawer' })).toBeVisible({
+		await expect(navigationDrawer).toBeVisible({
 			timeout: 200
 		});
 	}).toPass();
 
-	await expectNavigationItem(page, 'Home', '/');
-	await expectNavigationItem(page, 'About', '/about');
-	await expectNavigationItem(page, 'List', '/list');
-	await expectNavigationItem(page, 'GitHub', 'https://github.com/carl-hartshorn/listen-later');
+	await expectNavigationItem(navigationDrawer, 'Home', '/');
+	await expectNavigationItem(navigationDrawer, 'List', '/list');
+	await expectNavigationItem(
+		navigationDrawer,
+		'GitHub',
+		'https://github.com/carl-hartshorn/listen-later'
+	);
 
 	// Shows a navigation item for settings and button to sign out in the navigation drawer when signed in
 	await goToListPage(page);
 	const signInButton = await signInAnonymously(page);
 
 	await openNavigation(page);
-	await expectNavigationItem(page, 'Settings', '/list/settings');
+	await expectNavigationItem(navigationDrawer, 'Settings', '/list/settings');
 	await closeNavigation(page);
 
 	await goToSearchPageAddItemAndVerify(page, 'Ezra Collective', '5BRAUN0yN8557PLRZIr02W');
