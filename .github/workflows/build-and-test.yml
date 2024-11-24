@@ -3,7 +3,7 @@ jobs:
   build_and_test:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.47.2-jammy
+      image: mcr.microsoft.com/playwright:v1.49.0-jammy
     strategy:
       fail-fast: false
       matrix:
