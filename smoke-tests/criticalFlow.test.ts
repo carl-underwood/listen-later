@@ -51,7 +51,7 @@ test('critical flow', async ({ page, request }) => {
 	await expectNavigationItem(
 		navigationDrawer,
 		'GitHub',
-		'https://github.com/carl-hartshorn/listen-later'
+		'https://github.com/carl-underwood/listen-later'
 	);
 
 	// Shows a navigation item for settings and button to sign out in the navigation drawer when signed in

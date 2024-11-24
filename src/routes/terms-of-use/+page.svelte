@@ -32,7 +32,7 @@
 		<p>
 			Listen Later is open-source, meaning that the code required to build and run the application
 			is freely available in the <a
-				href="https://github.com/carl-hartshorn/listen-later"
+				href="https://github.com/carl-underwood/listen-later"
 				class="underline">Listen Later GitHub repository</a
 			>. As such, in the event that hosting of the application must be terminated, it may be
 			possible to self-host a version of the application if desired.
