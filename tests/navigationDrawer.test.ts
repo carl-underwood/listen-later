@@ -25,7 +25,7 @@ test.describe('navigation drawer', () => {
 		await expectNavigationItem(
 			navigationDrawer,
 			'GitHub',
-			'https://github.com/carl-hartshorn/listen-later'
+			'https://github.com/carl-underwood/listen-later'
 		);
 	});
 

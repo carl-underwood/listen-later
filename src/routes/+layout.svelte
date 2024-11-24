@@ -147,7 +147,7 @@
 						<ListMusic slot="icon" />
 						<svelte:fragment>List</svelte:fragment>
 					</NavMenuItem>
-					<NavMenuItem href="https://github.com/carl-hartshorn/listen-later">
+					<NavMenuItem href="https://github.com/carl-underwood/listen-later">
 						<Github slot="icon" />
 						<svelte:fragment>GitHub</svelte:fragment>
 					</NavMenuItem>
@@ -179,7 +179,7 @@
 		<div class="p-8 flex flex-col text-center">
 			<p>
 				Made with <span aria-hidden="true">❤</span><span class="sr-only">love</span> by
-				<a href="https://www.carl-hartshorn.dev" class="underline">Carl Hartshorn</a>
+				<a href="https://www.carl-underwood.dev" class="underline">Carl Underwood</a>
 			</p>
 			<small>Version {version}</small>
 			<div>
