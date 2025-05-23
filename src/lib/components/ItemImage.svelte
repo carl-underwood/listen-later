@@ -3,11 +3,11 @@
 	import type ItemMetadata from '$lib/types/ItemMetadata';
 	import ImageWithFallback from './ImageWithFallback.svelte';
 
-	export let itemMetadata: ItemMetadata | null | undefined;
+	let { itemMetadata }: { itemMetadata: ItemMetadata | null | undefined } = $props();
 </script>
 
 {#if itemMetadata === undefined}
-	<div class="placeholder animate-pulse h-16 w-16" />
+	<div class="placeholder animate-pulse h-16 w-16"></div>
 {:else if itemMetadata?.imageUrl}
 	<ImageWithFallback
 		classes="h-16 w-16"

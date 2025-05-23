@@ -10,10 +10,10 @@
 
 	const modalStore = getModalStore();
 
-	let promptForReauthentication = false;
-	let showEmailConfirmation = false;
-	let providerId: typeof ProviderId;
-	let trapFocus = false;
+	let promptForReauthentication = $state(false);
+	let showEmailConfirmation = $state(false);
+	let providerId: typeof ProviderId | undefined = $state();
+	let trapFocus = $state(false);
 
 	const confirmDelete = () =>
 		loading.whileAwaiting(async () => {
@@ -112,11 +112,11 @@
 		<p>Are you sure you want to delete your account?</p>
 		<p><strong>This can not be undone</strong></p>
 		<div class="mt-4 flex gap-4 justify-center">
-			<button class="btn variant-soft" disabled={$loading} on:click={closeModal}>Cancel</button>
+			<button class="btn variant-soft" disabled={$loading} onclick={closeModal}>Cancel</button>
 			<button
 				class="btn bg-gradient-to-br variant-filled-error"
 				disabled={$loading}
-				on:click={confirmDelete}
+				onclick={confirmDelete}
 			>
 				Delete
 			</button>
@@ -128,17 +128,17 @@
 			{:else}
 				<p>Please reauthenticate to delete your account</p>
 				<div class="flex flex-col gap-4 justify-center">
-					{#if $user?.providerData.find((provider) => provider.providerId === providerId.PASSWORD)}
+					{#if $user?.providerData.find((provider) => provider.providerId === providerId!.PASSWORD)}
 						<button
 							class="btn bg-surface-900-50-token text-surface-50-900-token"
 							disabled={$loading}
-							on:click={sendSignInLink}
+							onclick={sendSignInLink}
 						>
 							Send sign in link
 						</button>
 					{/if}
-					{#if $user?.providerData.find((provider) => provider.providerId === providerId.GOOGLE)}
-						<SignInWithGoogleButton on:click={signInWithGoogle} />
+					{#if $user?.providerData.find((provider) => provider.providerId === providerId!.GOOGLE)}
+						<SignInWithGoogleButton onclick={signInWithGoogle} />
 					{/if}
 				</div>
 			{/if}

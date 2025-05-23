@@ -17,8 +17,7 @@
 
 	const modalStore = getModalStore();
 
-	export let item: Item;
-	export let openAccordionItemId: string | null;
+	let { item, openAccordionItemId }: { item: Item; openAccordionItemId: string | null } = $props();
 
 	const onItemListenedChange = async (event: Event, item: Item) => {
 		if ($loading) {
@@ -68,12 +67,12 @@
 		</div>
 	</div>
 	<!-- Ignoring as the click event is only handled to prevent default -->
-	<!-- svelte-ignore a11y-click-events-have-key-events -->
-	<!-- svelte-ignore a11y-no-static-element-interactions -->
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
 		slot="summary"
 		class="flex flex-col select-text"
-		on:click={(event) => {
+		onclick={(event) => {
 			if (getSelection()?.toString()) {
 				event.preventDefault();
 				event.stopImmediatePropagation();
@@ -104,7 +103,7 @@
 		<button
 			class="btn-icon btn-icon-sm variant-filled-error"
 			disabled={$loading}
-			on:click={() => deleteItem(item)}
+			onclick={() => deleteItem(item)}
 		>
 			<TrashBin classes="w-4 h-4" />
 			<span class="sr-only">Delete {item.name}</span>

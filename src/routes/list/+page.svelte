@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { Accordion } from '@skeletonlabs/skeleton';
 	import smoothScrollIntoViewIfNeeded from 'smooth-scroll-into-view-if-needed';
 	import { items } from '$lib/stores/items';
@@ -13,15 +13,17 @@
 	import { user } from '$lib/stores/user';
 	import PromoteAccountAlert from '$lib/components/PromoteAccountAlert.svelte';
 
-	let accordionItems: { [Property: string]: HTMLDivElement } = {};
-	$: openAccordionItemId = $page.url.searchParams.get('itemId');
+	let accordionItems: { [Property: string]: HTMLDivElement } = $state({});
+	let openAccordionItemId = $derived(page.url.searchParams.get('itemId'));
 
-	$: if (openAccordionItemId && accordionItems[openAccordionItemId]) {
-		smoothScrollIntoViewIfNeeded(accordionItems[openAccordionItemId], {
-			behavior: 'smooth',
-			duration: 800
-		});
-	}
+	$effect(() => {
+		if (openAccordionItemId && accordionItems[openAccordionItemId]) {
+			smoothScrollIntoViewIfNeeded(accordionItems[openAccordionItemId], {
+				behavior: 'smooth',
+				duration: 800
+			});
+		}
+	});
 
 	const slideWithPrefersReducedMotion = (node: Element) =>
 		slide(node, { duration: $prefersReducedMotion ? 0 : undefined });
@@ -67,7 +69,7 @@
 		class="btn bg-surface-900-50-token text-surface-50-900-token mt-5 sticky bottom-4 left-1/2 -translate-x-1/2 w-36"
 		class:opacity-50={$loading}
 		class:cursor-not-allowed={$loading}
-		on:click={(event) => preventDefaultIf(event, $loading)}
+		onclick={(event) => preventDefaultIf(event, $loading)}
 	>
 		<Plus />
 		<span class="sr-only">Add item</span>

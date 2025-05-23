@@ -17,19 +17,21 @@
 
 	const MINIMUM_SEARCH_QUERY_LENGTH = 3;
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	$: $functions;
-	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	$: $items;
+	$effect(() => {
+		$functions;
+	});
+	$effect(() => {
+		$items;
+	});
 
-	let searchResults: SearchResult[] = [];
-	let lastSearchQuery = '';
-	let searchQuery = '';
-	let searchErrored = false;
-	let searching = false;
-	let showSearchError = false;
-	let showAddError = false;
-	let selectedItemId = '';
+	let searchResults: SearchResult[] = $state([]);
+	let lastSearchQuery = $state('');
+	let searchQuery = $state('');
+	let searchErrored = $state(false);
+	let searching = $state(false);
+	let showSearchError = $state(false);
+	let showAddError = $state(false);
+	let selectedItemId = $state('');
 
 	let itemTypeFilters: { [Property in ItemType]: boolean } = {
 		album: false,
@@ -39,8 +41,8 @@
 		song: false
 	};
 
-	$: itemTypeFiltersClear = itemTypes.every((itemType) => !itemTypeFilters[itemType]);
-	$: itemTypeFiltersFriendlyDescription = () => {
+	let itemTypeFiltersClear = $derived(itemTypes.every((itemType) => !itemTypeFilters[itemType]));
+	let itemTypeFiltersFriendlyDescription = $derived(() => {
 		const commaSeparatedItemTypeFilters = itemTypes
 			.filter((itemType) => itemTypeFilters[itemType])
 			.join(', ');
@@ -58,29 +60,33 @@
 			replacement +
 			commaSeparatedItemTypeFilters.slice(lastCommaIndex + 1)
 		);
-	};
+	});
 
-	$: fuzzysortedResults = [
-		...fuzzysort.go(lastSearchQuery, searchResults, {
-			key: 'name'
-		})
-	]
-		.sort((a, b) => {
-			if (a.score === b.score) {
-				return b.obj.popularity - a.obj.popularity;
-			}
+	let fuzzysortedResults = $derived(
+		[
+			...fuzzysort.go(lastSearchQuery, searchResults, {
+				key: 'name'
+			})
+		]
+			.sort((a, b) => {
+				if (a.score === b.score) {
+					return b.obj.popularity - a.obj.popularity;
+				}
 
-			return a.score < b.score ? 1 : -1; // fuzzysort scores are negative
-		})
-		.map((keyResult) => keyResult.obj);
+				return a.score < b.score ? 1 : -1; // fuzzysort scores are negative
+			})
+			.map((keyResult) => keyResult.obj)
+	);
 
-	$: filteredResults = [
-		...fuzzysortedResults,
-		...searchResults.filter(
-			(result) =>
-				!fuzzysortedResults.find((fuzzysortedResult) => fuzzysortedResult.id === result.id)
-		)
-	].filter((item) => itemTypeFilters[item.type] || itemTypeFiltersClear);
+	let filteredResults = $derived(
+		[
+			...fuzzysortedResults,
+			...searchResults.filter(
+				(result) =>
+					!fuzzysortedResults.find((fuzzysortedResult) => fuzzysortedResult.id === result.id)
+			)
+		].filter((item) => itemTypeFilters[item.type] || itemTypeFiltersClear)
+	);
 
 	const filterItemTypes = (itemType: ItemType) => {
 		itemTypeFilters = { ...itemTypeFilters, [itemType]: !itemTypeFilters[itemType] };
@@ -218,7 +224,7 @@
 						class="chip rounded-token"
 						class:variant-filled={itemTypeFilters[itemType]}
 						class:variant-soft-surface={!itemTypeFilters[itemType]}
-						on:click={() => filterItemTypes(itemType)}
+						onclick={() => filterItemTypes(itemType)}
 						on:keypress={(event) => {
 							if (event.key == ' ' || event.code == 'Space' || event.keyCode == 32) {
 								filterItemTypes(itemType);
@@ -237,7 +243,7 @@
 					class="chip rounded-token"
 					class:variant-soft-error={itemTypeFiltersClear}
 					class:variant-filled-error={!itemTypeFiltersClear}
-					on:click={clearItemTypeFilters}
+					onclick={clearItemTypeFilters}
 					type="button"
 				>
 					Clear <span class="sr-only">filters</span>
@@ -278,7 +284,7 @@
 						name="item"
 						value={item.id}
 						padding="p-4 focus:!-outline-offset-4"
-						on:click={onItemClick}
+						onclick={onItemClick}
 					>
 						<div id={item.id} class="flex gap-4 items-center" class:cursor-not-allowed={$loading}>
 							<div class="flex flex-col gap-4 shrink-0 justify-center items-center">
@@ -309,16 +315,11 @@
 		class="btn bg-surface-900-50-token text-surface-50-900-token"
 		type="submit"
 		disabled={$loading}
-		on:click={onSelectionSubmit}
+		onclick={onSelectionSubmit}
 	>
 		Add
 	</button>
-	<button
-		class="btn variant-soft"
-		type="button"
-		disabled={$loading}
-		on:click={() => goToListPage()}
-	>
+	<button class="btn variant-soft" type="button" disabled={$loading} onclick={() => goToListPage()}>
 		Cancel
 	</button>
 </div>

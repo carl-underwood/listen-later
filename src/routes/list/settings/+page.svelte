@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { type ModalSettings, getModalStore } from '@skeletonlabs/skeleton';
 	import DeleteAccountModal from '$lib/components/DeleteAccountModal.svelte';
 	import PromoteAccountAlert from '$lib/components/PromoteAccountAlert.svelte';
@@ -13,15 +13,19 @@
 
 	const modalStore = getModalStore();
 
-	$: if ($page.url.searchParams.get(deleteAccountSearchParameterName) === 'true') {
-		showModal(deleteAccountModal);
-	} else if ($page.url.searchParams.get(promoteAccountSearchParameterName) === 'true') {
-		showModal(promoteAccountModal);
-	}
+	$effect(() => {
+		if (page.url.searchParams.get(deleteAccountSearchParameterName) === 'true') {
+			showModal(deleteAccountModal);
+		} else if (page.url.searchParams.get(promoteAccountSearchParameterName) === 'true') {
+			showModal(promoteAccountModal);
+		}
+	});
 
-	$: if ($modalStore[0] !== deleteAccountModal && $modalStore[0] !== promoteAccountModal) {
-		goto('/list/settings', { replaceState: true });
-	}
+	$effect(() => {
+		if ($modalStore[0] !== deleteAccountModal && $modalStore[0] !== promoteAccountModal) {
+			goto('/list/settings', { replaceState: true });
+		}
+	});
 
 	const deleteAccountModal: ModalSettings = {
 		type: 'component',
@@ -59,7 +63,7 @@
 			<svelte:fragment slot="signInButton">
 				<button
 					class="btn bg-surface-900-50-token text-surface-50-900-token"
-					on:click={promoteAccount}
+					onclick={promoteAccount}
 				>
 					Sign in
 				</button>
@@ -82,7 +86,7 @@
 	</div>
 
 	<div class="flex flex-col items-center justify-end grow">
-		<button on:click={deleteAccount} class="btn variant-filled-error btn-2xl">
+		<button onclick={deleteAccount} class="btn variant-filled-error btn-2xl">
 			Delete account
 		</button>
 	</div>

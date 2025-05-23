@@ -4,8 +4,7 @@
 	import Markdown from './markdown/Markdown.svelte';
 
 	const lexer = new Lexer();
-
-	$: tokens = lexer.lex(roadmapMarkdown);
+	const tokens = lexer.lex(roadmapMarkdown);
 </script>
 
 <div class="roadmap">

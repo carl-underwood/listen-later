@@ -10,7 +10,8 @@
 
 	const modalStore = getModalStore();
 
-	let showCredentialAlreadyInUseError = false;
+	let showCredentialAlreadyInUseError = $state(false);
+	let trapFocus = $state(false);
 
 	const tryEmailLink = (email: string) =>
 		loading.whileAwaiting(async () => {
@@ -49,7 +50,6 @@
 		modalStore.close();
 	};
 
-	var trapFocus = false;
 	onMount(async () => {
 		await loading.whileAwaiting(async () => {
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -92,6 +92,6 @@
 				in this guest account list will need to be manually added to that account).
 			</p>
 		{/if}
-		<SignInForm on:signInWithGoogleClicked={linkWithGoogle} {tryEmailLink} />
+		<SignInForm signInWithGoogleClicked={linkWithGoogle} {tryEmailLink} />
 	</div>
 </div>

@@ -10,11 +10,11 @@
 	import GoToReferenceButton from '$lib/components/GoToReferenceButton.svelte';
 	import Roadmap from '$lib/components/Roadmap.svelte';
 
-	let scrollY: number;
+	let scrollY: number = $state(0);
 
-	$: percentageScrolled = !browser
-		? 0
-		: scrollY / (document.body.scrollHeight - window.innerHeight) || 0;
+	let percentageScrolled = $derived(
+		!browser ? 0 : scrollY / (document.body.scrollHeight - window.innerHeight) || 0
+	);
 
 	type Reference = {
 		href: string;
@@ -43,8 +43,8 @@
 
 	let referenceRefs: HTMLAnchorElement[] = [];
 
-	const goToReference = (event: CustomEvent<{ oneBasedReferenceNumber: number }>) => {
-		referenceRefs[event.detail.oneBasedReferenceNumber - 1].focus();
+	const goToReference = (event: { oneBasedReferenceNumber: number }) => {
+		referenceRefs[event.oneBasedReferenceNumber - 1].focus();
 	};
 </script>
 
@@ -97,12 +97,12 @@
 			</p>
 			<p>
 				Born out of the desire to be able to easily keep track of things to listen to later
-				<GoToReferenceButton oneBasedReferenceNumber={1} on:goToReference={goToReference} />
-				<GoToReferenceButton oneBasedReferenceNumber={2} on:goToReference={goToReference} />
-				<GoToReferenceButton oneBasedReferenceNumber={3} on:goToReference={goToReference} />
+				<GoToReferenceButton oneBasedReferenceNumber={1} {goToReference} />
+				<GoToReferenceButton oneBasedReferenceNumber={2} {goToReference} />
+				<GoToReferenceButton oneBasedReferenceNumber={3} {goToReference} />
 				(which Spotify currently only supports for podcast episodes <GoToReferenceButton
 					oneBasedReferenceNumber={4}
-					on:goToReference={goToReference}
+					{goToReference}
 				/>), Listen Later is a free to use, ad-free and open-source web application built to solve
 				this problem.
 			</p>

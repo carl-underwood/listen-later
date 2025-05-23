@@ -4,7 +4,7 @@
 
 	import { slide } from 'svelte/transition';
 	import { browser, version } from '$app/environment';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
 	import {
 		initializeStores,
@@ -49,19 +49,18 @@
 		window.location.href = `https://listenlater.cloud${window.location.pathname}`;
 	}
 
-	$: {
-		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-		$page;
+	$effect(() => {
+		page;
 		drawerStore.close();
-	}
+	});
 
-	$: {
+	$effect(() => {
 		if (browser) {
 			document.head
 				.querySelector("meta[name='theme-color']")
 				?.setAttribute('content', $modeCurrent ? '#ffffff' : '#000000');
 		}
-	}
+	});
 
 	afterNavigate((navigation) => {
 		const searchParams = navigation.to?.url.searchParams;
@@ -80,8 +79,8 @@
 </script>
 
 <svelte:head>
-	<title>{$page.data.title}</title>
-	<meta name="og:title" content={$page.data.title} />
+	<title>{page.data.title}</title>
+	<meta name="og:title" content={page.data.title} />
 	<meta
 		name="description"
 		content="Curate a list of songs, artists, albums, podcasts and episodes that you want to listen to later with Spotify."
@@ -97,7 +96,7 @@
 	<meta name="og:image:height" content="512" />
 	<meta name="og:image:alt" content="Listen Later Logo" />
 	<meta name="og:url" content="https://listenlater.cloud" />
-	<link rel="canonical" href={`https://listenlater.cloud${$page.url.pathname}`} />
+	<link rel="canonical" href={`https://listenlater.cloud${page.url.pathname}`} />
 </svelte:head>
 
 <AppBar background="bg-transparent" slotTrail="place-content-end">
@@ -106,7 +105,7 @@
 		<button
 			type="button"
 			class="btn-icon bg-transparent"
-			on:click={() => drawerStore.open()}
+			onclick={() => drawerStore.open()}
 			disabled={$loading}
 		>
 			<Bars />
@@ -128,7 +127,7 @@
 					<button
 						type="button"
 						class="btn-icon bg-transparent"
-						on:click={drawerStore.close}
+						onclick={drawerStore.close}
 						disabled={$loading}
 					>
 						<Close />
@@ -166,7 +165,7 @@
 			{#if $user}
 				<div class="pb-8 flex justify-center">
 					<button
-						on:click={() => loading.whileAwaiting(auth.signOut)}
+						onclick={() => loading.whileAwaiting(auth.signOut)}
 						disabled={$loading}
 						class="btn variant-filled-error btn-2xl"
 						transition:slideWithPrefersReducedMotion

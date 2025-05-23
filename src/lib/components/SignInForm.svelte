@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createEventDispatcher, onDestroy } from 'svelte';
+	import { onDestroy } from 'svelte';
 	import { auth } from '$lib/stores/auth';
 	import { user } from '$lib/stores/user';
 	import { loading } from '$lib/stores/loading';
@@ -7,22 +7,30 @@
 	import type { AuthError } from 'firebase/auth';
 	import { goto } from '$app/navigation';
 
-	const dispatch = createEventDispatcher();
+	let {
+		tryEmailLink,
+		emailFormToggled = () => {},
+		signInWithGoogleClicked
+	}: {
+		tryEmailLink: (email: string) => Promise<void>;
+		emailFormToggled?: ({ showingEmailForm }: { showingEmailForm: boolean }) => void;
+		signInWithGoogleClicked: () => void;
+	} = $props();
 
-	export let tryEmailLink: (email: string) => Promise<void>;
+	let isSignInWithEmailLinkChecked = $state(false);
+	let email = $state('');
+	let showEmailForm = $state(false);
+	let showEmailError = $state(false);
+	let showEmailConfirmation = $state(false);
+	let confirmingEmailForSignIn = $state(false);
 
-	let isSignInWithEmailLinkChecked = false;
-	let email = '';
-	let showEmailForm = false;
-	let showEmailError = false;
-	let showEmailConfirmation = false;
-	let confirmingEmailForSignIn = false;
+	$effect(() => {
+		if ($user) {
+			resetSignInState();
+		}
+	});
 
-	$: if ($user) {
-		resetSignInState();
-	}
-
-	$: dispatch('emailFormToggled', { showingEmailForm: showEmailForm });
+	$effect(() => emailFormToggled({ showingEmailForm: showEmailForm }));
 
 	const authUnsubscribe = auth.subscribe(async ($auth) => {
 		if (!$auth || isSignInWithEmailLinkChecked) {
@@ -117,7 +125,13 @@
 	{#if showEmailConfirmation}
 		Email sent, please check your inbox for a sign in link
 	{:else if showEmailForm}
-		<form class="flex flex-col items-center" on:submit|preventDefault={onEmailFormSubmit}>
+		<form
+			class="flex flex-col items-center"
+			onsubmit={(event) => {
+				event.preventDefault();
+				onEmailFormSubmit();
+			}}
+		>
 			{#if confirmingEmailForSignIn}
 				<span class="mb-4">Please confirm the email that received the sign in link</span>
 			{/if}
@@ -129,7 +143,10 @@
 					placeholder="Email"
 					required
 					bind:value={email}
-					on:invalid|preventDefault={() => (showEmailError = true)}
+					oninvalid={(event) => {
+						event.preventDefault();
+						showEmailError = true;
+					}}
 				/>
 			</label>
 
@@ -153,7 +170,7 @@
 						class="btn variant-soft"
 						type="button"
 						disabled={$loading}
-						on:click={resetSignInState}
+						onclick={resetSignInState}
 					>
 						Cancel
 					</button>
@@ -164,10 +181,10 @@
 		<button
 			disabled={$loading}
 			class="btn bg-surface-900-50-token text-surface-50-900-token"
-			on:click={() => (showEmailForm = true)}
+			onclick={() => (showEmailForm = true)}
 		>
 			Sign in with Email
 		</button>
-		<SignInWithGoogleButton on:click={() => dispatch('signInWithGoogleClicked')} />
+		<SignInWithGoogleButton onclick={signInWithGoogleClicked} />
 	{/if}
 </div>

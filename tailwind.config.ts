@@ -3,9 +3,6 @@ import type { Config } from 'tailwindcss';
 
 import tailwindforms from '@tailwindcss/forms';
 
-// 1. Import the Skeleton plugin
-import { skeleton } from '@skeletonlabs/tw-plugin';
-
 const config = {
 	// 2. Opt for dark mode to be handled via the class method
 	darkMode: 'class',
@@ -17,11 +14,7 @@ const config = {
 	theme: {
 		extend: {}
 	},
-	plugins: [
-		tailwindforms,
-		// 4. Append the Skeleton plugin (after other plugins)
-		skeleton
-	]
+	plugins: [tailwindforms]
 } satisfies Config;
 
 export default config;

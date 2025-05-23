@@ -5,7 +5,7 @@
 	import Loading from '$lib/components/Loading.svelte';
 	import SignInForm from '$lib/components/SignInForm.svelte';
 
-	let showingEmailForm = false;
+	let showingEmailForm = $state(false);
 
 	const tryEmailLink = async (email: string) => {
 		const { signInWithEmailLink } = await import('firebase/auth');
@@ -59,7 +59,7 @@
 					</strong>
 				</p>
 				<button
-					on:click={() => loading.whileAwaiting(auth.signInAnonymously)}
+					onclick={() => loading.whileAwaiting(auth.signInAnonymously)}
 					disabled={$loading}
 					class="btn bg-surface-900-50-token text-surface-50-900-token"
 				>
@@ -72,8 +72,8 @@
 			</div>
 		{/if}
 		<SignInForm
-			on:emailFormToggled={(event) => (showingEmailForm = event.detail.showingEmailForm)}
-			on:signInWithGoogleClicked={signInWithGoogle}
+			emailFormToggled={(event) => (showingEmailForm = event.showingEmailForm)}
+			signInWithGoogleClicked={signInWithGoogle}
 			{tryEmailLink}
 		/>
 	{:else}

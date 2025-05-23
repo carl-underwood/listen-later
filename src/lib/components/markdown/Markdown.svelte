@@ -4,10 +4,9 @@
 
 	const slugger = new GithubSlugger();
 
-	export let baseHeading = 1;
-	export let tokens: TokensList;
+	let { baseHeading = 1, tokens }: { baseHeading?: number; tokens: TokensList } = $props();
 
-	$: {
+	$effect(() => {
 		const unsupportedTokenTypes = tokens
 			.filter(
 				(token) =>
@@ -29,7 +28,7 @@
 				)}]`
 			);
 		}
-	}
+	});
 </script>
 
 <!-- Horrible formatting here required to avoid whitespace issues! -->
