@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
 	import { page } from '$app/state';
-	import { Accordion } from '@skeletonlabs/skeleton';
+	import { goto } from '$app/navigation';
+	import { Accordion } from '@skeletonlabs/skeleton-svelte';
 	import smoothScrollIntoViewIfNeeded from 'smooth-scroll-into-view-if-needed';
 	import { items } from '$lib/stores/items';
 	import { loading } from '$lib/stores/loading';
@@ -40,25 +41,39 @@
 			</span>
 		{:else if $user?.isAnonymous}
 			<PromoteAccountAlert>
-				<svelte:fragment slot="signInButton">
+				{#snippet signInButton()}
 					<a
 						href="/list/settings?promoteAccount=true"
-						class="btn bg-surface-900-50-token text-surface-50-900-token"
+						class="btn bg-surface-950-50 text-surface-50-950"
 					>
 						Sign in
 					</a>
-				</svelte:fragment>
+				{/snippet}
 			</PromoteAccountAlert>
 		{/if}
-		<Accordion disabled={$loading} spacing="" padding="p-4">
+		<Accordion
+			value={openAccordionItemId ? [openAccordionItemId] : []}
+			disabled={$loading}
+			spaceY=""
+			padding="p-4"
+			collapsible
+			onValueChange={(event) => {
+				goto(`/list${event.value[0] ? `?itemId=${event.value[0]}` : ''}`, {
+					noScroll: true,
+					replaceState: true,
+					keepFocus: true
+				});
+			}}
+			animationConfig={{ duration: $prefersReducedMotion ? 0 : undefined }}
+		>
 			{#each $items as item (item.id)}
 				<div
 					bind:this={accordionItems[item.id]}
 					transition:slideWithPrefersReducedMotion
-					class="ring-4 ring-surface-900-50-token mt-1"
+					class="ring-4 ring-surface-950-50 mt-1"
 				>
 					{#if item.service === 'spotify'}
-						<ItemSpotify {item} {openAccordionItemId} />
+						<ItemSpotify {item} />
 					{/if}
 				</div>
 			{/each}
@@ -66,7 +81,7 @@
 	</div>
 	<a
 		href="/list/add"
-		class="btn bg-surface-900-50-token text-surface-50-900-token mt-5 sticky bottom-4 left-1/2 -translate-x-1/2 w-36"
+		class="btn bg-surface-950-50 text-surface-50-950 mt-5 sticky bottom-4 left-1/2 -translate-x-1/2 w-36"
 		class:opacity-50={$loading}
 		class:cursor-not-allowed={$loading}
 		onclick={(event) => preventDefaultIf(event, $loading)}

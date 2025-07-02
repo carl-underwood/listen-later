@@ -139,7 +139,7 @@
 				<span class="sr-only">Email</span>
 				<input
 					type="email"
-					class="!bg-surface-50-900-token !border-surface-900-50-token border-4 focus:!ring-4 focus:ring-inset focus:ring-surface-500"
+					class="!bg-surface-50-950 !border-surface-950-50 border-4 focus:!ring-4 focus:ring-inset focus:ring-surface-500"
 					placeholder="Email"
 					required
 					bind:value={email}
@@ -152,7 +152,7 @@
 
 			<small
 				role={showEmailError ? 'alert' : ''}
-				class="text-error-600-300-token min-h-[1.5rem] block text-center"
+				class="text-error-700-300 min-h-[1.5rem] block text-center"
 			>
 				{#if showEmailError}
 					{confirmingEmailForSignIn
@@ -162,12 +162,12 @@
 			</small>
 
 			<div class="flex flex-wrap gap-4 justify-center">
-				<button class="btn bg-surface-900-50-token text-surface-50-900-token" disabled={$loading}>
+				<button class="btn bg-surface-950-50 text-surface-50-950" disabled={$loading}>
 					{!confirmingEmailForSignIn ? 'Send sign in link' : 'Sign in'}
 				</button>
 				{#if !confirmingEmailForSignIn}
 					<button
-						class="btn variant-soft"
+						class="btn preset-tonal"
 						type="button"
 						disabled={$loading}
 						onclick={resetSignInState}
@@ -180,7 +180,7 @@
 	{:else}
 		<button
 			disabled={$loading}
-			class="btn bg-surface-900-50-token text-surface-50-900-token"
+			class="btn bg-surface-950-50 text-surface-50-950"
 			onclick={() => (showEmailForm = true)}
 		>
 			Sign in with Email

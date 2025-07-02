@@ -7,7 +7,6 @@
 	import { search } from '$lib/functions/search';
 	import type SearchResult from '$lib/types/SearchResult';
 	import type Item from '$lib/types/Item';
-	import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
 	import SearchLoop from '$lib/components/icons/search-loop.svelte';
 	import Loading from '$lib/components/Loading.svelte';
 	import Check from '$lib/components/icons/check.svelte';
@@ -33,13 +32,13 @@
 	let showAddError = $state(false);
 	let selectedItemId = $state('');
 
-	let itemTypeFilters: { [Property in ItemType]: boolean } = {
+	let itemTypeFilters: { [Property in ItemType]: boolean } = $state({
 		album: false,
 		artist: false,
 		episode: false,
 		podcast: false,
 		song: false
-	};
+	});
 
 	let itemTypeFiltersClear = $derived(itemTypes.every((itemType) => !itemTypeFilters[itemType]));
 	let itemTypeFiltersFriendlyDescription = $derived(() => {
@@ -108,7 +107,9 @@
 		}
 	};
 
-	const onSearchSubmit = async () => {
+	const onSearchSubmit = async (event: Event) => {
+		event.preventDefault();
+
 		showSearchError = searchQuery.length < MINIMUM_SEARCH_QUERY_LENGTH;
 
 		if (showSearchError) {
@@ -168,24 +169,24 @@
 
 	const goToListPage = (itemId?: string) => goto(`/list${!itemId ? '' : `?itemId=${itemId}`}`);
 
-	const onItemClick = (event: Event) => {
-		if (!$loading) {
+	const onItemClick = (event: Event, itemId: string) => {
+		if ($loading) {
 			return;
 		}
 
 		event.preventDefault();
+
+		selectedItemId = itemId;
 	};
 </script>
 
 <div id="add-container" class="flex flex-col">
-	<div class="sticky top-0 p-4 -mt-4 bg-surface-50-900-token">
-		<form on:submit|preventDefault={onSearchSubmit}>
+	<div class="sticky top-0 p-4 -mt-4 bg-surface-50-950">
+		<form onsubmit={onSearchSubmit}>
 			<label class="label">
 				<span class="sr-only">Search</span>
-				<div class="input-group flex bg-surface-50-900-token !border-surface-900-50-token">
-					<div
-						class="relative grow text-surface-900-50-token bg-surface-50-900-token !px-0 min-w-0"
-					>
+				<div class="input-group flex bg-surface-50-950 !border-surface-950-50">
+					<div class="relative grow text-surface-950-50 bg-surface-50-950 !px-0 min-w-0">
 						<div class="absolute">
 							<SearchLoop />
 						</div>
@@ -194,12 +195,12 @@
 							placeholder="Search..."
 							bind:value={searchQuery}
 							disabled={$loading}
-							on:input={onSearchInput}
-							class="pl-14 pr-4 !bg-surface-50-900-token focus:!ring-4 focus:ring-inset focus:ring-surface-500 grow min-w-0"
+							oninput={onSearchInput}
+							class="pl-14 pr-4 !bg-surface-50-950 focus:!ring-4 focus:ring-inset focus:ring-surface-500 grow min-w-0"
 						/>
 					</div>
 					<button
-						class="bg-surface-900-50-token text-surface-50-900-token focus:-outline-offset-4"
+						class="bg-surface-950-50 text-surface-50-950 focus:-outline-offset-4"
 						disabled={$loading}
 					>
 						Submit
@@ -208,7 +209,7 @@
 			</label>
 			<small
 				role={showSearchError || showAddError ? 'alert' : ''}
-				class="text-error-600-300-token min-h-[1.5rem] block text-center"
+				class="text-error-700-300 min-h-[1.5rem] block text-center"
 			>
 				{#if showSearchError}
 					Please enter a search query of at least {MINIMUM_SEARCH_QUERY_LENGTH} characters
@@ -221,11 +222,11 @@
 				<span class="sr-only">Filters</span>
 				{#each itemTypes as itemType}
 					<span
-						class="chip rounded-token"
-						class:variant-filled={itemTypeFilters[itemType]}
-						class:variant-soft-surface={!itemTypeFilters[itemType]}
+						class="chip pointer"
+						class:preset-filled={itemTypeFilters[itemType]}
+						class:preset-tonal={!itemTypeFilters[itemType]}
 						onclick={() => filterItemTypes(itemType)}
-						on:keypress={(event) => {
+						onkeypress={(event) => {
 							if (event.key == ' ' || event.code == 'Space' || event.keyCode == 32) {
 								filterItemTypes(itemType);
 								event.preventDefault();
@@ -240,9 +241,9 @@
 					</span>
 				{/each}
 				<button
-					class="chip rounded-token"
-					class:variant-soft-error={itemTypeFiltersClear}
-					class:variant-filled-error={!itemTypeFiltersClear}
+					class="chip rounded-base"
+					class:preset-tonal-error={itemTypeFiltersClear}
+					class:preset-filled-error-500={!itemTypeFiltersClear}
 					onclick={clearItemTypeFilters}
 					type="button"
 				>
@@ -258,7 +259,7 @@
 		{:else if !filteredResults.length}
 			<div class="m-4 text-center">
 				{#if searchErrored}
-					<span role="alert" class="text-error-600-300-token">
+					<span role="alert" class="text-error-700-300">
 						There was an error when fetching search results, please try again
 					</span>
 				{:else if lastSearchQuery}
@@ -277,14 +278,20 @@
 				Showing {itemTypeFiltersClear ? 'all' : itemTypeFiltersFriendlyDescription()}
 				search results.
 			</span>
-			<ListBox spacing="">
+			<div>
 				{#each filteredResults as item, i (item.id)}
-					<ListBoxItem
-						bind:group={selectedItemId}
-						name="item"
-						value={item.id}
-						padding="p-4 focus:!-outline-offset-4"
-						onclick={onItemClick}
+					<div
+						tabindex="0"
+						role="option"
+						aria-selected={selectedItemId === item.id}
+						class="p-4 focus:!-outline-offset-4"
+						onclick={(event) => onItemClick(event, item.id)}
+						onkeyup={(event) => {
+							if (event.key !== 'space') {
+								return;
+							}
+							onItemClick(event, item.id);
+						}}
 					>
 						<div id={item.id} class="flex gap-4 items-center" class:cursor-not-allowed={$loading}>
 							<div class="flex flex-col gap-4 shrink-0 justify-center items-center">
@@ -300,26 +307,26 @@
 								{/each}
 							</div>
 						</div>
-					</ListBoxItem>
+					</div>
 					{#if i !== filteredResults.length - 1}
 						<hr class="!border-t-4" />
 					{/if}
 				{/each}
-			</ListBox>
+			</div>
 		{/if}
 	</div>
 </div>
 
-<div class="sticky bottom-0 -mb-4 p-4 flex justify-center gap-4 bg-surface-50-900-token">
+<div class="sticky bottom-0 -mb-4 p-4 flex justify-center gap-4 bg-surface-50-950">
 	<button
-		class="btn bg-surface-900-50-token text-surface-50-900-token"
+		class="btn bg-surface-950-50 text-surface-50-950"
 		type="submit"
 		disabled={$loading}
 		onclick={onSelectionSubmit}
 	>
 		Add
 	</button>
-	<button class="btn variant-soft" type="button" disabled={$loading} onclick={() => goToListPage()}>
+	<button class="btn preset-tonal" type="button" disabled={$loading} onclick={() => goToListPage()}>
 		Cancel
 	</button>
 </div>

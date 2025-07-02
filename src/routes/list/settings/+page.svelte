@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { type ModalSettings, getModalStore } from '@skeletonlabs/skeleton';
+	import { type ModalSettings } from '@skeletonlabs/skeleton-svelte';
 	import DeleteAccountModal from '$lib/components/DeleteAccountModal.svelte';
 	import PromoteAccountAlert from '$lib/components/PromoteAccountAlert.svelte';
 	import PromoteAccountModal from '$lib/components/PromoteAccountModal.svelte';
@@ -60,18 +60,15 @@
 <div id="settings-container" class="flex flex-col gap-4">
 	{#if $user?.isAnonymous}
 		<PromoteAccountAlert>
-			<svelte:fragment slot="signInButton">
-				<button
-					class="btn bg-surface-900-50-token text-surface-50-900-token"
-					onclick={promoteAccount}
-				>
+			{#snippet signInButton()}
+				<button class="btn bg-surface-950-50 text-surface-50-950" onclick={promoteAccount}>
 					Sign in
 				</button>
-			</svelte:fragment>
+			{/snippet}
 		</PromoteAccountAlert>
 	{/if}
 
-	<div class="flex flex-col gap-4 ring-4 ring-surface-900-50-token mt-1 mb-1 p-4">
+	<div class="flex flex-col gap-4 ring-4 ring-surface-950-50 mt-1 mb-1 p-4">
 		<h2 class="h2">Spotify</h2>
 		<p>
 			Listen Later currently only supports searching Spotify for songs etc. available to the
@@ -86,7 +83,7 @@
 	</div>
 
 	<div class="flex flex-col items-center justify-end grow">
-		<button onclick={deleteAccount} class="btn variant-filled-error btn-2xl">
+		<button onclick={deleteAccount} class="btn preset-filled-error-500 btn-2xl">
 			Delete account
 		</button>
 	</div>

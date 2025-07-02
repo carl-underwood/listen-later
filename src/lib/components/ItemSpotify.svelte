@@ -9,17 +9,17 @@
 	import type Item from '$lib/types/Item';
 	import ItemImage from './ItemImage.svelte';
 
-	let { item, openAccordionItemId }: { item: Item; openAccordionItemId: string | null } = $props();
+	let { item }: { item: Item } = $props();
 
 	let itemMetadata = $derived($spotifyItemMetadata[getPrefixlessId(item)]);
 </script>
 
-<ItemBase {item} {openAccordionItemId}>
-	<svelte:fragment slot="lead">
+<ItemBase {item}>
+	{#snippet itemLead()}
 		<ItemImage {itemMetadata} />
 		<SpotifyLogo classes="w-20" />
-	</svelte:fragment>
-	<svelte:fragment slot="metadata">
+	{/snippet}
+	{#snippet metadata()}
 		{#if !itemMetadata}
 			<span class="capitalize">{item.type}</span>
 			{#if ['album', 'podcast', 'song'].includes(item.type)}
@@ -33,12 +33,12 @@
 				<span class="break-word">{metadataPart}</span>
 			{/each}
 		{/if}
-	</svelte:fragment>
-	<svelte:fragment slot="openButton">
+	{/snippet}
+	{#snippet openButton()}
 		<a
 			href={item.url + '?go=1'}
 			target="_blank"
-			class="btn variant-ringed-surface font-semibold rounded-3xl"
+			class="btn preset-outlined-surface-500 font-semibold rounded-3xl"
 			class:opacity-50={$loading}
 			class:cursor-not-allowed={$loading}
 			onclick={(event) => preventDefaultIf(event, $loading)}
@@ -46,5 +46,5 @@
 			<SpotifyIcon classes="w-6 h-6 mr-3 fill-[#83D269]" />
 			Open in Spotify
 		</a>
-	</svelte:fragment>
+	{/snippet}
 </ItemBase>

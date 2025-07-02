@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { focusTrap, getModalStore } from '@skeletonlabs/skeleton';
 	import { loading } from '$lib/stores/loading';
 	import { user } from '$lib/stores/user';
 	import { auth } from '$lib/stores/auth';
@@ -112,9 +111,9 @@
 		<p>Are you sure you want to delete your account?</p>
 		<p><strong>This can not be undone</strong></p>
 		<div class="mt-4 flex gap-4 justify-center">
-			<button class="btn variant-soft" disabled={$loading} onclick={closeModal}>Cancel</button>
+			<button class="btn preset-tonal" disabled={$loading} onclick={closeModal}>Cancel</button>
 			<button
-				class="btn bg-gradient-to-br variant-filled-error"
+				class="btn bg-gradient-to-br preset-filled-error-500"
 				disabled={$loading}
 				onclick={confirmDelete}
 			>
@@ -130,7 +129,7 @@
 				<div class="flex flex-col gap-4 justify-center">
 					{#if $user?.providerData.find((provider) => provider.providerId === providerId!.PASSWORD)}
 						<button
-							class="btn bg-surface-900-50-token text-surface-50-900-token"
+							class="btn bg-surface-950-50 text-surface-50-950"
 							disabled={$loading}
 							onclick={sendSignInLink}
 						>

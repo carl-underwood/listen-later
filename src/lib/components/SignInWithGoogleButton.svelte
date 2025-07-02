@@ -7,7 +7,7 @@
 
 <button
 	disabled={$loading}
-	class="btn bg-surface-900-50-token text-surface-50-900-token flex gap-2"
+	class="btn bg-surface-950-50 text-surface-50-950 flex gap-2"
 	{onclick}
 >
 	<Google classes="w-6 h-6" />

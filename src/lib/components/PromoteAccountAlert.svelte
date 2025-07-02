@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
 	import { prefersReducedMotion } from '$lib/stores/prefersReducedMotion';
+	import type { Snippet } from 'svelte';
+
+	let { signInButton }: { signInButton: Snippet } = $props();
 
 	const slideWithPrefersReducedMotion = (node: Element) =>
 		slide(node, { duration: $prefersReducedMotion ? 0 : undefined });
@@ -8,7 +11,7 @@
 
 <div
 	role="alert"
-	class="alert variant-filled-error ring-4 ring-surface-900-50-token mt-1 mb-1"
+	class="alert preset-filled-error-500 ring-4 ring-surface-950-50 mt-1 mb-1"
 	transition:slideWithPrefersReducedMotion
 >
 	<div class="alert-message">
@@ -24,6 +27,6 @@
 		</p>
 	</div>
 	<div class="alert-actions">
-		<slot name="signInButton" />
+		{@render signInButton()}
 	</div>
 </div>

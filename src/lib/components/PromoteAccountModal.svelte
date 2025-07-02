@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { focusTrap, getModalStore } from '@skeletonlabs/skeleton';
 	import { loading } from '$lib/stores/loading';
 	import { user } from '$lib/stores/user';
 	import { auth } from '$lib/stores/auth';
@@ -81,7 +80,7 @@
 		{#if !showCredentialAlreadyInUseError}
 			<p>Please sign in to create your account</p>
 		{:else}
-			<p role="alert" class="text-error-600-300-token max-w-md">
+			<p role="alert" class="text-error-700-300 max-w-md">
 				You tried to sign in to an account that already exists.
 				<br />
 				<br />

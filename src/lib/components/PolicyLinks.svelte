@@ -11,7 +11,7 @@
 	{#each policyLinks as policyLink, i (policyLink.href)}
 		<a href={policyLink.href} class="underline"><small>{policyLink.name}</small></a>
 		{#if i !== policyLinks.length - 1}
-			<span class="divider-vertical border-surface-900-50-token m-0 h-4"></span>
+			<span class="divider-vertical border-surface-950-50 m-0 h-4"></span>
 		{/if}
 	{/each}
 </div>

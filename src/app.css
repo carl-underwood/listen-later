@@ -1,12 +1,15 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-@tailwind variants;
+@import 'tailwindcss';
+
+@import '@skeletonlabs/skeleton';
+@import '@skeletonlabs/skeleton/optional/presets';
+@import './theme.css';
+
+@source '../node_modules/@skeletonlabs/skeleton-svelte/dist';
 
 :focus-visible:not(input) {
-	outline-color: rgb(var(--color-surface-400)) !important;
+	outline-color: var(--color-surface-500) !important;
 	outline-style: solid !important;
-	outline-width: var(--theme-border-base) !important;
+	outline-width: var(--default-ring-width) !important;
 }
 
 input:focus-visible {

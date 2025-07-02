@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { tick } from 'svelte';
+	import { tick, type Snippet } from 'svelte';
 
 	type Image = {
 		src: string;
@@ -8,8 +8,13 @@
 
 	let {
 		imagesInOrderOfPrecedence,
-		classes = undefined
-	}: { imagesInOrderOfPrecedence: Image[]; classes?: string | undefined } = $props();
+		classes = undefined,
+		finalFallback
+	}: {
+		imagesInOrderOfPrecedence: Image[];
+		classes?: string | undefined;
+		finalFallback: Snippet;
+	} = $props();
 
 	let attemptIndex = $state(0);
 
@@ -40,5 +45,5 @@
 	/>
 {/if}
 {#if attemptIndex >= imagesInOrderOfPrecedence.length}
-	<slot name="finalFallback" />
+	{@render finalFallback()}
 {/if}

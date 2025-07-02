@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { ProgressBar } from '@skeletonlabs/skeleton';
+	import { Progress } from '@skeletonlabs/skeleton-svelte';
 </script>
 
-<ProgressBar />
+<Progress />
 <span class="sr-only">Loading</span>

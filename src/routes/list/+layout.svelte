@@ -5,6 +5,8 @@
 	import Loading from '$lib/components/Loading.svelte';
 	import SignInForm from '$lib/components/SignInForm.svelte';
 
+	let { children } = $props();
+
 	let showingEmailForm = $state(false);
 
 	const tryEmailLink = async (email: string) => {
@@ -61,13 +63,13 @@
 				<button
 					onclick={() => loading.whileAwaiting(auth.signInAnonymously)}
 					disabled={$loading}
-					class="btn bg-surface-900-50-token text-surface-50-900-token"
+					class="btn bg-surface-950-50 text-surface-50-950"
 				>
 					Try it out
 				</button>
 				<div class="self-stretch mt-4 relative">
 					<hr class="!border-t-2 absolute left-0 right-0 top-3 -z-[1]" />
-					<span class="inline-block h-6 px-4 bg-surface-50-900-token">or</span>
+					<span class="inline-block h-6 px-4 bg-surface-50-950">or</span>
 				</div>
 			</div>
 		{/if}
@@ -77,6 +79,6 @@
 			{tryEmailLink}
 		/>
 	{:else}
-		<slot />
+		{@render children()}
 	{/if}
 </div>
