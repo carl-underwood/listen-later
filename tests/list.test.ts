@@ -19,17 +19,17 @@ test.describe('list page', () => {
 	});
 
 	test('allows an item to be added when signed in', async ({ page }) => {
-		await signInAddItemAndVerify(page, 'Victory Dance', '6cQzmvrbnCM1d51XOodmPR');
+		await signInAddItemAndVerify(page, 'Victory Dance', '6GumLQysBiahvtJmxMXOpn');
 	});
 
 	test('allows an item to be added when signed in directly to the add page', async ({ page }) => {
 		await page.goto('/list/add');
 		await signInAnonymously(page);
-		await searchForItemAddAndVerify(page, 'Victory Dance', '6cQzmvrbnCM1d51XOodmPR');
+		await searchForItemAddAndVerify(page, 'Victory Dance', '6GumLQysBiahvtJmxMXOpn');
 	});
 
 	test('allows an item to be deleted when signed in', async ({ page }) => {
-		const newItem = await signInAddItemAndVerify(page, 'Victory Dance', '6cQzmvrbnCM1d51XOodmPR');
+		const newItem = await signInAddItemAndVerify(page, 'Victory Dance', '6GumLQysBiahvtJmxMXOpn');
 
 		const newItemDeleteButton = page.getByRole('button', { name: 'Delete Victory Dance' });
 		await expect(newItemDeleteButton).toBeVisible();
@@ -49,7 +49,7 @@ test.describe('list page', () => {
 
 	test('prevents an item added again from overwriting the existing item', async ({ page }) => {
 		const name = 'Victory Dance';
-		const id = '6cQzmvrbnCM1d51XOodmPR';
+		const id = '6GumLQysBiahvtJmxMXOpn';
 
 		await signInAddItemAndVerify(page, name, id);
 
@@ -69,14 +69,14 @@ test.describe('list page', () => {
 		const newItem = await goToSearchPageAddItemAndVerify(
 			page,
 			'Victory Dance',
-			'6cQzmvrbnCM1d51XOodmPR'
+			'6GumLQysBiahvtJmxMXOpn'
 		);
 		await expect(newItem).toBeVisible();
 		await expect(newItem).toHaveAttribute('aria-expanded', 'true');
 	});
 
 	test('shows a button to open the item in Spotify', async ({ page }) => {
-		const id = '6cQzmvrbnCM1d51XOodmPR';
+		const id = '6GumLQysBiahvtJmxMXOpn';
 		await signInAddItemAndVerify(page, 'Victory Dance', id);
 
 		const openInSpotifyLink = page.getByRole('link', { name: 'Open in Spotify' });
@@ -88,7 +88,7 @@ test.describe('list page', () => {
 	});
 
 	test('allows items to be marked as listened to', async ({ page }) => {
-		const newItem = await signInAddItemAndVerify(page, 'Victory Dance', '6cQzmvrbnCM1d51XOodmPR');
+		const newItem = await signInAddItemAndVerify(page, 'Victory Dance', '6GumLQysBiahvtJmxMXOpn');
 
 		const listenedSwitch = page.getByRole('switch', { name: 'Listened' });
 		const listenedSwitchUnderlyingCheckbox = listenedSwitch.locator("input[type='checkbox']");
@@ -111,7 +111,7 @@ test.describe('list page', () => {
 		await signInAddItemAndExpectMetadata(
 			page,
 			'Victory Dance',
-			'5Nu4AvrNgIx42nWGbteHLh',
+			'6GumLQysBiahvtJmxMXOpn',
 			async (newItem) => {
 				await expect(newItem.getByText('Song')).toBeVisible();
 				await expect(newItem.getByText('Ezra Collective')).toBeVisible();
@@ -123,8 +123,20 @@ test.describe('list page', () => {
 	test('shows metadata for album Spotify items', async ({ page }) => {
 		await signInAddItemAndExpectMetadata(
 			page,
-			'Victory Dance',
-			'7x5W5TIWobdV7SeF6kFtn9',
+			"Where I'm Meant To Be",
+			'4bFZYpPPKHvsVsmYEYnIRk',
+			async (newItem) => {
+				await expect(newItem.getByText('Album')).toBeVisible();
+				await expect(newItem.getByText('Ezra Collective')).toBeVisible();
+			}
+		);
+	});
+
+	test('shows metadata for album Spotify items (singles)', async ({ page }) => {
+		await signInAddItemAndExpectMetadata(
+			page,
+			'God Gave Me Feet For Dancing (feat. Yazmin Lacey)',
+			'6JcMpbDUIIigbqtymfNTUY',
 			async (newItem) => {
 				await expect(newItem.getByText('Single')).toBeVisible();
 				await expect(newItem.getByText('Ezra Collective')).toBeVisible();

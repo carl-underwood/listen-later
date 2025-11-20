@@ -25,7 +25,7 @@
 			>.
 		</p>
 		<p>
-			For anything else, <button class="underline" on:click={fireEmail}>drop us an email</button>.
+			For anything else, <button class="underline" onclick={fireEmail}>drop us an email</button>.
 		</p>
 	</div>
 </div>

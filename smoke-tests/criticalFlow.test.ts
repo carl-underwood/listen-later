@@ -1,26 +1,27 @@
 import { APIRequestContext, Page, expect, test } from '@playwright/test';
 import dotenv from 'dotenv';
+import { dirname } from 'path';
 import { v4 as uuid } from 'uuid';
 import {
-	signInAnonymously,
-	goToSearchPageAddItemAndVerify,
-	goToListPage,
-	expectNavigationItem,
-	openNavigation,
 	clickSignInAndExpectPromoteAccountAlertDialog,
 	clickSignInWithEmailButton,
 	clickSignOutButton,
 	closeModal,
 	closeNavigation,
+	deleteAccount,
+	ensureLoggedOutAndConfirmationModalClosed,
 	expectListPageToBeVisible,
+	expectNavigationItem,
 	fillEmailInputClickSendSignInLinkAndExpectConfirmation,
 	getPromoteAccountAlert,
 	getVisibleItemWithName,
-	deleteAccount,
-	ensureLoggedOutAndConfirmationModalClosed
+	goToListPage,
+	goToSearchPageAddItemAndVerify,
+	openNavigation,
+	signInAnonymously
 } from '../tests/helpers/shared';
 
-dotenv.config();
+dotenv.config({ path: `${dirname(import.meta.url.replace('file://', ''))}/.env` });
 
 const FIREBASE_APPCHECK_DEBUG_TOKEN = process.env.FIREBASE_APPCHECK_DEBUG_TOKEN;
 const MAILINATOR_API_TOKEN = process.env.MAILINATOR_API_TOKEN;
@@ -68,7 +69,7 @@ test('critical flow', async ({ page, request }) => {
 	const victoryDance = await goToSearchPageAddItemAndVerify(
 		page,
 		'Victory Dance',
-		'5Nu4AvrNgIx42nWGbteHLh'
+		'6GumLQysBiahvtJmxMXOpn'
 	);
 
 	// Shows a button to open the item in Spotify
@@ -76,7 +77,7 @@ test('critical flow', async ({ page, request }) => {
 	await expect(openInSpotifyLink).toBeVisible();
 	await expect(openInSpotifyLink).toHaveAttribute(
 		'href',
-		`https://open.spotify.com/track/5Nu4AvrNgIx42nWGbteHLh?go=1`
+		`https://open.spotify.com/track/6GumLQysBiahvtJmxMXOpn?go=1`
 	);
 
 	// Allows items to be marked as listened to
@@ -209,8 +210,9 @@ const gotoSignInLinkFromMailinator = (
 		);
 
 		const messageResponseJson = await messageResponse.json();
-		const htmlMessage = messageResponseJson.parts.find((part) =>
-			part.headers['content-type'].startsWith('text/html')
+		const htmlMessage = messageResponseJson.parts.find(
+			(part: { headers: Record<string, string>; body: string }) =>
+				part.headers['content-type'].startsWith('text/html')
 		);
 
 		await page.setContent(htmlMessage.body);
@@ -220,7 +222,6 @@ const gotoSignInLinkFromMailinator = (
 
 		expect(href).toBeTruthy();
 
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		await page.goto(href!);
 
 		return messageId;

@@ -287,7 +287,7 @@ export const addItemAndExpectPromoteAccountAlert = async (page: Page) => {
 	await expect(promoteAccountAlert).not.toBeVisible();
 
 	const name = 'Victory Dance';
-	const id = '6cQzmvrbnCM1d51XOodmPR';
+	const id = '6GumLQysBiahvtJmxMXOpn';
 	await goToSearchPageAddItemAndVerify(page, name, id);
 
 	await expect(promoteAccountAlert).toBeVisible();

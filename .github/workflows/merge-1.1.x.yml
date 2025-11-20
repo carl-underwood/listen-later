@@ -19,15 +19,15 @@ jobs:
       PUBLIC_FIREBASE_APP_ID: '1:888811211358:web:0e351469eaead560e602cf'
       PUBLIC_FIREBASE_USE_EMULATORS: 'false'
       PUBLIC_FIREBASE_APPCHECK_DEBUG_TOKEN: ''
-      PUBLIC_RECAPTCHA_SITE_KEY: '6Lcaxv4mAAAAAAGnxGlw3i8IgCzIJHeCdM3p0Ymp'
+      PUBLIC_RECAPTCHA_SITE_KEY: '6LcPHCsrAAAAAONNpGFPBVct7Bz-Ez4UXPTN81gK'
       SPOTIFY_CLIENT_ID: 'd46d2b58a44947d093ecbe0289a5dfc3'
       SPOTIFY_CLIENT_SECRET: '${{ secrets.SPOTIFY_CLIENT_SECRET }}'
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js 18.x
+      - name: Use Node.js 22.x
         uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 22.x
       - name: Install dependencies
         run: npm ci
       - name: SvelteKit sync
@@ -59,13 +59,13 @@ jobs:
     needs: build_and_deploy
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.49.0-jammy
+      image: mcr.microsoft.com/playwright:v1.56.1-noble
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js 18.x
+      - name: Use Node.js 22.x
         uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 22.x
       - name: Install dependencies
         run: npm ci
       - name: Run Playwright smoke tests

@@ -1,20 +1,21 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
+	import { resolve } from '$app/paths';
+	import GoToReferenceButton from '$lib/components/GoToReferenceButton.svelte';
+	import ArrowDown from '$lib/components/icons/arrow-down.svelte';
 	import ListenLater from '$lib/components/ListenLater.svelte';
-	import searchDark from '../assets/search-dark.png';
-	import searchLight from '../assets/search-light.png';
+	import Roadmap from '$lib/components/Roadmap.svelte';
+	import { modeCurrent } from '@skeletonlabs/skeleton';
 	import listDark from '../assets/list-dark.png';
 	import listLight from '../assets/list-light.png';
-	import { modeCurrent } from '@skeletonlabs/skeleton';
-	import ArrowDown from '$lib/components/icons/arrow-down.svelte';
-	import { browser } from '$app/environment';
-	import GoToReferenceButton from '$lib/components/GoToReferenceButton.svelte';
-	import Roadmap from '$lib/components/Roadmap.svelte';
+	import searchDark from '../assets/search-dark.png';
+	import searchLight from '../assets/search-light.png';
 
-	let scrollY: number;
+	let scrollY: number = $state(0);
 
-	$: percentageScrolled = !browser
-		? 0
-		: scrollY / (document.body.scrollHeight - window.innerHeight) || 0;
+	let percentageScrolled = $derived(
+		!browser ? 0 : scrollY / (document.body.scrollHeight - window.innerHeight) || 0
+	);
 
 	type Reference = {
 		href: string;
@@ -43,8 +44,8 @@
 
 	let referenceRefs: HTMLAnchorElement[] = [];
 
-	const goToReference = (event: CustomEvent<{ oneBasedReferenceNumber: number }>) => {
-		referenceRefs[event.detail.oneBasedReferenceNumber - 1].focus();
+	const goToReference = (event: { oneBasedReferenceNumber: number }) => {
+		referenceRefs[event.oneBasedReferenceNumber - 1].focus();
 	};
 </script>
 
@@ -84,7 +85,9 @@
 			/>
 		</div>
 		<div class="flex flex-col gap-4 items-center px-4 xl:self-end xl:sticky xl:bottom-8">
-			<a href="/list" class="btn bg-surface-900-50-token text-surface-50-900-token">Try it out</a>
+			<a href={resolve('/list')} class="btn bg-surface-900-50-token text-surface-50-900-token"
+				>Try it out</a
+			>
 		</div>
 	</div>
 
@@ -97,12 +100,12 @@
 			</p>
 			<p>
 				Born out of the desire to be able to easily keep track of things to listen to later
-				<GoToReferenceButton oneBasedReferenceNumber={1} on:goToReference={goToReference} />
-				<GoToReferenceButton oneBasedReferenceNumber={2} on:goToReference={goToReference} />
-				<GoToReferenceButton oneBasedReferenceNumber={3} on:goToReference={goToReference} />
+				<GoToReferenceButton oneBasedReferenceNumber={1} {goToReference} />
+				<GoToReferenceButton oneBasedReferenceNumber={2} {goToReference} />
+				<GoToReferenceButton oneBasedReferenceNumber={3} {goToReference} />
 				(which Spotify currently only supports for podcast episodes <GoToReferenceButton
 					oneBasedReferenceNumber={4}
-					on:goToReference={goToReference}
+					{goToReference}
 				/>), Listen Later is a free to use, ad-free and open-source web application built to solve
 				this problem.
 			</p>
@@ -128,7 +131,9 @@
 				access it on other devices by simply signing in.
 			</p>
 			<div class="flex justify-center">
-				<a href="/list" class="btn bg-surface-900-50-token text-surface-50-900-token">Try it out</a>
+				<a href={resolve('/list')} class="btn bg-surface-900-50-token text-surface-50-900-token"
+					>Try it out</a
+				>
 			</div>
 			<hr class="!border-t-2 my-4" />
 			<Roadmap />
@@ -139,6 +144,7 @@
 					{#each references as reference, i (reference.href)}
 						<li class="flex gap-2">
 							<span class="shrink-0">[<span class="sr-only">Reference </span>{i + 1}]</span>
+							<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 							<a href={reference.href} class="underline reference" bind:this={referenceRefs[i]}>
 								{reference.description}
 							</a>

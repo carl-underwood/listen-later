@@ -1,15 +1,15 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
 {
-	"name": "Playwright with Java & Node 18",
+	"name": "Playwright with Java & Node 22",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/playwright:v1.49.0-jammy",
+	"image": "mcr.microsoft.com/playwright:v1.56.1-noble",
 	"features": {
 		"ghcr.io/devcontainers/features/java:1": {
-			"version": "17"
+			"version": "25"
 		},
 		"ghcr.io/devcontainers/features/node:1": {
-			"version": "18.19.1"
+			"version": "22.21.1"
 		}
 	},
 	"customizations": {

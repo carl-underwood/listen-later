@@ -46,7 +46,6 @@ export const mapToSearchResults = (
 		name: item.name,
 		metadataParts: [
 			'Episode',
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			episodesResponse.episodes.find((episode) => episode.id === item.id)!.show.name
 		],
 		url: item.external_urls.spotify,

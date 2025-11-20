@@ -1,46 +1,51 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import fuzzysort from 'fuzzysort';
-	import { items } from '$lib/stores/items';
-	import { functions } from '$lib/stores/functions';
-	import { loading } from '$lib/stores/loading';
-	import { search } from '$lib/functions/search';
-	import type SearchResult from '$lib/types/SearchResult';
-	import type Item from '$lib/types/Item';
-	import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
-	import SearchLoop from '$lib/components/icons/search-loop.svelte';
-	import Loading from '$lib/components/Loading.svelte';
+	import { resolve } from '$app/paths';
 	import Check from '$lib/components/icons/check.svelte';
-	import { type ItemType, itemTypes } from '$lib/types/ItemType';
-	import SpotifyLogo from '$lib/components/SpotifyLogo.svelte';
+	import SearchLoop from '$lib/components/icons/search-loop.svelte';
 	import ItemImage from '$lib/components/ItemImage.svelte';
+	import Loading from '$lib/components/Loading.svelte';
+	import SpotifyLogo from '$lib/components/SpotifyLogo.svelte';
+	import { search } from '$lib/functions/search';
+	import { functions } from '$lib/stores/functions';
+	import { items } from '$lib/stores/items';
+	import { loading } from '$lib/stores/loading';
+	import type Item from '$lib/types/Item';
+	import { type ItemType, itemTypes } from '$lib/types/ItemType';
+	import type SearchResult from '$lib/types/SearchResult';
+	import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
+	import fuzzysort from 'fuzzysort';
 
 	const MINIMUM_SEARCH_QUERY_LENGTH = 3;
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	$: $functions;
-	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	$: $items;
+	$effect(() => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		$functions;
+	});
+	$effect(() => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		$items;
+	});
 
-	let searchResults: SearchResult[] = [];
-	let lastSearchQuery = '';
-	let searchQuery = '';
-	let searchErrored = false;
-	let searching = false;
-	let showSearchError = false;
-	let showAddError = false;
-	let selectedItemId = '';
+	let searchResults: SearchResult[] = $state([]);
+	let lastSearchQuery = $state('');
+	let searchQuery = $state('');
+	let searchErrored = $state(false);
+	let searching = $state(false);
+	let showSearchError = $state(false);
+	let showAddError = $state(false);
+	let selectedItemId = $state('');
 
-	let itemTypeFilters: { [Property in ItemType]: boolean } = {
+	let itemTypeFilters: { [Property in ItemType]: boolean } = $state({
 		album: false,
 		artist: false,
 		episode: false,
 		podcast: false,
 		song: false
-	};
+	});
 
-	$: itemTypeFiltersClear = itemTypes.every((itemType) => !itemTypeFilters[itemType]);
-	$: itemTypeFiltersFriendlyDescription = () => {
+	let itemTypeFiltersClear = $derived(itemTypes.every((itemType) => !itemTypeFilters[itemType]));
+	let itemTypeFiltersFriendlyDescription = $derived(() => {
 		const commaSeparatedItemTypeFilters = itemTypes
 			.filter((itemType) => itemTypeFilters[itemType])
 			.join(', ');
@@ -58,29 +63,33 @@
 			replacement +
 			commaSeparatedItemTypeFilters.slice(lastCommaIndex + 1)
 		);
-	};
+	});
 
-	$: fuzzysortedResults = [
-		...fuzzysort.go(lastSearchQuery, searchResults, {
-			key: 'name'
-		})
-	]
-		.sort((a, b) => {
-			if (a.score === b.score) {
-				return b.obj.popularity - a.obj.popularity;
-			}
+	let fuzzysortedResults = $derived(
+		[
+			...fuzzysort.go(lastSearchQuery, searchResults, {
+				key: 'name'
+			})
+		]
+			.sort((a, b) => {
+				if (a.score === b.score) {
+					return b.obj.popularity - a.obj.popularity;
+				}
 
-			return a.score < b.score ? 1 : -1; // fuzzysort scores are negative
-		})
-		.map((keyResult) => keyResult.obj);
+				return a.score < b.score ? 1 : -1; // fuzzysort scores are negative
+			})
+			.map((keyResult) => keyResult.obj)
+	);
 
-	$: filteredResults = [
-		...fuzzysortedResults,
-		...searchResults.filter(
-			(result) =>
-				!fuzzysortedResults.find((fuzzysortedResult) => fuzzysortedResult.id === result.id)
-		)
-	].filter((item) => itemTypeFilters[item.type] || itemTypeFiltersClear);
+	let filteredResults = $derived(
+		[
+			...fuzzysortedResults,
+			...searchResults.filter(
+				(result) =>
+					!fuzzysortedResults.find((fuzzysortedResult) => fuzzysortedResult.id === result.id)
+			)
+		].filter((item) => itemTypeFilters[item.type] || itemTypeFiltersClear)
+	);
 
 	const filterItemTypes = (itemType: ItemType) => {
 		itemTypeFilters = { ...itemTypeFilters, [itemType]: !itemTypeFilters[itemType] };
@@ -102,7 +111,9 @@
 		}
 	};
 
-	const onSearchSubmit = async () => {
+	const onSearchSubmit = async (event: Event) => {
+		event.preventDefault();
+
 		showSearchError = searchQuery.length < MINIMUM_SEARCH_QUERY_LENGTH;
 
 		if (showSearchError) {
@@ -160,7 +171,9 @@
 		goToListPage(item.id);
 	};
 
-	const goToListPage = (itemId?: string) => goto(`/list${!itemId ? '' : `?itemId=${itemId}`}`);
+	const goToListPage = (itemId?: string) =>
+		// eslint-disable-next-line svelte/no-navigation-without-resolve
+		goto(`${resolve('/list')}${!itemId ? '' : `?itemId=${itemId}`}`);
 
 	const onItemClick = (event: Event) => {
 		if (!$loading) {
@@ -173,7 +186,7 @@
 
 <div id="add-container" class="flex flex-col">
 	<div class="sticky top-0 p-4 -mt-4 bg-surface-50-900-token">
-		<form on:submit|preventDefault={onSearchSubmit}>
+		<form onsubmit={onSearchSubmit}>
 			<label class="label">
 				<span class="sr-only">Search</span>
 				<div class="input-group flex bg-surface-50-900-token !border-surface-900-50-token">
@@ -188,7 +201,7 @@
 							placeholder="Search..."
 							bind:value={searchQuery}
 							disabled={$loading}
-							on:input={onSearchInput}
+							oninput={onSearchInput}
 							class="pl-14 pr-4 !bg-surface-50-900-token focus:!ring-4 focus:ring-inset focus:ring-surface-500 grow min-w-0"
 						/>
 					</div>
@@ -213,13 +226,13 @@
 			</small>
 			<div class="mb-4 flex flex-wrap gap-4 justify-center">
 				<span class="sr-only">Filters</span>
-				{#each itemTypes as itemType}
+				{#each itemTypes as itemType (itemType)}
 					<span
 						class="chip rounded-token"
 						class:variant-filled={itemTypeFilters[itemType]}
 						class:variant-soft-surface={!itemTypeFilters[itemType]}
-						on:click={() => filterItemTypes(itemType)}
-						on:keypress={(event) => {
+						onclick={() => filterItemTypes(itemType)}
+						onkeypress={(event) => {
 							if (event.key == ' ' || event.code == 'Space' || event.keyCode == 32) {
 								filterItemTypes(itemType);
 								event.preventDefault();
@@ -237,7 +250,7 @@
 					class="chip rounded-token"
 					class:variant-soft-error={itemTypeFiltersClear}
 					class:variant-filled-error={!itemTypeFiltersClear}
-					on:click={clearItemTypeFilters}
+					onclick={clearItemTypeFilters}
 					type="button"
 				>
 					Clear <span class="sr-only">filters</span>
@@ -289,7 +302,7 @@
 								<span class="font-semibold">
 									{item.name}
 								</span>
-								{#each item.metadataParts as metadataPart}
+								{#each item.metadataParts as metadataPart (metadataPart)}
 									<span class="break-word">{metadataPart}</span>
 								{/each}
 							</div>
@@ -309,16 +322,11 @@
 		class="btn bg-surface-900-50-token text-surface-50-900-token"
 		type="submit"
 		disabled={$loading}
-		on:click={onSelectionSubmit}
+		onclick={onSelectionSubmit}
 	>
 		Add
 	</button>
-	<button
-		class="btn variant-soft"
-		type="button"
-		disabled={$loading}
-		on:click={() => goToListPage()}
-	>
+	<button class="btn variant-soft" type="button" disabled={$loading} onclick={() => goToListPage()}>
 		Cancel
 	</button>
 </div>

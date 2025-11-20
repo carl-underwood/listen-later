@@ -4,7 +4,7 @@
 
 	import { slide } from 'svelte/transition';
 	import { browser, version } from '$app/environment';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
 	import {
 		initializeStores,
@@ -49,19 +49,21 @@
 		window.location.href = `https://listenlater.cloud${window.location.pathname}`;
 	}
 
-	$: {
-		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-		$page;
-		drawerStore.close();
-	}
+	let { children } = $props();
 
-	$: {
+	$effect(() => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		page.route;
+		drawerStore.close();
+	});
+
+	$effect(() => {
 		if (browser) {
 			document.head
 				.querySelector("meta[name='theme-color']")
 				?.setAttribute('content', $modeCurrent ? '#ffffff' : '#000000');
 		}
-	}
+	});
 
 	afterNavigate((navigation) => {
 		const searchParams = navigation.to?.url.searchParams;
@@ -80,8 +82,8 @@
 </script>
 
 <svelte:head>
-	<title>{$page.data.title}</title>
-	<meta name="og:title" content={$page.data.title} />
+	<title>{page.data.title}</title>
+	<meta name="og:title" content={page.data.title} />
 	<meta
 		name="description"
 		content="Curate a list of songs, artists, albums, podcasts and episodes that you want to listen to later with Spotify."
@@ -97,22 +99,22 @@
 	<meta name="og:image:height" content="512" />
 	<meta name="og:image:alt" content="Listen Later Logo" />
 	<meta name="og:url" content="https://listenlater.cloud" />
-	<link rel="canonical" href={`https://listenlater.cloud${$page.url.pathname}`} />
+	<link rel="canonical" href={`https://listenlater.cloud${page.url.pathname}`} />
 </svelte:head>
 
 <AppBar background="bg-transparent" slotTrail="place-content-end">
-	<svelte:fragment slot="trail">
+	{#snippet trail()}
 		<LightSwitch ring="ring-2 ring-surface-900-50-token" />
 		<button
 			type="button"
 			class="btn-icon bg-transparent"
-			on:click={() => drawerStore.open()}
+			onclick={() => drawerStore.open()}
 			disabled={$loading}
 		>
 			<Bars />
 			<span class="sr-only">Open navigation drawer</span>
 		</button>
-	</svelte:fragment>
+	{/snippet}
 </AppBar>
 
 <Drawer
@@ -124,41 +126,41 @@
 	<div id="navigation-drawer-inner" class="flex flex-col">
 		<div class="grow">
 			<AppBar slotTrail="place-content-end">
-				<svelte:fragment slot="trail">
+				{#snippet trail()}
 					<button
 						type="button"
 						class="btn-icon bg-transparent"
-						on:click={drawerStore.close}
+						onclick={drawerStore.close}
 						disabled={$loading}
 					>
 						<Close />
 						<span class="sr-only">Close navigation drawer</span>
 					</button>
-				</svelte:fragment>
+				{/snippet}
 			</AppBar>
 			<nav class="list-nav p-8 flex flex-col">
 				<span id="navigation-drawer-label" class="sr-only">Navigation drawer</span>
 				<ul class="text-2xl flex flex-col gap-4">
 					<NavMenuItem href="/">
-						<Home slot="icon" />
-						<svelte:fragment>Home</svelte:fragment>
+						{#snippet icon()}<Home />{/snippet}
+						Home
 					</NavMenuItem>
 					<NavMenuItem href="/list" nofollow>
-						<ListMusic slot="icon" />
-						<svelte:fragment>List</svelte:fragment>
+						{#snippet icon()}<ListMusic />{/snippet}
+						List
 					</NavMenuItem>
 					<NavMenuItem href="https://github.com/carl-underwood/listen-later">
-						<Github slot="icon" />
-						<svelte:fragment>GitHub</svelte:fragment>
+						{#snippet icon()}<Github />{/snippet}
+						GitHub
 					</NavMenuItem>
 					<NavMenuItem href="/contact">
-						<Envelope slot="icon" />
-						<svelte:fragment>Contact</svelte:fragment>
+						{#snippet icon()}<Envelope />{/snippet}
+						Contact
 					</NavMenuItem>
 					{#if $user}
 						<NavMenuItem href="/list/settings" transition={slideWithPrefersReducedMotion}>
-							<UserSettings slot="icon" />
-							<svelte:fragment>Settings</svelte:fragment>
+							{#snippet icon()}<UserSettings />{/snippet}
+							Settings
 						</NavMenuItem>
 					{/if}
 				</ul>
@@ -166,7 +168,7 @@
 			{#if $user}
 				<div class="pb-8 flex justify-center">
 					<button
-						on:click={() => loading.whileAwaiting(auth.signOut)}
+						onclick={() => loading.whileAwaiting(auth.signOut)}
 						disabled={$loading}
 						class="btn variant-filled-error btn-2xl"
 						transition:slideWithPrefersReducedMotion
@@ -194,7 +196,7 @@
 	</div>
 </Drawer>
 
-<slot />
+{@render children()}
 
 <Modal duration={$prefersReducedMotion ? 0 : undefined} />
 

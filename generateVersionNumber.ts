@@ -1,4 +1,4 @@
-// Script to generate a new build number
+// Script to generate a new version number
 // Relies on the fact that github.run_number is reset when the workflow file name changes
 // This is why the version pattern is included in the file name
 

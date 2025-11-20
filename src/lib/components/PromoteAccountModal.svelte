@@ -1,16 +1,18 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { focusTrap, getModalStore } from '@skeletonlabs/skeleton';
+	import { resolve } from '$app/paths';
+	import { auth } from '$lib/stores/auth';
 	import { loading } from '$lib/stores/loading';
 	import { user } from '$lib/stores/user';
-	import { auth } from '$lib/stores/auth';
+	import { focusTrap, getModalStore } from '@skeletonlabs/skeleton';
 	import type { AuthError } from 'firebase/auth';
+	import { onMount } from 'svelte';
 	import SignInForm from './SignInForm.svelte';
 
 	const modalStore = getModalStore();
 
-	let showCredentialAlreadyInUseError = false;
+	let showCredentialAlreadyInUseError = $state(false);
+	let trapFocus = $state(false);
 
 	const tryEmailLink = (email: string) =>
 		loading.whileAwaiting(async () => {
@@ -20,7 +22,6 @@
 
 			try {
 				const credential = EmailAuthProvider.credentialWithLink(email, window.location.href);
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				await linkWithCredential($user!, credential);
 			} catch (error) {
 				if ((error as AuthError).code === AuthErrorCodes.EMAIL_EXISTS) {
@@ -40,19 +41,16 @@
 
 			const provider = new GoogleAuthProvider();
 
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			await linkWithRedirect($user!, provider);
 		});
 
 	const closeModalAndRedirectToList = async () => {
-		await goto('/list');
+		await goto(resolve('/list'));
 		modalStore.close();
 	};
 
-	var trapFocus = false;
 	onMount(async () => {
 		await loading.whileAwaiting(async () => {
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			if (!$user!.isAnonymous) {
 				await closeModalAndRedirectToList();
 				return;
@@ -92,6 +90,6 @@
 				in this guest account list will need to be manually added to that account).
 			</p>
 		{/if}
-		<SignInForm on:signInWithGoogleClicked={linkWithGoogle} {tryEmailLink} />
+		<SignInForm signInWithGoogleClicked={linkWithGoogle} {tryEmailLink} />
 	</div>
 </div>

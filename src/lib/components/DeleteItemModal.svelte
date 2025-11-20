@@ -7,7 +7,7 @@
 
 	const modalStore = getModalStore();
 
-	export let item: Item;
+	let { item }: { item: Item } = $props();
 
 	const deleteItem = async (itemId: string) => {
 		await loading.whileAwaiting(() => items.deleteItem(itemId));
@@ -20,11 +20,11 @@
 <div class="card p-4">
 	<p>Are you sure you want to delete <em>{item.name}</em>?</p>
 	<div class="mt-4 flex gap-4 justify-center">
-		<button class="btn variant-soft" disabled={$loading} on:click={closeModal}>Cancel</button>
+		<button class="btn variant-soft" disabled={$loading} onclick={closeModal}>Cancel</button>
 		<button
 			class="btn bg-gradient-to-br variant-filled-error"
 			disabled={$loading}
-			on:click={() => deleteItem(item.id)}
+			onclick={() => deleteItem(item.id)}
 		>
 			Delete
 		</button>

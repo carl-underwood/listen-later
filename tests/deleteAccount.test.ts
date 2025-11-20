@@ -227,13 +227,12 @@ const ensureUserIsCreated = async (email: string) => {
 		return user;
 	}).toPass();
 
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	return user!;
 };
 
 const addSong = async (page: Page) => {
 	const name = 'Victory Dance';
-	const id = '5Nu4AvrNgIx42nWGbteHLh';
+	const id = '6GumLQysBiahvtJmxMXOpn';
 	await goToSearchPageAddItemAndVerify(page, name, id);
 };
 
