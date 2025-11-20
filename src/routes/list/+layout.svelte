@@ -1,11 +1,14 @@
 <script lang="ts">
-	import { auth } from '$lib/stores/auth';
-	import { user } from '$lib/stores/user';
-	import { loading } from '$lib/stores/loading';
+	import { resolve } from '$app/paths';
 	import Loading from '$lib/components/Loading.svelte';
 	import SignInForm from '$lib/components/SignInForm.svelte';
+	import { auth } from '$lib/stores/auth';
+	import { loading } from '$lib/stores/loading';
+	import { user } from '$lib/stores/user';
 
-	let showingEmailForm = false;
+	let { children } = $props();
+
+	let showingEmailForm = $state(false);
 
 	const tryEmailLink = async (email: string) => {
 		const { signInWithEmailLink } = await import('firebase/auth');
@@ -39,10 +42,10 @@
 			<div class="px-4 pb-8 flex flex-col gap-4 items-center text-center">
 				<p>
 					By continuing to use Listen Later, you agree to the <a
-						href="/terms-of-use"
+						href={resolve('/terms-of-use')}
 						class="underline">Terms of Use</a
 					>
-					& <a href="/privacy-policy" class="underline">Privacy Policy</a>
+					& <a href={resolve('/privacy-policy')} class="underline">Privacy Policy</a>
 				</p>
 				<hr class="!border-t-2 w-full my-4" />
 				<p>You can try out Listen Later without signing in.</p>
@@ -59,7 +62,7 @@
 					</strong>
 				</p>
 				<button
-					on:click={() => loading.whileAwaiting(auth.signInAnonymously)}
+					onclick={() => loading.whileAwaiting(auth.signInAnonymously)}
 					disabled={$loading}
 					class="btn bg-surface-900-50-token text-surface-50-900-token"
 				>
@@ -72,11 +75,11 @@
 			</div>
 		{/if}
 		<SignInForm
-			on:emailFormToggled={(event) => (showingEmailForm = event.detail.showingEmailForm)}
-			on:signInWithGoogleClicked={signInWithGoogle}
+			emailFormToggled={(event) => (showingEmailForm = event.showingEmailForm)}
+			signInWithGoogleClicked={signInWithGoogle}
 			{tryEmailLink}
 		/>
 	{:else}
-		<slot />
+		{@render children()}
 	{/if}
 </div>

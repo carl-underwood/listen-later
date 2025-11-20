@@ -1,20 +1,27 @@
 <script lang="ts">
-	import { tick } from 'svelte';
+	import { tick, type Snippet } from 'svelte';
 
 	type Image = {
 		src: string;
 		alt?: string;
 	};
 
-	export let imagesInOrderOfPrecedence: Image[];
-	export let classes: string | undefined = undefined;
+	let {
+		imagesInOrderOfPrecedence,
+		classes = undefined,
+		finalFallback
+	}: {
+		imagesInOrderOfPrecedence: Image[];
+		classes?: string | undefined;
+		finalFallback: Snippet;
+	} = $props();
 
-	let attemptIndex = 0;
+	let attemptIndex = $state(0);
 
 	// This is required as Chrome (for example) only runs the `onerror` once
 	// so in order for our second, third, etc. fallbacks to be attempted we have
 	// rip out the `img` and render it again.
-	let renderImage = true;
+	let renderImage = $state(true);
 
 	const forceImageRerender = async () => {
 		renderImage = false;
@@ -32,11 +39,11 @@
 	<img
 		src={imagesInOrderOfPrecedence[attemptIndex].src}
 		alt={imagesInOrderOfPrecedence[attemptIndex].alt}
-		on:error={tryNextImage}
+		onerror={tryNextImage}
 		loading="lazy"
 		class={classes}
 	/>
 {/if}
 {#if attemptIndex >= imagesInOrderOfPrecedence.length}
-	<slot name="finalFallback" />
+	{@render finalFallback()}
 {/if}

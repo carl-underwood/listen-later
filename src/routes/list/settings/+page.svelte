@@ -1,11 +1,13 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
-	import { type ModalSettings, getModalStore } from '@skeletonlabs/skeleton';
+	import { goto, onNavigate } from '$app/navigation';
+	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 	import DeleteAccountModal from '$lib/components/DeleteAccountModal.svelte';
 	import PromoteAccountAlert from '$lib/components/PromoteAccountAlert.svelte';
 	import PromoteAccountModal from '$lib/components/PromoteAccountModal.svelte';
 	import { user } from '$lib/stores/user';
+	import { type ModalSettings, getModalStore } from '@skeletonlabs/skeleton';
+	import { onMount } from 'svelte';
 	import {
 		deleteAccountSearchParameterName,
 		promoteAccountSearchParameterName
@@ -13,15 +15,28 @@
 
 	const modalStore = getModalStore();
 
-	$: if ($page.url.searchParams.get(deleteAccountSearchParameterName) === 'true') {
-		showModal(deleteAccountModal);
-	} else if ($page.url.searchParams.get(promoteAccountSearchParameterName) === 'true') {
-		showModal(promoteAccountModal);
-	}
+	const handleSearchParameters = (url: URL) => {
+		const hasSearchParameter = (parameterName: string) =>
+			url.searchParams.get(parameterName) === 'true';
 
-	$: if ($modalStore[0] !== deleteAccountModal && $modalStore[0] !== promoteAccountModal) {
-		goto('/list/settings', { replaceState: true });
-	}
+		if (hasSearchParameter(deleteAccountSearchParameterName)) {
+			showModal(deleteAccountModal);
+		} else if (hasSearchParameter(promoteAccountSearchParameterName)) {
+			showModal(promoteAccountModal);
+		}
+	};
+
+	onMount(() => handleSearchParameters(page.url));
+
+	onNavigate((navigation) => {
+		handleSearchParameters(navigation.to?.url || page.url);
+	});
+
+	$effect(() => {
+		if (!$modalStore[0]) {
+			goto(resolve('/list/settings'), { replaceState: true });
+		}
+	});
 
 	const deleteAccountModal: ModalSettings = {
 		type: 'component',
@@ -38,10 +53,16 @@
 	};
 
 	const promoteAccount = () =>
-		goto(`/list/settings?${promoteAccountSearchParameterName}=true`, { replaceState: true });
+		// eslint-disable-next-line svelte/no-navigation-without-resolve
+		goto(`${resolve('/list/settings')}?${promoteAccountSearchParameterName}=true`, {
+			replaceState: true
+		});
 
 	const deleteAccount = () =>
-		goto(`/list/settings?${deleteAccountSearchParameterName}=true`, { replaceState: true });
+		// eslint-disable-next-line svelte/no-navigation-without-resolve
+		goto(`${resolve('/list/settings')}?${deleteAccountSearchParameterName}=true`, {
+			replaceState: true
+		});
 
 	const showModal = (modalSettings: ModalSettings) => {
 		if ($modalStore[0]) {
@@ -56,14 +77,14 @@
 <div id="settings-container" class="flex flex-col gap-4">
 	{#if $user?.isAnonymous}
 		<PromoteAccountAlert>
-			<svelte:fragment slot="signInButton">
+			{#snippet signInButton()}
 				<button
 					class="btn bg-surface-900-50-token text-surface-50-900-token"
-					on:click={promoteAccount}
+					onclick={promoteAccount}
 				>
 					Sign in
 				</button>
-			</svelte:fragment>
+			{/snippet}
 		</PromoteAccountAlert>
 	{/if}
 
@@ -77,12 +98,13 @@
 		</p>
 		<p>
 			We aim to introduce best-effort market detection and manual selection at a later date. Please
-			see the <a href="/about#roadmap" class="underline">Roadmap</a> for more details.
+			<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+			see the <a href={`${resolve('/')}#roadmap`} class="underline">Roadmap</a> for more details.
 		</p>
 	</div>
 
 	<div class="flex flex-col items-center justify-end grow">
-		<button on:click={deleteAccount} class="btn variant-filled-error btn-2xl">
+		<button onclick={deleteAccount} class="btn variant-filled-error btn-2xl">
 			Delete account
 		</button>
 	</div>

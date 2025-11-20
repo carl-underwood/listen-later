@@ -7,13 +7,14 @@
 	import type { AuthError, ProviderId } from 'firebase/auth';
 	import SignInWithGoogleButton from './SignInWithGoogleButton.svelte';
 	import { onMount } from 'svelte';
+	import { resolve } from '$app/paths';
 
 	const modalStore = getModalStore();
 
-	let promptForReauthentication = false;
-	let showEmailConfirmation = false;
-	let providerId: typeof ProviderId;
-	let trapFocus = false;
+	let promptForReauthentication = $state(false);
+	let showEmailConfirmation = $state(false);
+	let providerId: typeof ProviderId | undefined = $state();
+	let trapFocus = $state(false);
 
 	const confirmDelete = () =>
 		loading.whileAwaiting(async () => {
@@ -29,7 +30,7 @@
 
 			try {
 				await $user?.delete();
-				await goto('/list');
+				await goto(resolve('/list'));
 				closeModal();
 			} catch (error) {
 				if ((error as AuthError).code !== AuthErrorCodes.CREDENTIAL_TOO_OLD_LOGIN_AGAIN) {
@@ -63,7 +64,6 @@
 
 			const provider = new GoogleAuthProvider();
 
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			await reauthenticateWithRedirect($user!, provider);
 		});
 
@@ -83,16 +83,15 @@
 
 			try {
 				if (isSignInWithEmailLink($auth, window.location.href)) {
-					/* eslint-disable @typescript-eslint/no-non-null-assertion */
 					const credential = EmailAuthProvider.credentialWithLink(
 						$user!.email!,
 						window.location.href
 					);
 
 					await reauthenticateWithCredential($user!, credential);
-					/* eslint-enable @typescript-eslint/no-non-null-assertion */
 
-					await goto('/list/settings?deleteAccount=true', { replaceState: true });
+					// eslint-disable-next-line svelte/no-navigation-without-resolve
+					await goto(`${resolve('/list/settings')}?deleteAccount=true`, { replaceState: true });
 				}
 			} catch (error) {
 				if ((error as AuthError).code === AuthErrorCodes.INVALID_EMAIL) {
@@ -112,11 +111,11 @@
 		<p>Are you sure you want to delete your account?</p>
 		<p><strong>This can not be undone</strong></p>
 		<div class="mt-4 flex gap-4 justify-center">
-			<button class="btn variant-soft" disabled={$loading} on:click={closeModal}>Cancel</button>
+			<button class="btn variant-soft" disabled={$loading} onclick={closeModal}>Cancel</button>
 			<button
 				class="btn bg-gradient-to-br variant-filled-error"
 				disabled={$loading}
-				on:click={confirmDelete}
+				onclick={confirmDelete}
 			>
 				Delete
 			</button>
@@ -128,17 +127,17 @@
 			{:else}
 				<p>Please reauthenticate to delete your account</p>
 				<div class="flex flex-col gap-4 justify-center">
-					{#if $user?.providerData.find((provider) => provider.providerId === providerId.PASSWORD)}
+					{#if $user?.providerData.find((provider) => provider.providerId === providerId!.PASSWORD)}
 						<button
 							class="btn bg-surface-900-50-token text-surface-50-900-token"
 							disabled={$loading}
-							on:click={sendSignInLink}
+							onclick={sendSignInLink}
 						>
 							Send sign in link
 						</button>
 					{/if}
-					{#if $user?.providerData.find((provider) => provider.providerId === providerId.GOOGLE)}
-						<SignInWithGoogleButton on:click={signInWithGoogle} />
+					{#if $user?.providerData.find((provider) => provider.providerId === providerId!.GOOGLE)}
+						<SignInWithGoogleButton onclick={signInWithGoogle} />
 					{/if}
 				</div>
 			{/if}

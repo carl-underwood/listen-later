@@ -19,14 +19,16 @@ const createAppCheck = () => {
 				return;
 			}
 
-			const { initializeAppCheck, ReCaptchaV3Provider } = await import('firebase/app-check');
+			const { initializeAppCheck, ReCaptchaEnterpriseProvider } = await import(
+				'firebase/app-check'
+			);
 
 			if (PUBLIC_FIREBASE_USE_EMULATORS === 'true') {
 				self.FIREBASE_APPCHECK_DEBUG_TOKEN = PUBLIC_FIREBASE_APPCHECK_DEBUG_TOKEN;
 			}
 
 			appCheck = initializeAppCheck($app, {
-				provider: new ReCaptchaV3Provider(PUBLIC_RECAPTCHA_SITE_KEY),
+				provider: new ReCaptchaEnterpriseProvider(PUBLIC_RECAPTCHA_SITE_KEY),
 				isTokenAutoRefreshEnabled: true
 			});
 

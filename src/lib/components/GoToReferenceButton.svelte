@@ -1,11 +1,13 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-
-	const dispatch = createEventDispatcher();
-
-	export let oneBasedReferenceNumber: number;
+	let {
+		oneBasedReferenceNumber,
+		goToReference
+	}: {
+		oneBasedReferenceNumber: number;
+		goToReference: ({ oneBasedReferenceNumber }: { oneBasedReferenceNumber: number }) => void;
+	} = $props();
 </script>
 
-<button class="underline" on:click={() => dispatch('goToReference', { oneBasedReferenceNumber })}>
+<button class="underline" onclick={() => goToReference({ oneBasedReferenceNumber })}>
 	[<span class="sr-only">see reference </span>{oneBasedReferenceNumber}]
 </button>

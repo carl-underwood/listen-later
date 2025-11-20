@@ -108,7 +108,7 @@ test.describe('list page', () => {
 		await expectListPageToBeVisible(page);
 
 		const name = 'Victory Dance';
-		const id = '5Nu4AvrNgIx42nWGbteHLh';
+		const id = '6GumLQysBiahvtJmxMXOpn';
 		const newItem = await goToSearchPageAddItemAndVerify(page, name, id);
 
 		await openNavigation(page);

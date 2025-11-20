@@ -1,13 +1,14 @@
 <script lang="ts">
-	import type { TokensList } from 'marked';
+	import type { Token, TokensList } from 'marked';
 	import GithubSlugger from 'github-slugger';
+	import Self from './Markdown.svelte';
 
 	const slugger = new GithubSlugger();
 
-	export let baseHeading = 1;
-	export let tokens: TokensList;
+	let { baseHeading = 1, tokens }: { baseHeading?: number; tokens: Token[] | TokensList } =
+		$props();
 
-	$: {
+	$effect(() => {
 		const unsupportedTokenTypes = tokens
 			.filter(
 				(token) =>
@@ -29,24 +30,25 @@
 				)}]`
 			);
 		}
-	}
+	});
 </script>
 
 <!-- Horrible formatting here required to avoid whitespace issues! -->
-{#each tokens as token}{#if token.type === 'space'}<br
+{#each tokens as token (token)}{#if token.type === 'space'}<br
 		/>{/if}{#if token.type === 'text'}{token.raw}{/if}{#if token.type === 'heading'}<svelte:element
 			this={`h${token.depth + (baseHeading - 1)}`}
 			id={slugger.slug(token.text)}
 			class={`h${token.depth + (baseHeading - 1)}`}
-			><svelte:self tokens={token.tokens} {baseHeading} /></svelte:element
+			><Self tokens={token.tokens || []} {baseHeading} /></svelte:element
 		>{/if}{#if token.type === 'paragraph'}<p>
-			<svelte:self tokens={token.tokens} {baseHeading} />
+			<Self tokens={token.tokens || []} {baseHeading} />
+			<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 		</p>{/if}{#if token.type === 'link'}<a href={token.href} class="underline"
-			><svelte:self tokens={token.tokens} {baseHeading} /></a
+			><Self tokens={token.tokens || []} {baseHeading} /></a
 		>{/if}{#if token.type === 'list'}<ul>
-			<svelte:self tokens={token.items} {baseHeading} />
+			<Self tokens={token.items} {baseHeading} />
 		</ul>{/if}{#if token.type === 'list_item'}<li>
-			<svelte:self tokens={token.tokens} {baseHeading} />
+			<Self tokens={token.tokens || []} {baseHeading} />
 		</li>{/if}{/each}
 
 <style>

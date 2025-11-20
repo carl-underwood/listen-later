@@ -9,43 +9,44 @@
 	import type Item from '$lib/types/Item';
 	import ItemImage from './ItemImage.svelte';
 
-	export let item: Item;
-	export let openAccordionItemId: string | null;
+	let { item, openAccordionItemId }: { item: Item; openAccordionItemId: string | null } = $props();
 
-	$: itemMetadata = $spotifyItemMetadata[getPrefixlessId(item)];
+	let itemMetadata = $derived($spotifyItemMetadata[getPrefixlessId(item)]);
 </script>
 
 <ItemBase {item} {openAccordionItemId}>
-	<svelte:fragment slot="lead">
+	{#snippet itemLead()}
 		<ItemImage {itemMetadata} />
 		<SpotifyLogo classes="w-20" />
-	</svelte:fragment>
-	<svelte:fragment slot="metadata">
+	{/snippet}
+	{#snippet metadata()}
 		{#if !itemMetadata}
 			<span class="capitalize">{item.type}</span>
 			{#if ['album', 'podcast', 'song'].includes(item.type)}
-				<span class="{itemMetadata === undefined ? 'placeholder animate-pulse' : ''} h-6" />
+				<span class="{itemMetadata === undefined ? 'placeholder animate-pulse' : ''} h-6"></span>
 			{/if}
 			{#if item.type === 'song'}
-				<span class="{itemMetadata === undefined ? 'placeholder animate-pulse' : ''} h-6" />
+				<span class="{itemMetadata === undefined ? 'placeholder animate-pulse' : ''} h-6"></span>
 			{/if}
 		{:else}
-			{#each itemMetadata.metadataParts as metadataPart}
+			{#each itemMetadata.metadataParts as metadataPart (metadataPart)}
 				<span class="break-word">{metadataPart}</span>
 			{/each}
 		{/if}
-	</svelte:fragment>
-	<svelte:fragment slot="openButton">
+	{/snippet}
+	{#snippet openButton()}
+		<!-- eslint-disable svelte/no-navigation-without-resolve -->
 		<a
 			href={item.url + '?go=1'}
 			target="_blank"
 			class="btn variant-ringed-surface font-semibold rounded-3xl"
 			class:opacity-50={$loading}
 			class:cursor-not-allowed={$loading}
-			on:click={(event) => preventDefaultIf(event, $loading)}
+			onclick={(event) => preventDefaultIf(event, $loading)}
 		>
 			<SpotifyIcon classes="w-6 h-6 mr-3 fill-[#83D269]" />
 			Open in Spotify
 		</a>
-	</svelte:fragment>
+		<!-- eslint-enable svelte/no-navigation-without-resolve -->
+	{/snippet}
 </ItemBase>

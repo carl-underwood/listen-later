@@ -1,5 +1,5 @@
 import { join, dirname } from 'path';
-import { test, devices, Page } from '@playwright/test';
+import { test, devices, Page, expect } from '@playwright/test';
 import {
 	goToListPage,
 	clickSignInWithGoogleButton,
@@ -14,7 +14,7 @@ import {
 } from '../tests/helpers/shared';
 
 // See https://flaviocopes.com/fix-dirname-not-defined-es-module-scope/
-const __dirname = dirname(import.meta.url.replace('file:///', ''));
+const __dirname = dirname(import.meta.url.replace('file://', ''));
 
 test.use(devices['Pixel 5']);
 
@@ -37,7 +37,7 @@ test('generate screenshots', async ({ page }) => {
 	await clickAddItemButton(page);
 
 	const name = 'Victory Dance';
-	const id = '5Nu4AvrNgIx42nWGbteHLh';
+	const id = '6GumLQysBiahvtJmxMXOpn';
 
 	await searchForAndSelectItem(page, name, id);
 
@@ -47,6 +47,8 @@ test('generate screenshots', async ({ page }) => {
 	await addButton.click();
 
 	await waitForUrlWithSpotifyItemOpen(page, id);
+
+	await expect(page.locator('.placeholder')).toHaveCount(0);
 
 	await takeScreenshot(page, 'list');
 });

@@ -1,3 +1,7 @@
+<script>
+	import { resolve } from '$app/paths';
+</script>
+
 <div class="max-w-2xl mx-auto p-4">
 	<div class="flex flex-col gap-4">
 		<h1 class="h1">Privacy Policy</h1>
@@ -20,7 +24,10 @@
 			allowing sign in on different devices for access to your Listen Later list. This information
 			is not shared with any third party. Listen Later may use your email address to contact you at
 			a later date, for example if the application is being discontinued (as described in the
-			<a href="/terms-of-use#termination-of-hosting" class="underline">Terms of Use</a>).
+			<!--eslint-disable-next-line svelte/no-navigation-without-resolve-->
+			<a href={`${resolve('/terms-of-use')}#termination-of-hosting`} class="underline"
+				>Terms of Use</a
+			>).
 		</p>
 		<p>
 			Listen Later also collects information automatically when you use the application. This
@@ -47,7 +54,7 @@
 		</p>
 		<p>
 			Your account may be deleted at any time by visiting the <a
-				href="/list/settings"
+				href={resolve('/list/settings')}
 				class="underline">Settings</a
 			> page.
 		</p>
