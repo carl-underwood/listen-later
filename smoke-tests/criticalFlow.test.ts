@@ -153,7 +153,7 @@ test('critical flow', async ({ page, request }) => {
 	await clickSignInWithEmailButton(page);
 	await fillEmailInputClickSendSignInLinkAndExpectConfirmation(page, email);
 
-	await gotoSignInLinkFromMailinator(email, request, page, 1);
+	await gotoSignInLinkFromMailinator(email, request, page, 2);
 
 	await expectListPageToBeVisible(page);
 	await expect(promoteAccountAlert).not.toBeVisible();
@@ -175,7 +175,7 @@ const gotoSignInLinkFromMailinator = (
 	email: string,
 	request: APIRequestContext,
 	page: Page,
-	skip = 0
+	expectCount = 1
 ) =>
 	expect(async () => {
 		const inboxResponse = await request.get(
@@ -185,15 +185,13 @@ const gotoSignInLinkFromMailinator = (
 			{
 				headers: {
 					Authorization: MAILINATOR_API_TOKEN || ''
-				},
-				params: {
-					skip,
-					sort: 'ascending'
 				}
 			}
 		);
 
 		const messageJson = await inboxResponse.json();
+		expect(messageJson.msgs).toHaveLength(expectCount);
+
 		const messageId = messageJson.msgs[0]?.id;
 
 		expect(messageId).not.toBeUndefined();
