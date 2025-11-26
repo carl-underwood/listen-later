@@ -10,7 +10,7 @@
 	<div class="placeholder animate-pulse h-16 w-16"></div>
 {:else if itemMetadata?.imageUrl}
 	<ImageWithFallback
-		classes="h-16 w-16"
+		classes="h-16 w-16 object-cover"
 		imagesInOrderOfPrecedence={[{ src: itemMetadata.imageUrl, alt: '' }]}
 	>
 		{#snippet finalFallback()}
