@@ -19,9 +19,8 @@ const createAppCheck = () => {
 				return;
 			}
 
-			const { initializeAppCheck, ReCaptchaEnterpriseProvider } = await import(
-				'firebase/app-check'
-			);
+			const { initializeAppCheck, ReCaptchaEnterpriseProvider } =
+				await import('firebase/app-check');
 
 			if (PUBLIC_FIREBASE_USE_EMULATORS === 'true') {
 				self.FIREBASE_APPCHECK_DEBUG_TOKEN = PUBLIC_FIREBASE_APPCHECK_DEBUG_TOKEN;
