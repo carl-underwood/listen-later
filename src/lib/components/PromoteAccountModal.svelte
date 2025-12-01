@@ -16,9 +16,8 @@
 
 	const tryEmailLink = (email: string) =>
 		loading.whileAwaiting(async () => {
-			const { AuthErrorCodes, EmailAuthProvider, linkWithCredential } = await import(
-				'firebase/auth'
-			);
+			const { AuthErrorCodes, EmailAuthProvider, linkWithCredential } =
+				await import('firebase/auth');
 
 			try {
 				const credential = EmailAuthProvider.credentialWithLink(email, window.location.href);

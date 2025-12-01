@@ -3,7 +3,7 @@
 {
 	"name": "Playwright with Java & Node 22",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/playwright:v1.56.1-noble",
+	"image": "mcr.microsoft.com/playwright:v1.57.0-noble",
 	"features": {
 		"ghcr.io/devcontainers/features/java:1": {
 			"version": "25"
