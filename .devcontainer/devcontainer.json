@@ -20,7 +20,7 @@
 				"svelte.svelte-vscode",
 				"dbaeumer.vscode-eslint",
 				"github.vscode-github-actions",
-				"howardzuo.vscode-npm-dependency"
+				"pflannery.vscode-versionlens"
 			],
 			"settings": {
 				"editor.formatOnSave": true,
