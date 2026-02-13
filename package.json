@@ -21,7 +21,7 @@
 		"@eslint/compat": "^2.0.2",
 		"@eslint/eslintrc": "^3.3.3",
 		"@eslint/js": "^9.39.2",
-		"@playwright/test": "^1.58.2",
+		"@playwright/test": "^1.57.0",
 		"@skeletonlabs/skeleton": "^2.11.0",
 		"@skeletonlabs/tw-plugin": "^0.4.1",
 		"@sveltejs/adapter-auto": "^7.0.1",
