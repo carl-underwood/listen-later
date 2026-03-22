@@ -7,13 +7,13 @@
 	aria-hidden="true"
 	xmlns="http://www.w3.org/2000/svg"
 	fill="none"
-	viewBox="0 0 18 18"
+	viewBox="0 0 24 24"
 >
 	<path
 		stroke="currentColor"
 		stroke-linecap="round"
 		stroke-linejoin="round"
 		stroke-width="2"
-		d="M9 1v16M1 9h16"
+		d="M8 20V10m0 10-3-3m3 3 3-3m5-13v10m0-10 3 3m-3-3-3 3"
 	/>
 </svg>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
 	import { page } from '$app/state';
-	import { Accordion } from '@skeletonlabs/skeleton';
+	import { Accordion, getDrawerStore } from '@skeletonlabs/skeleton';
 	import smoothScrollIntoViewIfNeeded from 'smooth-scroll-into-view-if-needed';
 	import { items } from '$lib/stores/items';
 	import { loading } from '$lib/stores/loading';
@@ -13,6 +13,10 @@
 	import { user } from '$lib/stores/user';
 	import PromoteAccountAlert from '$lib/components/PromoteAccountAlert.svelte';
 	import { resolve } from '$app/paths';
+	import SortIcon from '$lib/components/icons/sort.svelte';
+	import { drawerIds } from '$lib/types/Drawers';
+
+	const drawerStore = getDrawerStore();
 
 	let accordionItems: { [Property: string]: HTMLDivElement } = $state({});
 	let openAccordionItemId = $derived(page.url.searchParams.get('itemId'));
@@ -67,16 +71,32 @@
 			{/each}
 		</Accordion>
 	</div>
-	<a
-		href={resolve('/list/add')}
-		class="btn bg-surface-900-50-token text-surface-50-900-token mt-5 sticky bottom-4 left-1/2 -translate-x-1/2 w-36"
-		class:opacity-50={$loading}
-		class:cursor-not-allowed={$loading}
-		onclick={(event) => preventDefaultIf(event, $loading)}
-	>
-		<Plus />
-		<span class="sr-only">Add item</span>
-	</a>
+	<div class="mt-5 sticky bottom-4 left-1/2 -translate-x-1/2 w-max flex gap-2">
+		<button
+			type="button"
+			class="btn bg-surface-900-50-token text-surface-50-900-token w-16"
+			class:opacity-50={$loading}
+			class:cursor-not-allowed={$loading}
+			onclick={(event) => {
+				preventDefaultIf(event, $loading);
+				if (!$loading)
+					drawerStore.open({ id: drawerIds.sort, position: 'bottom', regionDrawer: 'max-w-100' });
+			}}
+		>
+			<SortIcon classes="w-6 h-6" />
+			<span class="sr-only">Sort items</span>
+		</button>
+		<a
+			href={resolve('/list/add')}
+			class="btn bg-surface-900-50-token text-surface-50-900-token w-36"
+			class:opacity-50={$loading}
+			class:cursor-not-allowed={$loading}
+			onclick={(event) => preventDefaultIf(event, $loading)}
+		>
+			<Plus />
+			<span class="sr-only">Add item</span>
+		</a>
+	</div>
 {/if}
 
 <style>
