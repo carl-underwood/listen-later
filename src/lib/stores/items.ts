@@ -13,11 +13,10 @@ import type { User } from '@firebase/auth';
 import type Item from '../types/Item';
 import { firestore } from './firestore';
 import { user } from './user';
+import { sortOrder } from './sortOrder';
 
 export function createItems() {
-	let items: Item[] | undefined = undefined;
-
-	const { subscribe } = derived<[Readable<Firestore>, Readable<User | null>], Item[] | undefined>(
+	const rawItemsStore = derived<[Readable<Firestore>, Readable<User | null>], Item[] | undefined>(
 		[firestore, user],
 		([$firestore, $user], set) => {
 			let unsubscribe = () => {
@@ -32,14 +31,26 @@ export function createItems() {
 			const q = query(collection($firestore, `users/${$user.uid}/items`));
 
 			unsubscribe = onSnapshot(q, (snapshot) => {
-				items = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }) as Item);
-				items.sort((a, b) => (a.addedAtUtc > b.addedAtUtc ? -1 : 1));
-				set(items);
+				set(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }) as Item));
 			});
 
 			return unsubscribe;
 		}
 	);
+
+	const { subscribe } = derived([rawItemsStore, sortOrder], ([$rawItemsStore, $sortOrder]) => {
+		if ($rawItemsStore === undefined) return undefined;
+
+		const sortedItems = [...$rawItemsStore];
+		sortedItems.sort((a, b) => {
+			if ($sortOrder === 'addedAtUtcDescending') {
+				return a.addedAtUtc > b.addedAtUtc ? -1 : 1;
+			}
+			return a.addedAtUtc > b.addedAtUtc ? 1 : -1;
+		});
+
+		return sortedItems;
+	});
 
 	const upsertItem = async (item: Item) => {
 		const $firestore = get(firestore);

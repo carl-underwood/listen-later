@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let classes = 'w-6 h-6';
+	let { classes = 'w-6 h-6' }: { classes?: string } = $props();
 </script>
 
 <svg
