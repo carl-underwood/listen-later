@@ -302,7 +302,7 @@
 								<span class="font-semibold">
 									{item.name}
 								</span>
-								{#each item.metadataParts as metadataPart (metadataPart)}
+								{#each item.metadataParts as metadataPart, i (i)}
 									<span class="break-word">{metadataPart}</span>
 								{/each}
 							</div>
