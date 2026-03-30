@@ -29,7 +29,7 @@
 				<span class="{itemMetadata === undefined ? 'placeholder animate-pulse' : ''} h-6"></span>
 			{/if}
 		{:else}
-			{#each itemMetadata.metadataParts as metadataPart (metadataPart)}
+			{#each itemMetadata.metadataParts as metadataPart, i (i)}
 				<span class="break-word">{metadataPart}</span>
 			{/each}
 		{/if}
