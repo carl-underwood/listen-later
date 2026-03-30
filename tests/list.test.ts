@@ -177,4 +177,50 @@ test.describe('list page', () => {
 			}
 		);
 	});
+
+	test('allows items to be sorted', async ({ page }) => {
+		const firstItemName = 'Victory Dance';
+		const secondItemName = "James Acaster's Perfect Sounds";
+
+		await signInAddItemAndVerify(page, firstItemName, '6GumLQysBiahvtJmxMXOpn');
+		await goToSearchPageAddItemAndVerify(page, secondItemName, '5zR7VUlNzu7bHtEUnC2otn');
+
+		await goToListPage(page);
+
+		const sortButton = page.getByRole('button', { name: 'Sort items' });
+		await expect(sortButton).toBeVisible();
+		await sortButton.click();
+
+		const newestToOldestRadio = page.getByLabel('Newest to oldest');
+		await expect(newestToOldestRadio).toBeChecked();
+
+		const oldestToNewestRadio = page.getByLabel('Oldest to newest');
+		await oldestToNewestRadio.check();
+
+		const submitSortButton = page.getByRole('button', { name: 'Sort', exact: true });
+		await submitSortButton.click();
+
+		await page.reload();
+
+		await expect(page.getByRole('button', { name: firstItemName })).toBeVisible();
+		await expect(page.getByRole('button', { name: secondItemName })).toBeVisible();
+
+		const items = page.locator('.accordion-control');
+		await expect(items.first()).toContainText(firstItemName);
+		await expect(items.nth(1)).toContainText(secondItemName);
+
+		await sortButton.click();
+		await expect(oldestToNewestRadio).toBeChecked();
+
+		await newestToOldestRadio.check();
+
+		// List should not update until the sort button is clicked
+		await expect(items.first()).toContainText(firstItemName);
+		await expect(items.nth(1)).toContainText(secondItemName);
+
+		await submitSortButton.click();
+
+		await expect(items.first()).toContainText(secondItemName);
+		await expect(items.nth(1)).toContainText(firstItemName);
+	});
 });
