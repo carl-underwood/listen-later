@@ -1,9 +1,5 @@
 # Roadmap
 
-## 1.2.0
-
-List filtering & ordering (e.g. the ability to filter out items marked as listened to).
-
 ## 1.3.0
 
 Support for other Spotify markets.
