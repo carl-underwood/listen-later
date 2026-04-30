@@ -29,7 +29,7 @@
 			{/snippet}
 		</AppBar>
 
-		<div class="flex flex-col gap-4 p-8">
+		<div class="flex flex-col gap-4 px-8 py-4">
 			<span id="drawer-label" class="sr-only">Sort drawer</span>
 			<label class="flex items-center space-x-2">
 				<input
@@ -52,7 +52,7 @@
 				<span class="text-xl">Oldest to newest</span>
 			</label>
 
-			<div class="flex justify-center mt-8">
+			<div class="flex justify-center mx-8 mt-4 sticky bottom-4">
 				<button
 					class="btn bg-surface-900-50-token text-surface-50-900-token"
 					onclick={sort}

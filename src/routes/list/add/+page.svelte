@@ -161,7 +161,7 @@
 		};
 
 		await loading.whileAwaiting(async () => {
-			if ($items?.find((existingItem) => existingItem.id === item.id)) {
+			if ($items?.allItems.find((existingItem) => existingItem.id === item.id)) {
 				return;
 			}
 

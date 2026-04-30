@@ -1,8 +1,7 @@
 import type ItemMetadata from '$lib/types/ItemMetadata';
 
 import { derived, type Readable } from 'svelte/store';
-import type Item from '../types/Item';
-import { items } from './items';
+import { items, type ItemsState } from './items';
 import { getSpotifyMetadata } from '$lib/functions/getSpotifyMetadata';
 import arrayChunks from '$lib/helpers/arrayChunks';
 import type { ItemType } from '$lib/types/ItemType';
@@ -21,16 +20,16 @@ export function createSpotifyItemMetadata() {
 	let spotifyItemMetadata: SpotifyItemMetadata = {};
 
 	const { subscribe } = derived<
-		[Readable<Item[] | undefined>, Readable<AppCheck>, Readable<Functions>],
+		[Readable<ItemsState | undefined>, Readable<AppCheck>, Readable<Functions>],
 		SpotifyItemMetadata
 	>(
 		[items, appCheck, functions],
 		([$items, $appCheck, $functions], set) => {
-			if (!$items || !$items.length || !$appCheck || !$functions) {
+			if (!$items || !$items.allItems.length || !$appCheck || !$functions) {
 				return;
 			}
 
-			const itemsToLoad = $items.filter(
+			const itemsToLoad = $items.allItems.filter(
 				(item) =>
 					!loadingPrefixlessItemIds.includes(getPrefixlessId(item)) &&
 					spotifyItemMetadata[getPrefixlessId(item)] === undefined

@@ -14,6 +14,12 @@ import type Item from '../types/Item';
 import { firestore } from './firestore';
 import { user } from './user';
 import { sortOrder } from './sortOrder';
+import { filter } from './filter';
+
+export type ItemsState = {
+	allItems: Item[];
+	filteredAndSortedItems: Item[];
+};
 
 export function createItems() {
 	const rawItemsStore = derived<[Readable<Firestore>, Readable<User | null>], Item[] | undefined>(
@@ -38,19 +44,38 @@ export function createItems() {
 		}
 	);
 
-	const { subscribe } = derived([rawItemsStore, sortOrder], ([$rawItemsStore, $sortOrder]) => {
-		if ($rawItemsStore === undefined) return undefined;
+	const { subscribe } = derived<
+		[typeof rawItemsStore, typeof sortOrder, typeof filter],
+		ItemsState | undefined
+	>(
+		[rawItemsStore, sortOrder, filter],
+		([$rawItemsStore, $sortOrder, $filter]) => {
+			if ($rawItemsStore === undefined) return undefined;
 
-		const sortedItems = [...$rawItemsStore];
-		sortedItems.sort((a, b) => {
-			if ($sortOrder === 'addedAtUtcDescending') {
-				return a.addedAtUtc > b.addedAtUtc ? -1 : 1;
+			let processedItems = [...$rawItemsStore];
+
+			if ($filter) {
+				if ($filter.types && $filter.types.length > 0) {
+					processedItems = processedItems.filter((item) => $filter.types.includes(item.type));
+				}
+				if ($filter.listened !== null) {
+					processedItems = processedItems.filter((item) => item.listened === $filter.listened);
+				}
 			}
-			return a.addedAtUtc > b.addedAtUtc ? 1 : -1;
-		});
 
-		return sortedItems;
-	});
+			processedItems.sort((a, b) => {
+				if ($sortOrder === 'addedAtUtcDescending') {
+					return a.addedAtUtc > b.addedAtUtc ? -1 : 1;
+				}
+				return a.addedAtUtc > b.addedAtUtc ? 1 : -1;
+			});
+
+			return {
+				allItems: $rawItemsStore,
+				filteredAndSortedItems: processedItems
+			};
+		}
+	);
 
 	const upsertItem = async (item: Item) => {
 		const $firestore = get(firestore);
