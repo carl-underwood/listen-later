@@ -6,7 +6,11 @@ import {
 	goToSearchPageAddItemAndVerify,
 	searchForItemAddAndVerify,
 	signInAddItemAndVerify,
-	goToListPage
+	goToListPage,
+	clickAddItemButton,
+	searchForAndSelectItem,
+	getVisibleAddButton,
+	waitForUrlWithSpotifyItemOpen
 } from './helpers/shared';
 
 test.describe('list page', () => {
@@ -222,5 +226,63 @@ test.describe('list page', () => {
 
 		await expect(items.first()).toContainText(secondItemName);
 		await expect(items.nth(1)).toContainText(firstItemName);
+	});
+
+	test('allows items to be filtered', async ({ page }) => {
+		const firstItemName = 'Victory Dance';
+		const firstItemId = '6GumLQysBiahvtJmxMXOpn';
+		const secondItemName = "James Acaster's Perfect Sounds";
+		const secondItemId = '5zR7VUlNzu7bHtEUnC2otn';
+
+		await signInAddItemAndVerify(page, firstItemName, firstItemId);
+
+		const filterButton = page.getByRole('button', { name: 'Filter items' });
+		await filterButton.click();
+
+		await page.getByRole('checkbox', { name: 'songs' }).check();
+		await page.getByRole('radio', { name: 'Listened', exact: true }).check();
+
+		// List should not update until the apply button is clicked
+		const items = page.locator('.accordion-control');
+		await expect(items).toHaveCount(1);
+
+		await page.getByRole('button', { name: 'Apply', exact: true }).click();
+
+		await expect(items).toHaveCount(0);
+
+		const hiddenAlert = page.getByText('The selected item is currently hidden by your filters.');
+		await expect(hiddenAlert).toBeVisible();
+		await page.getByRole('button', { name: 'Dismiss' }).click();
+
+		const noItemsAlert = page.getByText('No items match your current filters.');
+		await expect(noItemsAlert).toBeVisible();
+
+		await clickAddItemButton(page);
+		await searchForAndSelectItem(page, secondItemName, secondItemId);
+
+		const addButton = await getVisibleAddButton(page);
+		await addButton.click();
+
+		await waitForUrlWithSpotifyItemOpen(page, secondItemId);
+
+		await expect(items).toHaveCount(0);
+		await expect(hiddenAlert).toBeVisible();
+
+		await page.getByRole('button', { name: 'Clear filters', exact: true }).click();
+		await expect(hiddenAlert).not.toBeVisible();
+		await expect(noItemsAlert).not.toBeVisible();
+		await expect(items).toHaveCount(2);
+
+		await filterButton.click();
+		await page.getByRole('checkbox', { name: 'podcasts' }).check();
+		await page.getByRole('button', { name: 'Apply', exact: true }).click();
+
+		await expect(items).toHaveCount(1);
+		await expect(items.first()).toContainText(secondItemName);
+
+		await filterButton.click();
+		await page.getByRole('button', { name: 'Clear', exact: true }).click();
+
+		await expect(items).toHaveCount(2);
 	});
 });
