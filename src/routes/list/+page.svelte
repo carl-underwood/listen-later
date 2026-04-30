@@ -70,59 +70,60 @@
 				{/snippet}
 			</PromoteAccountAlert>
 		{/if}
-		<Accordion disabled={$loading} spacing="" padding="p-4">
-			{#each $items.filteredAndSortedItems as item (item.id)}
-				<div
-					bind:this={accordionItems[item.id]}
-					transition:slideWithPrefersReducedMotion
-					class="ring-4 ring-surface-900-50-token mt-1"
-				>
-					{#if item.service === 'spotify'}
-						<ItemSpotify {item} {openAccordionItemId} />
+		{#if $items.filteredAndSortedItems.length}
+			<Accordion disabled={$loading} spacing="" padding="p-4" class="mb-1">
+				{#each $items.filteredAndSortedItems as item (item.id)}
+					<div
+						bind:this={accordionItems[item.id]}
+						transition:slideWithPrefersReducedMotion
+						class="ring-4 ring-surface-900-50-token mt-1"
+					>
+						{#if item.service === 'spotify'}
+							<ItemSpotify {item} {openAccordionItemId} />
+						{/if}
+					</div>
+				{/each}
+			</Accordion>
+		{/if}
+		{#if allItemsFilteredOut || currentItemFilteredOut}
+			<div
+				id="filter-alert"
+				role="alert"
+				class="alert variant-filled-warning ring-4 ring-surface-900-50-token sticky my-1"
+				transition:slideWithPrefersReducedMotion
+			>
+				<div class="alert-message">
+					{#if currentItemFilteredOut}
+						<p>The selected item is currently hidden by your filters.</p>
+					{:else if allItemsFilteredOut}
+						<p>No items match your current filters.</p>
 					{/if}
 				</div>
-			{/each}
-		</Accordion>
-	</div>
-	{#if allItemsFilteredOut || currentItemFilteredOut}
-		<div
-			id="filter-alert"
-			role="alert"
-			class="alert variant-filled-warning ring-4 ring-surface-900-50-token sticky mt-6"
-			transition:slideWithPrefersReducedMotion
-		>
-			<div class="alert-message">
-				{#if allItemsFilteredOut}
-					<p>No items match your current filters.</p>
-				{:else if currentItemFilteredOut}
-					<p>The selected item is currently hidden by your filters.</p>
-				{/if}
-			</div>
-			<div class="alert-actions">
-				<button
-					class="btn bg-surface-900-50-token text-surface-50-900-token"
-					onclick={() => filter.reset()}
-				>
-					Clear filters
-				</button>
-				{#if currentItemFilteredOut}
+				<div class="alert-actions">
 					<button
-						class="btn !bg-transparrent"
-						onclick={() => {
-							// eslint-disable-next-line svelte/no-navigation-without-resolve
-							goto(resolve('/list'), {
-								replaceState: true,
-								noScroll: true
-							});
-						}}
+						class="btn bg-surface-900-50-token text-surface-50-900-token"
+						onclick={() => filter.reset()}
 					>
-						Dismiss
+						Clear filters
 					</button>
-				{/if}
+					{#if currentItemFilteredOut}
+						<button
+							class="btn !bg-transparrent"
+							onclick={() => {
+								goto(resolve('/list'), {
+									replaceState: true,
+									noScroll: true
+								});
+							}}
+						>
+							Dismiss
+						</button>
+					{/if}
+				</div>
 			</div>
-		</div>
-	{/if}
-	<div class="mt-5 sticky bottom-4 left-1/2 -translate-x-1/2 w-max flex gap-2">
+		{/if}
+	</div>
+	<div class="mt-4 sticky bottom-4 self-center inline-flex gap-2">
 		<button
 			type="button"
 			class="btn bg-surface-900-50-token text-surface-50-900-token w-16"

@@ -3,7 +3,7 @@
 	import { filter } from '$lib/stores/filter';
 	import Close from '$lib/components/icons/close.svelte';
 	import { drawerIds } from '$lib/types/Drawers';
-	import { itemTypes } from '$lib/types/ItemType';
+	import { itemTypes, type ItemType } from '$lib/types/ItemType';
 	import type Filter from '$lib/types/Filter';
 
 	const drawerStore = getDrawerStore();
@@ -33,10 +33,10 @@
 	};
 
 	const toggleType = (type: string) => {
-		if (temporaryFilter.types.includes(type as any)) {
+		if (temporaryFilter.types.includes(type as ItemType)) {
 			temporaryFilter.types = temporaryFilter.types.filter((t) => t !== type);
 		} else {
-			temporaryFilter.types = [...temporaryFilter.types, type as any];
+			temporaryFilter.types = [...temporaryFilter.types, type as ItemType];
 		}
 	};
 </script>
@@ -59,7 +59,7 @@
 			<span id="drawer-label" class="sr-only">Filter drawer</span>
 			<h3 class="h3 sr-only">Item Type</h3>
 			<div class="flex flex-col gap-2">
-				{#each itemTypes as itemType}
+				{#each itemTypes as itemType (itemType)}
 					<label class="flex items-center space-x-2">
 						<input
 							class="checkbox"
@@ -67,7 +67,7 @@
 							checked={temporaryFilter.types.includes(itemType)}
 							onchange={() => toggleType(itemType)}
 						/>
-						<span class="text-xl capitalize">{itemType}</span>
+						<span class="text-xl capitalize">{itemType + 's'}</span>
 					</label>
 				{/each}
 			</div>
@@ -108,7 +108,7 @@
 				</label>
 			</div>
 
-			<div class="flex justify-center gap-4 mx-8 mt-4 sticky bottom-4">
+			<div class="inline-flex self-center justify-center gap-4 mx-8 mt-4 sticky bottom-4">
 				<button
 					class="btn bg-surface-900-50-token text-surface-50-900-token"
 					onclick={applyFilter}

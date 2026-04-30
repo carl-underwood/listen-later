@@ -47,35 +47,32 @@ export function createItems() {
 	const { subscribe } = derived<
 		[typeof rawItemsStore, typeof sortOrder, typeof filter],
 		ItemsState | undefined
-	>(
-		[rawItemsStore, sortOrder, filter],
-		([$rawItemsStore, $sortOrder, $filter]) => {
-			if ($rawItemsStore === undefined) return undefined;
+	>([rawItemsStore, sortOrder, filter], ([$rawItemsStore, $sortOrder, $filter]) => {
+		if ($rawItemsStore === undefined) return undefined;
 
-			let processedItems = [...$rawItemsStore];
+		let processedItems = [...$rawItemsStore];
 
-			if ($filter) {
-				if ($filter.types && $filter.types.length > 0) {
-					processedItems = processedItems.filter((item) => $filter.types.includes(item.type));
-				}
-				if ($filter.listened !== null) {
-					processedItems = processedItems.filter((item) => item.listened === $filter.listened);
-				}
+		if ($filter) {
+			if ($filter.types && $filter.types.length > 0) {
+				processedItems = processedItems.filter((item) => $filter.types.includes(item.type));
 			}
-
-			processedItems.sort((a, b) => {
-				if ($sortOrder === 'addedAtUtcDescending') {
-					return a.addedAtUtc > b.addedAtUtc ? -1 : 1;
-				}
-				return a.addedAtUtc > b.addedAtUtc ? 1 : -1;
-			});
-
-			return {
-				allItems: $rawItemsStore,
-				filteredAndSortedItems: processedItems
-			};
+			if ($filter.listened !== null) {
+				processedItems = processedItems.filter((item) => item.listened === $filter.listened);
+			}
 		}
-	);
+
+		processedItems.sort((a, b) => {
+			if ($sortOrder === 'addedAtUtcDescending') {
+				return a.addedAtUtc > b.addedAtUtc ? -1 : 1;
+			}
+			return a.addedAtUtc > b.addedAtUtc ? 1 : -1;
+		});
+
+		return {
+			allItems: $rawItemsStore,
+			filteredAndSortedItems: processedItems
+		};
+	});
 
 	const upsertItem = async (item: Item) => {
 		const $firestore = get(firestore);
