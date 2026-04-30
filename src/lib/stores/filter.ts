@@ -51,8 +51,7 @@ export function createFilter() {
 		await setFilter(defaultFilter);
 	};
 
-	const isFiltering = (filter: Filter) => 
-		filter.types.length > 0 || filter.listened !== null;
+	const isFiltering = (filter: Filter) => filter.types.length > 0 || filter.listened !== null;
 
 	return {
 		subscribe: rawFilterStore.subscribe,

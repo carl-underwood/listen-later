@@ -52,7 +52,7 @@
 				<span class="text-xl">Oldest to newest</span>
 			</label>
 
-			<div class="flex justify-center mx-8 mt-4 sticky bottom-4">
+			<div class="inline-flex self-center justify-center mx-8 mt-4 sticky bottom-4">
 				<button
 					class="btn bg-surface-900-50-token text-surface-50-900-token"
 					onclick={sort}
