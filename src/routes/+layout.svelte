@@ -21,6 +21,7 @@
 	import Bars from '$lib/components/icons/bars.svelte';
 	import NavigationDrawerContent from '$lib/components/NavigationDrawerContent.svelte';
 	import SortDrawerContent from '$lib/components/SortDrawerContent.svelte';
+	import FilterDrawerContent from '$lib/components/FilterDrawerContent.svelte';
 	import {
 		deleteAccountSearchParameterName,
 		promoteAccountSearchParameterName
@@ -110,6 +111,7 @@
 <Drawer labelledby="drawer-label" duration={$prefersReducedMotion ? 0 : 200}>
 	<NavigationDrawerContent />
 	<SortDrawerContent />
+	<FilterDrawerContent />
 </Drawer>
 
 {@render children()}

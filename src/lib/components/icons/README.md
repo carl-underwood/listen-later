@@ -11,6 +11,8 @@ Note that the following classes have been removed, as these were overriding them
 - [check](check.svelte)
 - [close](close.svelte)
 - [envelope](envelope.svelte)
+- [filter-outline](filter-outline.svelte)
+- [filter](filter.svelte)
 - [github](github.svelte)
 - [headphone](headphone.svelte)
 - [home](home.svelte)
