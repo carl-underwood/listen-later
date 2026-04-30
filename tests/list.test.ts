@@ -191,6 +191,10 @@ test.describe('list page', () => {
 
 		await goToListPage(page);
 
+		const items = page.locator('.accordion-control');
+		await expect(items.first()).toContainText(secondItemName);
+		await expect(items.nth(1)).toContainText(firstItemName);
+
 		const sortButton = page.getByRole('button', { name: 'Sort items' });
 		await expect(sortButton).toBeVisible();
 		await sortButton.click();
@@ -204,12 +208,14 @@ test.describe('list page', () => {
 		const submitSortButton = page.getByRole('button', { name: 'Sort', exact: true });
 		await submitSortButton.click();
 
+		await expect(items.first()).toContainText(firstItemName);
+		await expect(items.nth(1)).toContainText(secondItemName);
+
 		await page.reload();
 
 		await expect(page.getByRole('button', { name: firstItemName })).toBeVisible();
 		await expect(page.getByRole('button', { name: secondItemName })).toBeVisible();
 
-		const items = page.locator('.accordion-control');
 		await expect(items.first()).toContainText(firstItemName);
 		await expect(items.nth(1)).toContainText(secondItemName);
 
